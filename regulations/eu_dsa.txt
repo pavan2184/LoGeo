@@ -1,0 +1,19 @@
+EU Digital Services Act (DSA) - Key Compliance Requirements
+
+The EU Digital Services Act, effective February 2024, establishes comprehensive rules for digital services operating in the European Union.
+
+Key Requirements:
+- Content Moderation: Platforms must implement effective content moderation systems and provide clear community guidelines
+- Risk Assessment: Large platforms (45M+ EU users) must conduct annual systemic risk assessments
+- Transparency Reporting: Annual transparency reports detailing content moderation actions, algorithms, and risk mitigation measures
+- Age Verification: Special protections for minors, including age verification systems where minors may access services
+- Illegal Content: Rapid response mechanisms for removing illegal content upon notification
+- Crisis Response: Enhanced monitoring during crisis situations
+- Data Access: Researchers and authorities must have access to platform data for public interest research
+- Algorithm Transparency: Users must understand how recommendation systems work
+- Dark Patterns: Prohibition of dark patterns that manipulate user behavior
+- Geographic Scope: Applies to all services targeting EU users, regardless of company location
+
+Penalties: Up to 6% of global annual turnover for non-compliance.
+
+Relevant for features involving: content recommendation, user-generated content, age verification, data processing, algorithmic decision-making, crisis response mechanisms.

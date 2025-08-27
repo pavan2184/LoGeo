@@ -1,0 +1,11 @@
+title,description,expected_result,notes
+User Age Verification System,System to verify user age during registration using government ID validation for compliance with minor protection laws,true,Should trigger CA Kids Act and UT Social Media Act compliance
+Content Recommendation Algorithm,AI-powered system that suggests personalized content to users based on their viewing history and engagement patterns,uncertain,May need geo-compliance depending on implementation details
+Simple Calculator Widget,Basic arithmetic calculator that performs mathematical operations without storing or processing user data,false,Pure utility function with no geo-compliance implications
+Anonymous Chat Feature,Real-time messaging system that allows users to communicate without revealing personal identities or locations,uncertain,Anonymity features may conflict with some regional requirements
+Location-Based Service Discovery,GPS-enabled feature that helps users find nearby restaurants and entertainment venues based on their current location,true,Clear location data processing requires GDPR and regional privacy compliance
+CSAM Detection System,Automated system to detect and report child sexual abuse material in user-uploaded images and videos,true,Mandatory NCMEC reporting requirements in US jurisdiction
+Targeted Advertising Engine,Personalized advertising system that uses demographic data and browsing history to show relevant ads to users,true,GDPR data processing and age-based advertising restrictions
+Basic User Profile Storage,Simple system to store user display names and avatar images without behavioral tracking or analytics,false,Minimal data processing unlikely to trigger geo-compliance requirements
+Parental Control Dashboard,Comprehensive dashboard allowing parents to monitor and control their children's platform usage and interactions,true,Directly related to minor protection laws across multiple jurisdictions
+Cross-Border Data Sync,Feature that synchronizes user data across international servers for improved performance and redundancy,true,International data transfer subject to multiple regional regulations

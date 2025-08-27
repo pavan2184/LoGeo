@@ -1,0 +1,33 @@
+General Data Protection Regulation (GDPR) - EU Data Protection Law
+
+The General Data Protection Regulation (GDPR) is a comprehensive data protection law that applies to all organizations processing personal data of EU residents, regardless of where the organization is located.
+
+Key Requirements:
+- Lawful basis for processing personal data
+- Data minimization and purpose limitation
+- User consent and rights management
+- Data protection by design and by default
+- Breach notification within 72 hours
+- Data subject rights (access, rectification, erasure, portability)
+- Cross-border data transfer restrictions
+- Data protection impact assessments for high-risk processing
+
+Relevant for features involving:
+- Personal data collection and processing
+- User consent mechanisms
+- Data storage and retention
+- Cross-border data transfers
+- User rights management interfaces
+- Data breach detection and reporting
+- Privacy settings and controls
+- Data export and deletion features
+
+Compliance Requirements:
+- Implement data protection by design
+- Provide clear privacy notices
+- Enable user consent management
+- Support data subject rights
+- Implement data minimization
+- Ensure secure data processing
+- Provide data portability
+- Enable data erasure (right to be forgotten)

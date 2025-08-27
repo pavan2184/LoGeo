@@ -1,0 +1,33 @@
+Children's Online Privacy Protection Act (COPPA) - US Child Privacy Law
+
+The Children's Online Privacy Protection Act (COPPA) regulates the online collection of personal information from children under 13 years of age in the United States.
+
+Key Requirements:
+- Verifiable parental consent before collecting personal information
+- Clear privacy policies for children's data
+- Limited collection of personal information
+- Secure storage and handling of children's data
+- Right for parents to review and delete children's data
+- Prohibition of conditioning participation on data collection
+- Notice to parents about data collection practices
+- Reasonable security measures for children's data
+
+Relevant for features involving:
+- User registration and account creation
+- Age verification and parental consent
+- Data collection from users under 13
+- Educational or entertainment content for children
+- Social features and communication tools
+- Location-based services for minors
+- Content recommendation systems
+- Data analytics and tracking
+
+Compliance Requirements:
+- Implement verifiable parental consent mechanisms
+- Provide clear privacy notices for parents
+- Limit data collection to what's necessary
+- Enable parental access and control
+- Implement age verification systems
+- Maintain secure data handling practices
+- Provide data deletion mechanisms
+- Avoid conditioning services on data collection

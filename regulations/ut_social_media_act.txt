@@ -1,0 +1,23 @@
+Utah Social Media Regulation Act - Key Compliance Requirements
+
+Utah's pioneering social media legislation establishes comprehensive protections for minors on social platforms.
+
+Key Requirements:
+- Parental Consent: Verified parental consent required for all users under 18
+- Identity Verification: Age and identity verification systems for all new accounts
+- Time Restrictions: Automatic account lockout from 10:30 PM to 6:30 AM for minors (unless modified by parents)
+- Default Privacy: Enhanced privacy settings by default for minor accounts
+- Parental Access: Parents must have access to their minor's account activity and messages
+- Advertising Restrictions: Prohibited targeted advertising to users under 18
+- Algorithm Modifications: Recommendation algorithms cannot promote harmful content to minors
+- Design Features: Restrictions on addictive design features and engagement tactics for minors
+- Content Warnings: Age-appropriate content warnings and filtering systems
+- Data Minimization: Limited data collection and retention for minor users
+- Educational Resources: Mandatory digital citizenship and online safety education
+- Audit Requirements: Regular third-party audits of minor protection systems
+
+Enforcement: Utah Division of Consumer Protection oversight
+Effective Date: March 1, 2024
+Penalties: Up to $2,500 per violation plus civil remedies
+
+Relevant for features involving: user registration, content algorithms, advertising systems, messaging, time-based features, data collection, parental controls, content moderation.

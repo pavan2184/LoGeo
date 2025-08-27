@@ -1,0 +1,33 @@
+California Consumer Privacy Act (CCPA) - California Privacy Law
+
+The California Consumer Privacy Act (CCPA) grants California residents specific rights regarding their personal information and imposes obligations on businesses that collect, use, or sell personal information.
+
+Key Requirements:
+- Right to know what personal information is collected
+- Right to know whether personal information is sold or disclosed
+- Right to say no to the sale of personal information
+- Right to access personal information
+- Right to equal service and price (non-discrimination)
+- Right to delete personal information
+- Notice at collection of personal information
+- Opt-out mechanisms for data sales
+
+Relevant for features involving:
+- Personal data collection and processing
+- Data sales or sharing with third parties
+- User data access and control features
+- Privacy settings and preferences
+- Data deletion and account management
+- Targeted advertising and profiling
+- User consent and opt-out mechanisms
+- Data transparency and disclosure
+
+Compliance Requirements:
+- Provide notice of data collection practices
+- Implement data access and deletion mechanisms
+- Enable opt-out from data sales
+- Maintain non-discrimination policies
+- Support data portability requests
+- Implement reasonable security measures
+- Provide clear privacy notices
+- Enable user control over personal information

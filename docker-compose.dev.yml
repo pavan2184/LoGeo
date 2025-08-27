@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: geo-compliance-backend-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./results:/app/results
+      - ./regulations:/app/regulations
+      - ./backend:/app/backend  # Live reload backend code
+      - ./requirements.txt:/app/requirements.txt
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+    restart: unless-stopped
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: geo-compliance-frontend-dev
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./frontend:/app/frontend  # Live reload frontend code
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - API_BASE_URL=http://backend:8000
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_FILE_WATCHER_TYPE=poll
+    restart: unless-stopped
+    command: streamlit run frontend/app.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true --server.fileWatcherType=poll --server.runOnSave=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  results:
+    driver: local

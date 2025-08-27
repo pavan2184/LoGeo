@@ -1,0 +1,22 @@
+California Age-Appropriate Design Code Act (CA Kids Act) - Key Compliance Requirements
+
+The California Age-Appropriate Design Code Act requires platforms likely to be accessed by children to implement strong privacy and safety protections.
+
+Key Requirements:
+- Age Estimation: Platforms must estimate user age with reasonable certainty before providing services
+- Data Minimization: Collect and process only minimum necessary personal information for minors under 18
+- Privacy by Default: Default privacy settings must provide the highest level of protection for minors
+- Best Interests Standard: All platform features must consider the best interests of child users
+- Risk Assessments: Data Protection Impact Assessments (DPIAs) required for services likely accessed by children
+- Location Services: Precise geolocation disabled by default for minors
+- Dark Patterns: Prohibition of design features that manipulate, deceive, or trick minors
+- Parental Controls: Accessible and comprehensive parental supervision tools
+- Content Restrictions: Age-appropriate content filtering and moderation
+- Data Sharing: Restrictions on sharing, selling, or disclosing personal information of minors
+- Sleep Mode: Features that encourage healthy digital habits and screen time limits
+- Algorithm Transparency: Clear information about how algorithms may affect child users
+
+Effective Date: July 1, 2024
+Penalties: Up to $7,500 per affected child for violations
+
+Relevant for features involving: user registration, content recommendation, location services, social features, data collection, personalization algorithms, communication tools.

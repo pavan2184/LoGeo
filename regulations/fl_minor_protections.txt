@@ -1,0 +1,22 @@
+Florida Social Media Platform Age Verification and Protections - Key Compliance Requirements
+
+Florida's comprehensive social media legislation targets platforms to protect minors from harmful online experiences.
+
+Key Requirements:
+- Age Verification: Robust age verification systems required for account creation
+- Parental Consent: Verified parental consent required for users under 14
+- Teen Account Restrictions: Special restrictions and protections for users 14-15 years old
+- Anonymous Users: Prohibition of anonymous user accounts to improve accountability
+- Addictive Features: Restrictions on features designed to increase engagement time for minors
+- Content Filtering: Enhanced content moderation and filtering for age-inappropriate material
+- Time Limits: Built-in time management tools and usage restrictions for minor accounts
+- Educational Content: Promotion of educational and beneficial content for young users
+- Algorithmic Transparency: Disclosure requirements for recommendation algorithms affecting minors
+- Data Protection: Enhanced privacy protections for minor user data
+- Geographic Verification: Verification that users are subject to Florida jurisdiction
+- Reporting Requirements: Mandatory reporting of harmful content targeting minors
+
+Enforcement: Florida Attorney General oversight with significant penalties
+Effective Date: January 1, 2025 (phased implementation)
+
+Relevant for features involving: account creation, age verification, content recommendation, social interactions, data collection, engagement mechanics, content moderation, user identity verification.

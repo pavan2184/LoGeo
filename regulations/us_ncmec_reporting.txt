@@ -1,0 +1,23 @@
+US NCMEC Reporting Requirements - Key Compliance Requirements
+
+The National Center for Missing & Exploited Children (NCMEC) reporting requirements under federal law mandate specific actions for platforms detecting child exploitation material.
+
+Key Requirements:
+- Mandatory Reporting: Immediate reporting of known child sexual abuse material (CSAM) to NCMEC
+- Preservation Requirements: Preserve reported content and associated metadata for 180 days minimum
+- User Information: Provide all available user information associated with CSAM reports
+- Technical Detection: Implement systems to detect and prevent CSAM distribution
+- Hash Databases: Integration with industry hash databases (PhotoDNA, etc.) to identify known CSAM
+- Reporting Timeline: Reports must be made "as soon as reasonably possible" after discovery
+- Law Enforcement Cooperation: Full cooperation with law enforcement investigations
+- Content Removal: Immediate removal of CSAM upon detection
+- Account Termination: Termination of accounts distributing CSAM
+- International Cooperation: Coordination with international law enforcement through NCMEC
+- Record Keeping: Detailed logs of detection, reporting, and removal actions
+- Employee Training: Staff training on CSAM identification and reporting procedures
+
+Legal Framework: 18 USC 2258A (mandatory reporting), CDA Section 230 protections
+Penalties: Criminal and civil penalties for failure to report
+Global Application: US law applies to any service accessible from the United States
+
+Relevant for features involving: user-generated content, file uploads, messaging systems, content sharing, image/video processing, content moderation, user communications.
