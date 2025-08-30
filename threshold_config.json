@@ -1,0 +1,61 @@
+{
+  "thresholds": {
+    "legal_compliance": {
+      "confidence_threshold": 0.90,
+      "escalation_rule": "human_review",
+      "description": "GDPR, HIPAA, COPPA, DSA - super strict, small errors = high impact",
+      "examples": ["GDPR", "COPPA", "DSA", "HIPAA", "CCPA"]
+    },
+    "safety_health_protection": {
+      "confidence_threshold": 0.85,
+      "escalation_rule": "human_review", 
+      "description": "Child protection, CSAM reporting, age gates - strict safety requirements",
+      "examples": ["NCMEC", "child_protection", "age_gate", "safety"]
+    },
+    "data_residency": {
+      "confidence_threshold": 0.88,
+      "escalation_rule": "human_review",
+      "description": "Data localization, storage requirements - regulatory compliance",
+      "examples": ["data_residency", "localization", "storage"]
+    },
+    "tax_compliance": {
+      "confidence_threshold": 0.87,
+      "escalation_rule": "human_review",
+      "description": "VAT, tax ID collection - financial compliance",
+      "examples": ["VAT", "tax_id", "tax"]
+    },
+    "business_analytics": {
+      "confidence_threshold": 0.70,
+      "escalation_rule": "auto_ok",
+      "description": "Product segmentation, A/B testing, user analytics - business decisions",
+      "examples": ["A/B_test", "analytics", "segmentation", "experiment"]
+    },
+    "internal_features": {
+      "confidence_threshold": 0.60,
+      "escalation_rule": "ignore",
+      "description": "Internal tools, performance optimizations - low risk",
+      "examples": ["performance", "internal", "optimization", "cache"]
+    }
+  },
+  "escalation_rules": {
+    "human_review": {
+      "action": "flag_for_human",
+      "priority": "high",
+      "description": "Requires human review before proceeding"
+    },
+    "auto_ok": {
+      "action": "proceed_automatically", 
+      "priority": "medium",
+      "description": "Can proceed automatically, log for audit"
+    },
+    "ignore": {
+      "action": "skip_processing",
+      "priority": "low", 
+      "description": "Skip processing, no action required"
+    }
+  },
+  "hybrid_handling": {
+    "strategy": "strictest_threshold",
+    "description": "When multiple categories apply, use the strictest (highest) threshold"
+  }
+} 

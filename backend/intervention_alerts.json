@@ -3,240 +3,46 @@
     "alert_id": "alert_20250830_163336_9103",
     "timestamp": "2025-08-30T16:33:36.526934",
     "feature_title": "PF default toggle with NR enforcement for California teens",
-    "feature_description": "As part of compliance with California\u2019s SB976, the app will disable PF by default for users under 18 located in California. This default setting is considered NR to override, unless explicit parental opt-in is provided. Geo-detection is handled via GH, and rollout is monitored with FR logs. The design ensures minimal disruption while meeting the strict personalization requirements imposed by the law.",
+    "feature_description": "As part of compliance with California's SB976, the app will disable PF by default for users under 18 located in California. This default setting is considered NR to override, unless explicit parental opt-in is provided. Geo-detection is handled via GH, and rollout is monitored with FR logs. The design ensures minimal disruption while meeting the strict personalization requirements imposed by the law.",
     "classification_result": {
       "needs_geo_logic": true,
       "primary_confidence": 0.9,
       "secondary_confidence": 0.42000000000000004,
       "overall_confidence": 0.6699999999999999,
       "reasoning": "Strong regulatory compliance signals detected. Feature triggers: California Age-Appropriate Design Code Act. Geographic-specific implementation required.",
-      "applicable_regulations": [
-        {
-          "name": "California Age-Appropriate Design Code Act",
-          "jurisdiction": "California",
-          "relevance": "high",
-          "specific_articles": [],
-          "legal_basis": "Detected 1 keywords + 1 triggers"
-        }
-      ],
       "risk_assessment": "high",
-      "regulatory_requirements": [
-        "Implement jurisdiction-specific compliance logic",
-        "Configure geographic detection system",
-        "Establish regulatory audit trail",
-        "Design compliance-appropriate user experience"
-      ],
-      "evidence_sources": [
-        "Regulation detection: CA_KIDS_ACT",
-        "Legitimate regulatory document analysis"
-      ],
-      "recommended_actions": [
-        "Consult legal team for specific jurisdiction requirements",
-        "Implement geo-location detection",
-        "Design compliance verification system",
-        "Establish monitoring and reporting mechanisms"
-      ],
-      "standardized_entities": {
-        "locations": [
-          {
-            "original_text": "California",
-            "colloquial_name": "California",
-            "full_name": "State of California",
-            "country_code": "USA",
-            "region": [
-              "North America",
-              "United States",
-              "US West Coast"
-            ],
-            "confidence": 1.0,
-            "source": "regex"
-          },
-          {
-            "original_text": "California",
-            "colloquial_name": "California",
-            "full_name": "State of California",
-            "country_code": "USA",
-            "region": [
-              "North America",
-              "United States",
-              "US West Coast"
-            ],
-            "confidence": 1.0,
-            "source": "regex"
-          },
-          {
-            "original_text": "California",
-            "colloquial_name": "California",
-            "full_name": "State of California",
-            "country_code": "USA",
-            "region": [
-              "North America",
-              "United States",
-              "US West Coast"
-            ],
-            "confidence": 1.0,
-            "source": "regex"
-          }
-        ],
-        "ages": [
-          {
-            "original_text": "teens",
-            "standardized_term": "teen",
-            "numerical_range": [
-              13,
-              17
-            ],
-            "confidence": 0.8,
-            "source": "regex"
-          }
-        ],
-        "terminology": [],
-        "confidence_scores": {
-          "location": 1.0,
-          "age": 0.8,
-          "terminology": 0.0
-        }
-      },
-      "preprocessing_result": {
-        "original_text": "PF default toggle with NR enforcement for California teens. As part of compliance with California\u2019s SB976, the app will disable PF by default for users under 18 located in California. This default setting is considered NR to override, unless explicit parental opt-in is provided. Geo-detection is handled via GH, and rollout is monitored with FR logs. The design ensures minimal disruption while meeting the strict personalization requirements imposed by the law.",
-        "cleaned_text": "PF default toggle with NR enforcement for California teens. As part of compliance with California\u2019s SB976, the app will disable PF by default for users under 18 located in California. This default setting is considered NR to override, unless explicit parental opt-in is provided. Geo-detection is handled via GH, and rollout is monitored with FR logs. The design ensures minimal disruption while meeting the strict personalization requirements imposed by the law.",
-        "tokens": [
-          "default",
-          "toggle",
-          "enforcement",
-          "california",
-          "teens",
-          "part",
-          "compliance",
-          "california",
-          "sb976",
-          "app",
-          "disable",
-          "default",
-          "users",
-          "under",
-          "located",
-          "california",
-          "this",
-          "default",
-          "setting",
-          "considered",
-          "override",
-          "unless",
-          "explicit",
-          "parental",
-          "opt",
-          "provided",
-          "geo",
-          "detection",
-          "handled",
-          "via",
-          "rollout",
-          "monitored",
-          "logs",
-          "design",
-          "ensures",
-          "minimal",
-          "disruption",
-          "while",
-          "meeting",
-          "strict",
-          "personalization",
-          "requirements",
-          "imposed",
-          "law"
-        ],
-        "entities": [
-          {
-            "text": "California",
-            "entity_type": "LOCATION",
-            "start_pos": 38,
-            "end_pos": 52,
-            "confidence": 1.0,
-            "standardized_form": "California",
-            "source": "regex",
-            "additional_info": {
-              "pattern_type": "location"
-            }
-          },
-          {
-            "text": "California",
-            "entity_type": "LOCATION",
-            "start_pos": 169,
-            "end_pos": 182,
-            "confidence": 1.0,
-            "standardized_form": "California",
-            "source": "regex",
-            "additional_info": {
-              "pattern_type": "location"
-            }
-          },
-          {
-            "text": "California",
-            "entity_type": "LOCATION",
-            "start_pos": 71,
-            "end_pos": 97,
-            "confidence": 1.0,
-            "standardized_form": "California",
-            "source": "regex",
-            "additional_info": {
-              "pattern_type": "location"
-            }
-          },
-          {
-            "text": "teens",
-            "entity_type": "AGE",
-            "start_pos": 53,
-            "end_pos": 58,
-            "confidence": 0.8,
-            "standardized_form": "teen (13-17)",
-            "source": "regex",
-            "additional_info": {
-              "numerical_range": [
-                13,
-                17
-              ]
-            }
-          },
-          {
-            "text": "PF",
-            "entity_type": "TERMINOLOGY",
-            "start_pos": 0,
-            "end_pos": 2,
-            "confidence": 0.5775707721710205,
-            "standardized_form": "PF",
-            "source": "ner",
-            "additional_info": {
-              "huggingface_label": "ORG"
-            }
-          }
-        ],
-        "clear_cut_classification": false,
-        "confidence_score": 0.9,
-        "needs_further_analysis": true
-      },
-      "clear_cut_detection": false,
-      "confidence_breakdown": {
-        "base_weighted": 0.756,
-        "llm_component": 0.63,
-        "regex_ner_component": 0.126,
-        "entity_adjustment": 0.019999999999999997,
-        "cross_validation_adjustment": -0.006000000000000005,
-        "diversity_bonus": 0.1,
-        "final_confidence": 0.87,
-        "ambiguity_penalty": -0.2,
-        "adjusted_final_confidence": 0.6699999999999999
-      },
       "needs_human_review": true,
       "human_review_reason": "Confidence (0.670) below threshold (0.900) - human",
-      "intervention_priority": "high",
-      "processing_timestamp": "2025-08-30T16:33:36.525223",
-      "method_used": "llm_primary",
-      "processing_time_ms": 667.5269999999999,
-      "detailed_confidence": {
-        "llm_confidence": 0.9,
-        "regex_ner_confidence": 0.42000000000000004,
-        "entity_confidence": 0.6,
-        "cross_validation_confidence": 0.45999999999999996,
-        "final_confidence": 0.6699999999999999,
-        "confidence_level": 
+      "intervention_priority": "high"
+    },
+    "intervention_reason": "Confidence (0.670) below threshold (0.900) for minor_protection",
+    "priority": "high",
+    "status": "pending",
+    "assigned_reviewer": null,
+    "resolution_notes": null,
+    "resolved_timestamp": null
+  },
+  {
+    "alert_id": "alert_20250830_162647_6263",
+    "timestamp": "2025-08-30T16:26:47.667857",
+    "feature_title": "GDPR Age Gate",
+    "feature_description": "Age verification for EU users under 16 to comply with GDPR Article 8",
+    "classification_result": {
+      "needs_geo_logic": true,
+      "primary_confidence": 0.8,
+      "secondary_confidence": 0.6,
+      "overall_confidence": 0.7566666666666667,
+      "reasoning": "Potential regulatory compliance requirements detected: EU Digital Services Act, California Age-Appropriate Design Code Act, Florida Online Protections for Minors. Manual legal review recommended.",
+      "risk_assessment": "medium",
+      "needs_human_review": true,
+      "human_review_reason": "Confidence (0.757) below threshold (0.850) for privacy_rights",
+      "intervention_priority": "medium"
+    },
+    "intervention_reason": "Confidence (0.757) below threshold (0.850) for privacy_rights",
+    "priority": "medium",
+    "status": "pending",
+    "assigned_reviewer": null,
+    "resolution_notes": null,
+    "resolved_timestamp": null
+  }
+]
