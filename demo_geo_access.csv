@@ -1,0 +1,11 @@
+user_id,feature_name,country
+user001,user_registration,US
+user002,user_registration,CN
+user003,age_verification,EU
+user004,age_verification,RU
+user005,data_analytics,CA
+user006,data_analytics,UK
+user007,content_moderation,US
+user008,content_moderation,CN
+user009,social_features,AU
+user010,payment_processing,KP

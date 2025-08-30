@@ -274,23 +274,47 @@ class RegulationRAG:
         
         return classification
     
-    def get_context_for_classification(self, feature_title: str, feature_description: str, max_context_length: int = 2000) -> str:
-        """Get relevant regulation context for LLM classification"""
+    def get_regulatory_context(self, feature_title: str, feature_description: str, max_context_length: int = 3000) -> str:
+        """
+        Get relevant regulatory context from legitimate sources for compliance analysis.
+        Returns contextual information for LLM to perform regulatory analysis.
+        """
         query = f"{feature_title} {feature_description}"
-        results = self.search(query, k=5)
+        results = self.search(query, k=8)  # Get more results for comprehensive analysis
+        
+        if not results:
+            logger.warning(f"No regulatory context found for query: {query}")
+            return ""
         
         context_parts = []
         current_length = 0
         
+        # Add a header to clarify the source
+        header = "REGULATORY CONTEXT FROM LEGITIMATE SOURCES:\n"
+        context_parts.append(header)
+        current_length += len(header)
+        
         for result in results:
-            text = f"[{result['regulation']}]: {result['text']}"
+            # Format with clear regulation source and relevance
+            text = f"\n[SOURCE: {result['regulation']} | Relevance: {result['relevance_score']:.2f}]\n{result['text']}\n"
+            
             if current_length + len(text) <= max_context_length:
                 context_parts.append(text)
                 current_length += len(text)
             else:
+                # If we can't fit the whole result, add a truncated version
+                remaining_space = max_context_length - current_length - 100  # Leave some buffer
+                if remaining_space > 200:  # Only add if meaningful content can fit
+                    truncated_text = f"\n[SOURCE: {result['regulation']} | Relevance: {result['relevance_score']:.2f}]\n{result['text'][:remaining_space]}...\n"
+                    context_parts.append(truncated_text)
                 break
         
-        return "\n\n".join(context_parts)
+        context = "".join(context_parts)
+        
+        if len(context.strip()) < 100:
+            logger.warning(f"Insufficient regulatory context found for feature: {feature_title}")
+        
+        return context
 
 # Global RAG instance
 _rag_instance = None
@@ -322,6 +346,6 @@ if __name__ == "__main__":
         print(f"\n{i+1}. {result['regulation']} (Score: {result['relevance_score']:.3f})")
         print(f"   {result['text'][:200]}...")
     
-    # Test context generation
-    context = rag.get_context_for_classification("user registration", "allow users to create accounts with email verification")
-    print(f"\nContext for classification:\n{context}")
+    # Test regulatory context generation
+    context = rag.get_regulatory_context("user registration", "allow users to create accounts with email verification")
+    print(f"\nRegulatory context:\n{context}")

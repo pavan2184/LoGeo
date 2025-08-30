@@ -4,7 +4,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.backend
+      dockerfile: Dockerfile.backend.simple
     container_name: geo-compliance-backend
     ports:
       - "8000:8000"
@@ -12,9 +12,11 @@ services:
       - ./results:/app/results
       - ./regulations:/app/regulations
       - ./backend:/app/backend  # Mount backend code for auto-reload
-      - ./requirements.txt:/app/requirements.txt
     environment:
       - PYTHONPATH=/app
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     restart: unless-stopped
     command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
     healthcheck:

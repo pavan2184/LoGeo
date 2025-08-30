@@ -1,0 +1,16 @@
+user_id,feature_name,country
+user_utah_001,Curfew login blocker with ASL and GH for Utah minors,UT
+user_utah_002,Curfew login blocker with ASL and GH for Utah minors,CA
+user_ca_001,PF default toggle with NR enforcement for California teens,CA
+user_ca_002,PF default toggle with NR enforcement for California teens,NY
+user_us_001,Child abuse content scanner using T5 and CDS triggers,US
+user_eu_001,Content visibility lock with NSP for EU DSA,EU
+user_eu_002,Content visibility lock with NSP for EU DSA,US
+user_fl_001,Jellybean-based parental notifications for Florida regulation,FL
+user_fl_002,Jellybean-based parental notifications for Florida regulation,TX
+user_global_001,Universal PF deactivation on guest mode,US
+user_global_002,Universal PF deactivation on guest mode,EU
+user_minor_001,Age-specific notification controls with ASL,CA
+user_minor_002,Age-specific notification controls with ASL,EU
+user_minor_003,Minor-safe chat expansion via Jellybean,US
+user_minor_004,Custom avatar system with identity checks,EU

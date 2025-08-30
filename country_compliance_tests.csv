@@ -1,0 +1,63 @@
+user_id,feature_name,country
+utah_user_001,Curfew login blocker with ASL and GH for Utah minors,UT
+utah_user_002,Curfew login blocker with ASL and GH for Utah minors,CA
+utah_user_003,Curfew login blocker with ASL and GH for Utah minors,NY
+ca_user_001,PF default toggle with NR enforcement for California teens,CA
+ca_user_002,PF default toggle with NR enforcement for California teens,TX
+ca_user_003,PF default toggle with NR enforcement for California teens,EU
+fl_user_001,Jellybean-based parental notifications for Florida regulation,FL
+fl_user_002,Jellybean-based parental notifications for Florida regulation,GA
+minor_us_001,Age-specific notification controls with ASL,US
+minor_ca_001,Age-specific notification controls with ASL,CA
+minor_eu_001,Age-specific notification controls with ASL,EU
+minor_cn_001,Age-specific notification controls with ASL,CN
+minor_ru_001,Age-specific notification controls with ASL,RU
+chat_us_001,Minor-safe chat expansion via Jellybean,US
+chat_eu_001,Minor-safe chat expansion via Jellybean,EU
+chat_cn_001,Minor-safe chat expansion via Jellybean,CN
+chat_in_001,Minor-safe chat expansion via Jellybean,IN
+avatar_us_001,Custom avatar system with identity checks,US
+avatar_eu_001,Custom avatar system with identity checks,EU
+avatar_cn_001,Custom avatar system with identity checks,CN
+avatar_tr_001,Custom avatar system with identity checks,TR
+abuse_us_001,Child abuse content scanner using T5 and CDS triggers,US
+abuse_eu_001,Child abuse content scanner using T5 and CDS triggers,EU
+abuse_ca_001,Child abuse content scanner using T5 and CDS triggers,CA
+eu_content_001,Content visibility lock with NSP for EU DSA,EU
+eu_content_002,Content visibility lock with NSP for EU DSA,DE
+eu_content_003,Content visibility lock with NSP for EU DSA,FR
+eu_content_004,Content visibility lock with NSP for EU DSA,US
+creator_us_001,Creator fund payout tracking in CDS,US
+creator_ca_001,Creator fund payout tracking in CDS,CA
+creator_eu_001,Creator fund payout tracking in CDS,EU
+creator_de_001,Creator fund payout tracking in CDS,DE
+retention_us_001,Unified retention control via DRT & CDS,US
+retention_eu_001,Unified retention control via DRT & CDS,EU
+retention_cn_001,Unified retention control via DRT & CDS,CN
+retention_ru_001,Unified retention control via DRT & CDS,RU
+eu_video_001,Trial run of video replies in EU,EU
+eu_video_002,Trial run of video replies in EU,DE
+eu_video_003,Trial run of video replies in EU,US
+us_autoplay_001,Regional trial of autoplay behavior,US
+us_autoplay_002,Regional trial of autoplay behavior,EU
+us_autoplay_003,Regional trial of autoplay behavior,CA
+kr_theme_001,South Korea dark theme A/B experiment,KR
+kr_theme_002,South Korea dark theme A/B experiment,JP
+kr_theme_003,South Korea dark theme A/B experiment,US
+ca_variant_001,Canada-first PF variant test,CA
+ca_variant_002,Canada-first PF variant test,US
+ca_variant_003,Canada-first PF variant test,EU
+chat_ui_001,Chat UI overhaul,CA
+chat_ui_002,Chat UI overhaul,US
+chat_ui_003,Chat UI overhaul,BR
+chat_ui_004,Chat UI overhaul,ID
+chat_ui_005,Chat UI overhaul,EU
+universal_001,Universal PF deactivation on guest mode,US
+universal_002,Universal PF deactivation on guest mode,EU
+universal_003,Universal PF deactivation on guest mode,CN
+story_001,Story resharing with content expiry,US
+story_002,Story resharing with content expiry,EU
+story_003,Story resharing with content expiry,CN
+leaderboard_001,Leaderboard system for weekly creators,US
+leaderboard_002,Leaderboard system for weekly creators,EU
+leaderboard_003,Leaderboard system for weekly creators,CN

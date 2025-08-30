@@ -1,0 +1,2456 @@
+{
+  "locations": {
+    "united states": {
+      "colloquial_name": "United States",
+      "full_name": "United States of America",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "US",
+        "USA",
+        "America",
+        "United States"
+      ],
+      "abbreviations": [
+        "US",
+        "U.S.",
+        "USA",
+        "U.S.A."
+      ],
+      "confidence_score": 1.0
+    },
+    "us": {
+      "colloquial_name": "United States",
+      "full_name": "United States of America",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "US",
+        "USA",
+        "America",
+        "United States"
+      ],
+      "abbreviations": [
+        "US",
+        "U.S.",
+        "USA",
+        "U.S.A."
+      ],
+      "confidence_score": 1.0
+    },
+    "usa": {
+      "colloquial_name": "United States",
+      "full_name": "United States of America",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "US",
+        "USA",
+        "America",
+        "United States"
+      ],
+      "abbreviations": [
+        "US",
+        "U.S.",
+        "USA",
+        "U.S.A."
+      ],
+      "confidence_score": 1.0
+    },
+    "america": {
+      "colloquial_name": "United States",
+      "full_name": "United States of America",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "US",
+        "USA",
+        "America",
+        "United States"
+      ],
+      "abbreviations": [
+        "US",
+        "U.S.",
+        "USA",
+        "U.S.A."
+      ],
+      "confidence_score": 1.0
+    },
+    "u.s.": {
+      "colloquial_name": "United States",
+      "full_name": "United States of America",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "US",
+        "USA",
+        "America",
+        "United States"
+      ],
+      "abbreviations": [
+        "US",
+        "U.S.",
+        "USA",
+        "U.S.A."
+      ],
+      "confidence_score": 1.0
+    },
+    "u.s.a.": {
+      "colloquial_name": "United States",
+      "full_name": "United States of America",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "US",
+        "USA",
+        "America",
+        "United States"
+      ],
+      "abbreviations": [
+        "US",
+        "U.S.",
+        "USA",
+        "U.S.A."
+      ],
+      "confidence_score": 1.0
+    },
+    "european union": {
+      "colloquial_name": "European Union",
+      "full_name": "European Union",
+      "country_code_iso": "EUR",
+      "country_code_ioc": "EUR",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "EU",
+        "Europe",
+        "European Union"
+      ],
+      "abbreviations": [
+        "EU",
+        "E.U."
+      ],
+      "confidence_score": 1.0
+    },
+    "eu": {
+      "colloquial_name": "European Union",
+      "full_name": "European Union",
+      "country_code_iso": "EUR",
+      "country_code_ioc": "EUR",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "EU",
+        "Europe",
+        "European Union"
+      ],
+      "abbreviations": [
+        "EU",
+        "E.U."
+      ],
+      "confidence_score": 1.0
+    },
+    "europe": {
+      "colloquial_name": "European Union",
+      "full_name": "European Union",
+      "country_code_iso": "EUR",
+      "country_code_ioc": "EUR",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "EU",
+        "Europe",
+        "European Union"
+      ],
+      "abbreviations": [
+        "EU",
+        "E.U."
+      ],
+      "confidence_score": 1.0
+    },
+    "e.u.": {
+      "colloquial_name": "European Union",
+      "full_name": "European Union",
+      "country_code_iso": "EUR",
+      "country_code_ioc": "EUR",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "EU",
+        "Europe",
+        "European Union"
+      ],
+      "abbreviations": [
+        "EU",
+        "E.U."
+      ],
+      "confidence_score": 1.0
+    },
+    "germany": {
+      "colloquial_name": "Germany",
+      "full_name": "Federal Republic of Germany",
+      "country_code_iso": "DEU",
+      "country_code_ioc": "GER",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "Germany",
+        "Deutschland"
+      ],
+      "abbreviations": [
+        "DE",
+        "GER"
+      ],
+      "confidence_score": 1.0
+    },
+    "deutschland": {
+      "colloquial_name": "Germany",
+      "full_name": "Federal Republic of Germany",
+      "country_code_iso": "DEU",
+      "country_code_ioc": "GER",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "Germany",
+        "Deutschland"
+      ],
+      "abbreviations": [
+        "DE",
+        "GER"
+      ],
+      "confidence_score": 1.0
+    },
+    "de": {
+      "colloquial_name": "Germany",
+      "full_name": "Federal Republic of Germany",
+      "country_code_iso": "DEU",
+      "country_code_ioc": "GER",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "Germany",
+        "Deutschland"
+      ],
+      "abbreviations": [
+        "DE",
+        "GER"
+      ],
+      "confidence_score": 1.0
+    },
+    "ger": {
+      "colloquial_name": "Germany",
+      "full_name": "Federal Republic of Germany",
+      "country_code_iso": "DEU",
+      "country_code_ioc": "GER",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "Germany",
+        "Deutschland"
+      ],
+      "abbreviations": [
+        "DE",
+        "GER"
+      ],
+      "confidence_score": 1.0
+    },
+    "france": {
+      "colloquial_name": "France",
+      "full_name": "French Republic",
+      "country_code_iso": "FRA",
+      "country_code_ioc": "FRA",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "France",
+        "French Republic"
+      ],
+      "abbreviations": [
+        "FR",
+        "FRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "french republic": {
+      "colloquial_name": "France",
+      "full_name": "French Republic",
+      "country_code_iso": "FRA",
+      "country_code_ioc": "FRA",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "France",
+        "French Republic"
+      ],
+      "abbreviations": [
+        "FR",
+        "FRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "fr": {
+      "colloquial_name": "France",
+      "full_name": "French Republic",
+      "country_code_iso": "FRA",
+      "country_code_ioc": "FRA",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "France",
+        "French Republic"
+      ],
+      "abbreviations": [
+        "FR",
+        "FRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "fra": {
+      "colloquial_name": "France",
+      "full_name": "French Republic",
+      "country_code_iso": "FRA",
+      "country_code_ioc": "FRA",
+      "region": [
+        "Europe",
+        "European Union"
+      ],
+      "synonyms": [
+        "France",
+        "French Republic"
+      ],
+      "abbreviations": [
+        "FR",
+        "FRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "united kingdom": {
+      "colloquial_name": "United Kingdom",
+      "full_name": "United Kingdom of Great Britain and Northern Ireland",
+      "country_code_iso": "GBR",
+      "country_code_ioc": "GBR",
+      "region": [
+        "Europe"
+      ],
+      "synonyms": [
+        "UK",
+        "Britain",
+        "Great Britain",
+        "England"
+      ],
+      "abbreviations": [
+        "UK",
+        "GB",
+        "GBR"
+      ],
+      "confidence_score": 1.0
+    },
+    "uk": {
+      "colloquial_name": "United Kingdom",
+      "full_name": "United Kingdom of Great Britain and Northern Ireland",
+      "country_code_iso": "GBR",
+      "country_code_ioc": "GBR",
+      "region": [
+        "Europe"
+      ],
+      "synonyms": [
+        "UK",
+        "Britain",
+        "Great Britain",
+        "England"
+      ],
+      "abbreviations": [
+        "UK",
+        "GB",
+        "GBR"
+      ],
+      "confidence_score": 1.0
+    },
+    "britain": {
+      "colloquial_name": "United Kingdom",
+      "full_name": "United Kingdom of Great Britain and Northern Ireland",
+      "country_code_iso": "GBR",
+      "country_code_ioc": "GBR",
+      "region": [
+        "Europe"
+      ],
+      "synonyms": [
+        "UK",
+        "Britain",
+        "Great Britain",
+        "England"
+      ],
+      "abbreviations": [
+        "UK",
+        "GB",
+        "GBR"
+      ],
+      "confidence_score": 1.0
+    },
+    "great britain": {
+      "colloquial_name": "United Kingdom",
+      "full_name": "United Kingdom of Great Britain and Northern Ireland",
+      "country_code_iso": "GBR",
+      "country_code_ioc": "GBR",
+      "region": [
+        "Europe"
+      ],
+      "synonyms": [
+        "UK",
+        "Britain",
+        "Great Britain",
+        "England"
+      ],
+      "abbreviations": [
+        "UK",
+        "GB",
+        "GBR"
+      ],
+      "confidence_score": 1.0
+    },
+    "england": {
+      "colloquial_name": "United Kingdom",
+      "full_name": "United Kingdom of Great Britain and Northern Ireland",
+      "country_code_iso": "GBR",
+      "country_code_ioc": "GBR",
+      "region": [
+        "Europe"
+      ],
+      "synonyms": [
+        "UK",
+        "Britain",
+        "Great Britain",
+        "England"
+      ],
+      "abbreviations": [
+        "UK",
+        "GB",
+        "GBR"
+      ],
+      "confidence_score": 1.0
+    },
+    "gb": {
+      "colloquial_name": "United Kingdom",
+      "full_name": "United Kingdom of Great Britain and Northern Ireland",
+      "country_code_iso": "GBR",
+      "country_code_ioc": "GBR",
+      "region": [
+        "Europe"
+      ],
+      "synonyms": [
+        "UK",
+        "Britain",
+        "Great Britain",
+        "England"
+      ],
+      "abbreviations": [
+        "UK",
+        "GB",
+        "GBR"
+      ],
+      "confidence_score": 1.0
+    },
+    "gbr": {
+      "colloquial_name": "United Kingdom",
+      "full_name": "United Kingdom of Great Britain and Northern Ireland",
+      "country_code_iso": "GBR",
+      "country_code_ioc": "GBR",
+      "region": [
+        "Europe"
+      ],
+      "synonyms": [
+        "UK",
+        "Britain",
+        "Great Britain",
+        "England"
+      ],
+      "abbreviations": [
+        "UK",
+        "GB",
+        "GBR"
+      ],
+      "confidence_score": 1.0
+    },
+    "canada": {
+      "colloquial_name": "Canada",
+      "full_name": "Canada",
+      "country_code_iso": "CAN",
+      "country_code_ioc": "CAN",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "Canada"
+      ],
+      "abbreviations": [
+        "CA",
+        "CAN"
+      ],
+      "confidence_score": 1.0
+    },
+    "ca": {
+      "colloquial_name": "California",
+      "full_name": "State of California",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US West Coast"
+      ],
+      "synonyms": [
+        "California",
+        "CA",
+        "Calif"
+      ],
+      "abbreviations": [
+        "CA",
+        "CAL"
+      ],
+      "confidence_score": 1.0
+    },
+    "can": {
+      "colloquial_name": "Canada",
+      "full_name": "Canada",
+      "country_code_iso": "CAN",
+      "country_code_ioc": "CAN",
+      "region": [
+        "North America",
+        "Americas"
+      ],
+      "synonyms": [
+        "Canada"
+      ],
+      "abbreviations": [
+        "CA",
+        "CAN"
+      ],
+      "confidence_score": 1.0
+    },
+    "california": {
+      "colloquial_name": "California",
+      "full_name": "State of California",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US West Coast"
+      ],
+      "synonyms": [
+        "California",
+        "CA",
+        "Calif"
+      ],
+      "abbreviations": [
+        "CA",
+        "CAL"
+      ],
+      "confidence_score": 1.0
+    },
+    "calif": {
+      "colloquial_name": "California",
+      "full_name": "State of California",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US West Coast"
+      ],
+      "synonyms": [
+        "California",
+        "CA",
+        "Calif"
+      ],
+      "abbreviations": [
+        "CA",
+        "CAL"
+      ],
+      "confidence_score": 1.0
+    },
+    "cal": {
+      "colloquial_name": "California",
+      "full_name": "State of California",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US West Coast"
+      ],
+      "synonyms": [
+        "California",
+        "CA",
+        "Calif"
+      ],
+      "abbreviations": [
+        "CA",
+        "CAL"
+      ],
+      "confidence_score": 1.0
+    },
+    "florida": {
+      "colloquial_name": "Florida",
+      "full_name": "State of Florida",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US Southeast"
+      ],
+      "synonyms": [
+        "Florida",
+        "FL",
+        "Fla"
+      ],
+      "abbreviations": [
+        "FL",
+        "FLA"
+      ],
+      "confidence_score": 1.0
+    },
+    "fl": {
+      "colloquial_name": "Florida",
+      "full_name": "State of Florida",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US Southeast"
+      ],
+      "synonyms": [
+        "Florida",
+        "FL",
+        "Fla"
+      ],
+      "abbreviations": [
+        "FL",
+        "FLA"
+      ],
+      "confidence_score": 1.0
+    },
+    "fla": {
+      "colloquial_name": "Florida",
+      "full_name": "State of Florida",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US Southeast"
+      ],
+      "synonyms": [
+        "Florida",
+        "FL",
+        "Fla"
+      ],
+      "abbreviations": [
+        "FL",
+        "FLA"
+      ],
+      "confidence_score": 1.0
+    },
+    "utah": {
+      "colloquial_name": "Utah",
+      "full_name": "State of Utah",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US West"
+      ],
+      "synonyms": [
+        "Utah",
+        "UT"
+      ],
+      "abbreviations": [
+        "UT"
+      ],
+      "confidence_score": 1.0
+    },
+    "ut": {
+      "colloquial_name": "Utah",
+      "full_name": "State of Utah",
+      "country_code_iso": "USA",
+      "country_code_ioc": "USA",
+      "region": [
+        "North America",
+        "United States",
+        "US West"
+      ],
+      "synonyms": [
+        "Utah",
+        "UT"
+      ],
+      "abbreviations": [
+        "UT"
+      ],
+      "confidence_score": 1.0
+    },
+    "singapore": {
+      "colloquial_name": "Singapore",
+      "full_name": "Republic of Singapore",
+      "country_code_iso": "SGP",
+      "country_code_ioc": "SGP",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Singapore",
+        "S'pore"
+      ],
+      "abbreviations": [
+        "SG",
+        "SGP"
+      ],
+      "confidence_score": 1.0
+    },
+    "s'pore": {
+      "colloquial_name": "Singapore",
+      "full_name": "Republic of Singapore",
+      "country_code_iso": "SGP",
+      "country_code_ioc": "SGP",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Singapore",
+        "S'pore"
+      ],
+      "abbreviations": [
+        "SG",
+        "SGP"
+      ],
+      "confidence_score": 1.0
+    },
+    "sg": {
+      "colloquial_name": "Singapore",
+      "full_name": "Republic of Singapore",
+      "country_code_iso": "SGP",
+      "country_code_ioc": "SGP",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Singapore",
+        "S'pore"
+      ],
+      "abbreviations": [
+        "SG",
+        "SGP"
+      ],
+      "confidence_score": 1.0
+    },
+    "sgp": {
+      "colloquial_name": "Singapore",
+      "full_name": "Republic of Singapore",
+      "country_code_iso": "SGP",
+      "country_code_ioc": "SGP",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Singapore",
+        "S'pore"
+      ],
+      "abbreviations": [
+        "SG",
+        "SGP"
+      ],
+      "confidence_score": 1.0
+    },
+    "south korea": {
+      "colloquial_name": "South Korea",
+      "full_name": "Republic of Korea",
+      "country_code_iso": "KOR",
+      "country_code_ioc": "KOR",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "South Korea",
+        "Korea",
+        "Republic of Korea"
+      ],
+      "abbreviations": [
+        "KR",
+        "KOR",
+        "ROK"
+      ],
+      "confidence_score": 1.0
+    },
+    "korea": {
+      "colloquial_name": "South Korea",
+      "full_name": "Republic of Korea",
+      "country_code_iso": "KOR",
+      "country_code_ioc": "KOR",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "South Korea",
+        "Korea",
+        "Republic of Korea"
+      ],
+      "abbreviations": [
+        "KR",
+        "KOR",
+        "ROK"
+      ],
+      "confidence_score": 1.0
+    },
+    "republic of korea": {
+      "colloquial_name": "South Korea",
+      "full_name": "Republic of Korea",
+      "country_code_iso": "KOR",
+      "country_code_ioc": "KOR",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "South Korea",
+        "Korea",
+        "Republic of Korea"
+      ],
+      "abbreviations": [
+        "KR",
+        "KOR",
+        "ROK"
+      ],
+      "confidence_score": 1.0
+    },
+    "kr": {
+      "colloquial_name": "South Korea",
+      "full_name": "Republic of Korea",
+      "country_code_iso": "KOR",
+      "country_code_ioc": "KOR",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "South Korea",
+        "Korea",
+        "Republic of Korea"
+      ],
+      "abbreviations": [
+        "KR",
+        "KOR",
+        "ROK"
+      ],
+      "confidence_score": 1.0
+    },
+    "kor": {
+      "colloquial_name": "South Korea",
+      "full_name": "Republic of Korea",
+      "country_code_iso": "KOR",
+      "country_code_ioc": "KOR",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "South Korea",
+        "Korea",
+        "Republic of Korea"
+      ],
+      "abbreviations": [
+        "KR",
+        "KOR",
+        "ROK"
+      ],
+      "confidence_score": 1.0
+    },
+    "rok": {
+      "colloquial_name": "South Korea",
+      "full_name": "Republic of Korea",
+      "country_code_iso": "KOR",
+      "country_code_ioc": "KOR",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "South Korea",
+        "Korea",
+        "Republic of Korea"
+      ],
+      "abbreviations": [
+        "KR",
+        "KOR",
+        "ROK"
+      ],
+      "confidence_score": 1.0
+    },
+    "japan": {
+      "colloquial_name": "Japan",
+      "full_name": "Japan",
+      "country_code_iso": "JPN",
+      "country_code_ioc": "JPN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "Japan",
+        "Nippon"
+      ],
+      "abbreviations": [
+        "JP",
+        "JPN"
+      ],
+      "confidence_score": 1.0
+    },
+    "nippon": {
+      "colloquial_name": "Japan",
+      "full_name": "Japan",
+      "country_code_iso": "JPN",
+      "country_code_ioc": "JPN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "Japan",
+        "Nippon"
+      ],
+      "abbreviations": [
+        "JP",
+        "JPN"
+      ],
+      "confidence_score": 1.0
+    },
+    "jp": {
+      "colloquial_name": "Japan",
+      "full_name": "Japan",
+      "country_code_iso": "JPN",
+      "country_code_ioc": "JPN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "Japan",
+        "Nippon"
+      ],
+      "abbreviations": [
+        "JP",
+        "JPN"
+      ],
+      "confidence_score": 1.0
+    },
+    "jpn": {
+      "colloquial_name": "Japan",
+      "full_name": "Japan",
+      "country_code_iso": "JPN",
+      "country_code_ioc": "JPN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "Japan",
+        "Nippon"
+      ],
+      "abbreviations": [
+        "JP",
+        "JPN"
+      ],
+      "confidence_score": 1.0
+    },
+    "australia": {
+      "colloquial_name": "Australia",
+      "full_name": "Commonwealth of Australia",
+      "country_code_iso": "AUS",
+      "country_code_ioc": "AUS",
+      "region": [
+        "Oceania",
+        "Asia-Pacific"
+      ],
+      "synonyms": [
+        "Australia",
+        "Aussie"
+      ],
+      "abbreviations": [
+        "AU",
+        "AUS"
+      ],
+      "confidence_score": 1.0
+    },
+    "aussie": {
+      "colloquial_name": "Australia",
+      "full_name": "Commonwealth of Australia",
+      "country_code_iso": "AUS",
+      "country_code_ioc": "AUS",
+      "region": [
+        "Oceania",
+        "Asia-Pacific"
+      ],
+      "synonyms": [
+        "Australia",
+        "Aussie"
+      ],
+      "abbreviations": [
+        "AU",
+        "AUS"
+      ],
+      "confidence_score": 1.0
+    },
+    "au": {
+      "colloquial_name": "Australia",
+      "full_name": "Commonwealth of Australia",
+      "country_code_iso": "AUS",
+      "country_code_ioc": "AUS",
+      "region": [
+        "Oceania",
+        "Asia-Pacific"
+      ],
+      "synonyms": [
+        "Australia",
+        "Aussie"
+      ],
+      "abbreviations": [
+        "AU",
+        "AUS"
+      ],
+      "confidence_score": 1.0
+    },
+    "aus": {
+      "colloquial_name": "Australia",
+      "full_name": "Commonwealth of Australia",
+      "country_code_iso": "AUS",
+      "country_code_ioc": "AUS",
+      "region": [
+        "Oceania",
+        "Asia-Pacific"
+      ],
+      "synonyms": [
+        "Australia",
+        "Aussie"
+      ],
+      "abbreviations": [
+        "AU",
+        "AUS"
+      ],
+      "confidence_score": 1.0
+    },
+    "brazil": {
+      "colloquial_name": "Brazil",
+      "full_name": "Federative Republic of Brazil",
+      "country_code_iso": "BRA",
+      "country_code_ioc": "BRA",
+      "region": [
+        "South America",
+        "Americas"
+      ],
+      "synonyms": [
+        "Brazil",
+        "Brasil"
+      ],
+      "abbreviations": [
+        "BR",
+        "BRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "brasil": {
+      "colloquial_name": "Brazil",
+      "full_name": "Federative Republic of Brazil",
+      "country_code_iso": "BRA",
+      "country_code_ioc": "BRA",
+      "region": [
+        "South America",
+        "Americas"
+      ],
+      "synonyms": [
+        "Brazil",
+        "Brasil"
+      ],
+      "abbreviations": [
+        "BR",
+        "BRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "br": {
+      "colloquial_name": "Brazil",
+      "full_name": "Federative Republic of Brazil",
+      "country_code_iso": "BRA",
+      "country_code_ioc": "BRA",
+      "region": [
+        "South America",
+        "Americas"
+      ],
+      "synonyms": [
+        "Brazil",
+        "Brasil"
+      ],
+      "abbreviations": [
+        "BR",
+        "BRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "bra": {
+      "colloquial_name": "Brazil",
+      "full_name": "Federative Republic of Brazil",
+      "country_code_iso": "BRA",
+      "country_code_ioc": "BRA",
+      "region": [
+        "South America",
+        "Americas"
+      ],
+      "synonyms": [
+        "Brazil",
+        "Brasil"
+      ],
+      "abbreviations": [
+        "BR",
+        "BRA"
+      ],
+      "confidence_score": 1.0
+    },
+    "indonesia": {
+      "colloquial_name": "Indonesia",
+      "full_name": "Republic of Indonesia",
+      "country_code_iso": "IDN",
+      "country_code_ioc": "INA",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Indonesia"
+      ],
+      "abbreviations": [
+        "ID",
+        "IDN",
+        "INA"
+      ],
+      "confidence_score": 1.0
+    },
+    "id": {
+      "colloquial_name": "Indonesia",
+      "full_name": "Republic of Indonesia",
+      "country_code_iso": "IDN",
+      "country_code_ioc": "INA",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Indonesia"
+      ],
+      "abbreviations": [
+        "ID",
+        "IDN",
+        "INA"
+      ],
+      "confidence_score": 1.0
+    },
+    "idn": {
+      "colloquial_name": "Indonesia",
+      "full_name": "Republic of Indonesia",
+      "country_code_iso": "IDN",
+      "country_code_ioc": "INA",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Indonesia"
+      ],
+      "abbreviations": [
+        "ID",
+        "IDN",
+        "INA"
+      ],
+      "confidence_score": 1.0
+    },
+    "ina": {
+      "colloquial_name": "Indonesia",
+      "full_name": "Republic of Indonesia",
+      "country_code_iso": "IDN",
+      "country_code_ioc": "INA",
+      "region": [
+        "Asia",
+        "Southeast Asia",
+        "ASEAN"
+      ],
+      "synonyms": [
+        "Indonesia"
+      ],
+      "abbreviations": [
+        "ID",
+        "IDN",
+        "INA"
+      ],
+      "confidence_score": 1.0
+    },
+    "china": {
+      "colloquial_name": "China",
+      "full_name": "People's Republic of China",
+      "country_code_iso": "CHN",
+      "country_code_ioc": "CHN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "China",
+        "PRC"
+      ],
+      "abbreviations": [
+        "CN",
+        "CHN"
+      ],
+      "confidence_score": 1.0
+    },
+    "prc": {
+      "colloquial_name": "China",
+      "full_name": "People's Republic of China",
+      "country_code_iso": "CHN",
+      "country_code_ioc": "CHN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "China",
+        "PRC"
+      ],
+      "abbreviations": [
+        "CN",
+        "CHN"
+      ],
+      "confidence_score": 1.0
+    },
+    "cn": {
+      "colloquial_name": "China",
+      "full_name": "People's Republic of China",
+      "country_code_iso": "CHN",
+      "country_code_ioc": "CHN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "China",
+        "PRC"
+      ],
+      "abbreviations": [
+        "CN",
+        "CHN"
+      ],
+      "confidence_score": 1.0
+    },
+    "chn": {
+      "colloquial_name": "China",
+      "full_name": "People's Republic of China",
+      "country_code_iso": "CHN",
+      "country_code_ioc": "CHN",
+      "region": [
+        "Asia",
+        "East Asia"
+      ],
+      "synonyms": [
+        "China",
+        "PRC"
+      ],
+      "abbreviations": [
+        "CN",
+        "CHN"
+      ],
+      "confidence_score": 1.0
+    },
+    "india": {
+      "colloquial_name": "India",
+      "full_name": "Republic of India",
+      "country_code_iso": "IND",
+      "country_code_ioc": "IND",
+      "region": [
+        "Asia",
+        "South Asia"
+      ],
+      "synonyms": [
+        "India",
+        "Bharat"
+      ],
+      "abbreviations": [
+        "IN",
+        "IND"
+      ],
+      "confidence_score": 1.0
+    },
+    "bharat": {
+      "colloquial_name": "India",
+      "full_name": "Republic of India",
+      "country_code_iso": "IND",
+      "country_code_ioc": "IND",
+      "region": [
+        "Asia",
+        "South Asia"
+      ],
+      "synonyms": [
+        "India",
+        "Bharat"
+      ],
+      "abbreviations": [
+        "IN",
+        "IND"
+      ],
+      "confidence_score": 1.0
+    },
+    "in": {
+      "colloquial_name": "India",
+      "full_name": "Republic of India",
+      "country_code_iso": "IND",
+      "country_code_ioc": "IND",
+      "region": [
+        "Asia",
+        "South Asia"
+      ],
+      "synonyms": [
+        "India",
+        "Bharat"
+      ],
+      "abbreviations": [
+        "IN",
+        "IND"
+      ],
+      "confidence_score": 1.0
+    },
+    "ind": {
+      "colloquial_name": "India",
+      "full_name": "Republic of India",
+      "country_code_iso": "IND",
+      "country_code_ioc": "IND",
+      "region": [
+        "Asia",
+        "South Asia"
+      ],
+      "synonyms": [
+        "India",
+        "Bharat"
+      ],
+      "abbreviations": [
+        "IN",
+        "IND"
+      ],
+      "confidence_score": 1.0
+    },
+    "russia": {
+      "colloquial_name": "Russia",
+      "full_name": "Russian Federation",
+      "country_code_iso": "RUS",
+      "country_code_ioc": "RUS",
+      "region": [
+        "Europe",
+        "Asia",
+        "Eurasia"
+      ],
+      "synonyms": [
+        "Russia",
+        "Russian Federation"
+      ],
+      "abbreviations": [
+        "RU",
+        "RUS"
+      ],
+      "confidence_score": 1.0
+    },
+    "russian federation": {
+      "colloquial_name": "Russia",
+      "full_name": "Russian Federation",
+      "country_code_iso": "RUS",
+      "country_code_ioc": "RUS",
+      "region": [
+        "Europe",
+        "Asia",
+        "Eurasia"
+      ],
+      "synonyms": [
+        "Russia",
+        "Russian Federation"
+      ],
+      "abbreviations": [
+        "RU",
+        "RUS"
+      ],
+      "confidence_score": 1.0
+    },
+    "ru": {
+      "colloquial_name": "Russia",
+      "full_name": "Russian Federation",
+      "country_code_iso": "RUS",
+      "country_code_ioc": "RUS",
+      "region": [
+        "Europe",
+        "Asia",
+        "Eurasia"
+      ],
+      "synonyms": [
+        "Russia",
+        "Russian Federation"
+      ],
+      "abbreviations": [
+        "RU",
+        "RUS"
+      ],
+      "confidence_score": 1.0
+    },
+    "rus": {
+      "colloquial_name": "Russia",
+      "full_name": "Russian Federation",
+      "country_code_iso": "RUS",
+      "country_code_ioc": "RUS",
+      "region": [
+        "Europe",
+        "Asia",
+        "Eurasia"
+      ],
+      "synonyms": [
+        "Russia",
+        "Russian Federation"
+      ],
+      "abbreviations": [
+        "RU",
+        "RUS"
+      ],
+      "confidence_score": 1.0
+    }
+  },
+  "age_terms": {
+    "minor": {
+      "term": "minor",
+      "numerical_range": [
+        0,
+        17
+      ],
+      "synonyms": [
+        "child",
+        "kid",
+        "underage",
+        "juvenile",
+        "youth",
+        "teen",
+        "teenager"
+      ],
+      "confidence_score": 1.0
+    },
+    "child": {
+      "term": "child",
+      "numerical_range": [
+        0,
+        12
+      ],
+      "synonyms": [
+        "kid",
+        "minor child",
+        "young child"
+      ],
+      "confidence_score": 1.0
+    },
+    "kid": {
+      "term": "child",
+      "numerical_range": [
+        0,
+        12
+      ],
+      "synonyms": [
+        "kid",
+        "minor child",
+        "young child"
+      ],
+      "confidence_score": 1.0
+    },
+    "underage": {
+      "term": "minor",
+      "numerical_range": [
+        0,
+        17
+      ],
+      "synonyms": [
+        "child",
+        "kid",
+        "underage",
+        "juvenile",
+        "youth",
+        "teen",
+        "teenager"
+      ],
+      "confidence_score": 1.0
+    },
+    "juvenile": {
+      "term": "minor",
+      "numerical_range": [
+        0,
+        17
+      ],
+      "synonyms": [
+        "child",
+        "kid",
+        "underage",
+        "juvenile",
+        "youth",
+        "teen",
+        "teenager"
+      ],
+      "confidence_score": 1.0
+    },
+    "youth": {
+      "term": "teen",
+      "numerical_range": [
+        13,
+        17
+      ],
+      "synonyms": [
+        "teenager",
+        "adolescent",
+        "youth"
+      ],
+      "confidence_score": 1.0
+    },
+    "teen": {
+      "term": "teen",
+      "numerical_range": [
+        13,
+        17
+      ],
+      "synonyms": [
+        "teenager",
+        "adolescent",
+        "youth"
+      ],
+      "confidence_score": 1.0
+    },
+    "teenager": {
+      "term": "teen",
+      "numerical_range": [
+        13,
+        17
+      ],
+      "synonyms": [
+        "teenager",
+        "adolescent",
+        "youth"
+      ],
+      "confidence_score": 1.0
+    },
+    "adult": {
+      "term": "adult",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "grown-up",
+        "mature",
+        "of age"
+      ],
+      "confidence_score": 1.0
+    },
+    "grown-up": {
+      "term": "adult",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "grown-up",
+        "mature",
+        "of age"
+      ],
+      "confidence_score": 1.0
+    },
+    "mature": {
+      "term": "adult",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "grown-up",
+        "mature",
+        "of age"
+      ],
+      "confidence_score": 1.0
+    },
+    "of age": {
+      "term": "adult",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "grown-up",
+        "mature",
+        "of age"
+      ],
+      "confidence_score": 1.0
+    },
+    "adolescent": {
+      "term": "teen",
+      "numerical_range": [
+        13,
+        17
+      ],
+      "synonyms": [
+        "teenager",
+        "adolescent",
+        "youth"
+      ],
+      "confidence_score": 1.0
+    },
+    "minor child": {
+      "term": "child",
+      "numerical_range": [
+        0,
+        12
+      ],
+      "synonyms": [
+        "kid",
+        "minor child",
+        "young child"
+      ],
+      "confidence_score": 1.0
+    },
+    "young child": {
+      "term": "child",
+      "numerical_range": [
+        0,
+        12
+      ],
+      "synonyms": [
+        "kid",
+        "minor child",
+        "young child"
+      ],
+      "confidence_score": 1.0
+    },
+    "young adult": {
+      "term": "young adult",
+      "numerical_range": [
+        18,
+        25
+      ],
+      "synonyms": [
+        "emerging adult",
+        "college age"
+      ],
+      "confidence_score": 1.0
+    },
+    "emerging adult": {
+      "term": "young adult",
+      "numerical_range": [
+        18,
+        25
+      ],
+      "synonyms": [
+        "emerging adult",
+        "college age"
+      ],
+      "confidence_score": 1.0
+    },
+    "college age": {
+      "term": "young adult",
+      "numerical_range": [
+        18,
+        25
+      ],
+      "synonyms": [
+        "emerging adult",
+        "college age"
+      ],
+      "confidence_score": 1.0
+    },
+    "13+": {
+      "term": "13+",
+      "numerical_range": [
+        13,
+        120
+      ],
+      "synonyms": [
+        "thirteen plus",
+        "13 and up",
+        "over 13"
+      ],
+      "confidence_score": 1.0
+    },
+    "thirteen plus": {
+      "term": "13+",
+      "numerical_range": [
+        13,
+        120
+      ],
+      "synonyms": [
+        "thirteen plus",
+        "13 and up",
+        "over 13"
+      ],
+      "confidence_score": 1.0
+    },
+    "13 and up": {
+      "term": "13+",
+      "numerical_range": [
+        13,
+        120
+      ],
+      "synonyms": [
+        "thirteen plus",
+        "13 and up",
+        "over 13"
+      ],
+      "confidence_score": 1.0
+    },
+    "over 13": {
+      "term": "13+",
+      "numerical_range": [
+        13,
+        120
+      ],
+      "synonyms": [
+        "thirteen plus",
+        "13 and up",
+        "over 13"
+      ],
+      "confidence_score": 1.0
+    },
+    "18+": {
+      "term": "18+",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "eighteen plus",
+        "18 and up",
+        "adult content",
+        "mature audience"
+      ],
+      "confidence_score": 1.0
+    },
+    "eighteen plus": {
+      "term": "18+",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "eighteen plus",
+        "18 and up",
+        "adult content",
+        "mature audience"
+      ],
+      "confidence_score": 1.0
+    },
+    "18 and up": {
+      "term": "18+",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "eighteen plus",
+        "18 and up",
+        "adult content",
+        "mature audience"
+      ],
+      "confidence_score": 1.0
+    },
+    "adult content": {
+      "term": "18+",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "eighteen plus",
+        "18 and up",
+        "adult content",
+        "mature audience"
+      ],
+      "confidence_score": 1.0
+    },
+    "mature audience": {
+      "term": "18+",
+      "numerical_range": [
+        18,
+        120
+      ],
+      "synonyms": [
+        "eighteen plus",
+        "18 and up",
+        "adult content",
+        "mature audience"
+      ],
+      "confidence_score": 1.0
+    },
+    "21+": {
+      "term": "21+",
+      "numerical_range": [
+        21,
+        120
+      ],
+      "synonyms": [
+        "twenty-one plus",
+        "21 and up",
+        "legal drinking age"
+      ],
+      "confidence_score": 1.0
+    },
+    "twenty-one plus": {
+      "term": "21+",
+      "numerical_range": [
+        21,
+        120
+      ],
+      "synonyms": [
+        "twenty-one plus",
+        "21 and up",
+        "legal drinking age"
+      ],
+      "confidence_score": 1.0
+    },
+    "21 and up": {
+      "term": "21+",
+      "numerical_range": [
+        21,
+        120
+      ],
+      "synonyms": [
+        "twenty-one plus",
+        "21 and up",
+        "legal drinking age"
+      ],
+      "confidence_score": 1.0
+    },
+    "legal drinking age": {
+      "term": "21+",
+      "numerical_range": [
+        21,
+        120
+      ],
+      "synonyms": [
+        "twenty-one plus",
+        "21 and up",
+        "legal drinking age"
+      ],
+      "confidence_score": 1.0
+    }
+  },
+  "terminology": {
+    "gdpr": {
+      "term": "gdpr",
+      "standardized_form": "General Data Protection Regulation",
+      "category": "privacy",
+      "synonyms": [
+        "general data protection regulation",
+        "eu gdpr",
+        "european data protection"
+      ],
+      "expanded_meanings": [
+        "data protection",
+        "privacy rights",
+        "consent requirements"
+      ],
+      "confidence_score": 1.0
+    },
+    "general data protection regulation": {
+      "term": "gdpr",
+      "standardized_form": "General Data Protection Regulation",
+      "category": "privacy",
+      "synonyms": [
+        "general data protection regulation",
+        "eu gdpr",
+        "european data protection"
+      ],
+      "expanded_meanings": [
+        "data protection",
+        "privacy rights",
+        "consent requirements"
+      ],
+      "confidence_score": 1.0
+    },
+    "eu gdpr": {
+      "term": "gdpr",
+      "standardized_form": "General Data Protection Regulation",
+      "category": "privacy",
+      "synonyms": [
+        "general data protection regulation",
+        "eu gdpr",
+        "european data protection"
+      ],
+      "expanded_meanings": [
+        "data protection",
+        "privacy rights",
+        "consent requirements"
+      ],
+      "confidence_score": 1.0
+    },
+    "european data protection": {
+      "term": "gdpr",
+      "standardized_form": "General Data Protection Regulation",
+      "category": "privacy",
+      "synonyms": [
+        "general data protection regulation",
+        "eu gdpr",
+        "european data protection"
+      ],
+      "expanded_meanings": [
+        "data protection",
+        "privacy rights",
+        "consent requirements"
+      ],
+      "confidence_score": 1.0
+    },
+    "coppa": {
+      "term": "coppa",
+      "standardized_form": "Children's Online Privacy Protection Act",
+      "category": "age_verification",
+      "synonyms": [
+        "children's online privacy protection act",
+        "child privacy law"
+      ],
+      "expanded_meanings": [
+        "parental consent",
+        "child data protection",
+        "age verification"
+      ],
+      "confidence_score": 1.0
+    },
+    "children's online privacy protection act": {
+      "term": "coppa",
+      "standardized_form": "Children's Online Privacy Protection Act",
+      "category": "age_verification",
+      "synonyms": [
+        "children's online privacy protection act",
+        "child privacy law"
+      ],
+      "expanded_meanings": [
+        "parental consent",
+        "child data protection",
+        "age verification"
+      ],
+      "confidence_score": 1.0
+    },
+    "child privacy law": {
+      "term": "coppa",
+      "standardized_form": "Children's Online Privacy Protection Act",
+      "category": "age_verification",
+      "synonyms": [
+        "children's online privacy protection act",
+        "child privacy law"
+      ],
+      "expanded_meanings": [
+        "parental consent",
+        "child data protection",
+        "age verification"
+      ],
+      "confidence_score": 1.0
+    },
+    "ccpa": {
+      "term": "ccpa",
+      "standardized_form": "California Consumer Privacy Act",
+      "category": "privacy",
+      "synonyms": [
+        "california consumer privacy act",
+        "california privacy law"
+      ],
+      "expanded_meanings": [
+        "consumer rights",
+        "data deletion",
+        "privacy disclosure"
+      ],
+      "confidence_score": 1.0
+    },
+    "california consumer privacy act": {
+      "term": "ccpa",
+      "standardized_form": "California Consumer Privacy Act",
+      "category": "privacy",
+      "synonyms": [
+        "california consumer privacy act",
+        "california privacy law"
+      ],
+      "expanded_meanings": [
+        "consumer rights",
+        "data deletion",
+        "privacy disclosure"
+      ],
+      "confidence_score": 1.0
+    },
+    "california privacy law": {
+      "term": "ccpa",
+      "standardized_form": "California Consumer Privacy Act",
+      "category": "privacy",
+      "synonyms": [
+        "california consumer privacy act",
+        "california privacy law"
+      ],
+      "expanded_meanings": [
+        "consumer rights",
+        "data deletion",
+        "privacy disclosure"
+      ],
+      "confidence_score": 1.0
+    },
+    "dsa": {
+      "term": "dsa",
+      "standardized_form": "Digital Services Act",
+      "category": "content_moderation",
+      "synonyms": [
+        "digital services act",
+        "eu dsa",
+        "european digital services act"
+      ],
+      "expanded_meanings": [
+        "content transparency",
+        "platform responsibility",
+        "illegal content removal"
+      ],
+      "confidence_score": 1.0
+    },
+    "digital services act": {
+      "term": "dsa",
+      "standardized_form": "Digital Services Act",
+      "category": "content_moderation",
+      "synonyms": [
+        "digital services act",
+        "eu dsa",
+        "european digital services act"
+      ],
+      "expanded_meanings": [
+        "content transparency",
+        "platform responsibility",
+        "illegal content removal"
+      ],
+      "confidence_score": 1.0
+    },
+    "eu dsa": {
+      "term": "dsa",
+      "standardized_form": "Digital Services Act",
+      "category": "content_moderation",
+      "synonyms": [
+        "digital services act",
+        "eu dsa",
+        "european digital services act"
+      ],
+      "expanded_meanings": [
+        "content transparency",
+        "platform responsibility",
+        "illegal content removal"
+      ],
+      "confidence_score": 1.0
+    },
+    "european digital services act": {
+      "term": "dsa",
+      "standardized_form": "Digital Services Act",
+      "category": "content_moderation",
+      "synonyms": [
+        "digital services act",
+        "eu dsa",
+        "european digital services act"
+      ],
+      "expanded_meanings": [
+        "content transparency",
+        "platform responsibility",
+        "illegal content removal"
+      ],
+      "confidence_score": 1.0
+    },
+    "ncmec": {
+      "term": "ncmec",
+      "standardized_form": "National Center for Missing & Exploited Children",
+      "category": "content_safety",
+      "synonyms": [
+        "national center for missing & exploited children",
+        "child exploitation reporting"
+      ],
+      "expanded_meanings": [
+        "csam reporting",
+        "child abuse material",
+        "law enforcement reporting"
+      ],
+      "confidence_score": 1.0
+    },
+    "national center for missing & exploited children": {
+      "term": "ncmec",
+      "standardized_form": "National Center for Missing & Exploited Children",
+      "category": "content_safety",
+      "synonyms": [
+        "national center for missing & exploited children",
+        "child exploitation reporting"
+      ],
+      "expanded_meanings": [
+        "csam reporting",
+        "child abuse material",
+        "law enforcement reporting"
+      ],
+      "confidence_score": 1.0
+    },
+    "child exploitation reporting": {
+      "term": "ncmec",
+      "standardized_form": "National Center for Missing & Exploited Children",
+      "category": "content_safety",
+      "synonyms": [
+        "national center for missing & exploited children",
+        "child exploitation reporting"
+      ],
+      "expanded_meanings": [
+        "csam reporting",
+        "child abuse material",
+        "law enforcement reporting"
+      ],
+      "confidence_score": 1.0
+    },
+    "age_verification": {
+      "term": "age_verification",
+      "standardized_form": "age verification",
+      "category": "age_verification",
+      "synonyms": [
+        "age check",
+        "age validation",
+        "age confirmation",
+        "identity verification"
+      ],
+      "expanded_meanings": [
+        "age gate",
+        "minor protection",
+        "parental consent"
+      ],
+      "confidence_score": 1.0
+    },
+    "age check": {
+      "term": "age_verification",
+      "standardized_form": "age verification",
+      "category": "age_verification",
+      "synonyms": [
+        "age check",
+        "age validation",
+        "age confirmation",
+        "identity verification"
+      ],
+      "expanded_meanings": [
+        "age gate",
+        "minor protection",
+        "parental consent"
+      ],
+      "confidence_score": 1.0
+    },
+    "age validation": {
+      "term": "age_verification",
+      "standardized_form": "age verification",
+      "category": "age_verification",
+      "synonyms": [
+        "age check",
+        "age validation",
+        "age confirmation",
+        "identity verification"
+      ],
+      "expanded_meanings": [
+        "age gate",
+        "minor protection",
+        "parental consent"
+      ],
+      "confidence_score": 1.0
+    },
+    "age confirmation": {
+      "term": "age_verification",
+      "standardized_form": "age verification",
+      "category": "age_verification",
+      "synonyms": [
+        "age check",
+        "age validation",
+        "age confirmation",
+        "identity verification"
+      ],
+      "expanded_meanings": [
+        "age gate",
+        "minor protection",
+        "parental consent"
+      ],
+      "confidence_score": 1.0
+    },
+    "identity verification": {
+      "term": "age_verification",
+      "standardized_form": "age verification",
+      "category": "age_verification",
+      "synonyms": [
+        "age check",
+        "age validation",
+        "age confirmation",
+        "identity verification"
+      ],
+      "expanded_meanings": [
+        "age gate",
+        "minor protection",
+        "parental consent"
+      ],
+      "confidence_score": 1.0
+    },
+    "parental_consent": {
+      "term": "parental_consent",
+      "standardized_form": "parental consent",
+      "category": "age_verification",
+      "synonyms": [
+        "parent permission",
+        "guardian consent",
+        "parental approval"
+      ],
+      "expanded_meanings": [
+        "minor protection",
+        "family controls",
+        "supervised access"
+      ],
+      "confidence_score": 1.0
+    },
+    "parent permission": {
+      "term": "parental_consent",
+      "standardized_form": "parental consent",
+      "category": "age_verification",
+      "synonyms": [
+        "parent permission",
+        "guardian consent",
+        "parental approval"
+      ],
+      "expanded_meanings": [
+        "minor protection",
+        "family controls",
+        "supervised access"
+      ],
+      "confidence_score": 1.0
+    },
+    "guardian consent": {
+      "term": "parental_consent",
+      "standardized_form": "parental consent",
+      "category": "age_verification",
+      "synonyms": [
+        "parent permission",
+        "guardian consent",
+        "parental approval"
+      ],
+      "expanded_meanings": [
+        "minor protection",
+        "family controls",
+        "supervised access"
+      ],
+      "confidence_score": 1.0
+    },
+    "parental approval": {
+      "term": "parental_consent",
+      "standardized_form": "parental consent",
+      "category": "age_verification",
+      "synonyms": [
+        "parent permission",
+        "guardian consent",
+        "parental approval"
+      ],
+      "expanded_meanings": [
+        "minor protection",
+        "family controls",
+        "supervised access"
+      ],
+      "confidence_score": 1.0
+    },
+    "content_moderation": {
+      "term": "content_moderation",
+      "standardized_form": "content moderation",
+      "category": "content_moderation",
+      "synonyms": [
+        "content review",
+        "content filtering",
+        "community standards"
+      ],
+      "expanded_meanings": [
+        "harmful content removal",
+        "policy enforcement",
+        "user safety"
+      ],
+      "confidence_score": 1.0
+    },
+    "content review": {
+      "term": "content_moderation",
+      "standardized_form": "content moderation",
+      "category": "content_moderation",
+      "synonyms": [
+        "content review",
+        "content filtering",
+        "community standards"
+      ],
+      "expanded_meanings": [
+        "harmful content removal",
+        "policy enforcement",
+        "user safety"
+      ],
+      "confidence_score": 1.0
+    },
+    "content filtering": {
+      "term": "content_moderation",
+      "standardized_form": "content moderation",
+      "category": "content_moderation",
+      "synonyms": [
+        "content review",
+        "content filtering",
+        "community standards"
+      ],
+      "expanded_meanings": [
+        "harmful content removal",
+        "policy enforcement",
+        "user safety"
+      ],
+      "confidence_score": 1.0
+    },
+    "community standards": {
+      "term": "content_moderation",
+      "standardized_form": "content moderation",
+      "category": "content_moderation",
+      "synonyms": [
+        "content review",
+        "content filtering",
+        "community standards"
+      ],
+      "expanded_meanings": [
+        "harmful content removal",
+        "policy enforcement",
+        "user safety"
+      ],
+      "confidence_score": 1.0
+    },
+    "data_localization": {
+      "term": "data_localization",
+      "standardized_form": "data localization",
+      "category": "privacy",
+      "synonyms": [
+        "data residency",
+        "local data storage",
+        "regional data requirements"
+      ],
+      "expanded_meanings": [
+        "cross-border data transfer",
+        "regional compliance",
+        "data sovereignty"
+      ],
+      "confidence_score": 1.0
+    },
+    "data residency": {
+      "term": "data_localization",
+      "standardized_form": "data localization",
+      "category": "privacy",
+      "synonyms": [
+        "data residency",
+        "local data storage",
+        "regional data requirements"
+      ],
+      "expanded_meanings": [
+        "cross-border data transfer",
+        "regional compliance",
+        "data sovereignty"
+      ],
+      "confidence_score": 1.0
+    },
+    "local data storage": {
+      "term": "data_localization",
+      "standardized_form": "data localization",
+      "category": "privacy",
+      "synonyms": [
+        "data residency",
+        "local data storage",
+        "regional data requirements"
+      ],
+      "expanded_meanings": [
+        "cross-border data transfer",
+        "regional compliance",
+        "data sovereignty"
+      ],
+      "confidence_score": 1.0
+    },
+    "regional data requirements": {
+      "term": "data_localization",
+      "standardized_form": "data localization",
+      "category": "privacy",
+      "synonyms": [
+        "data residency",
+        "local data storage",
+        "regional data requirements"
+      ],
+      "expanded_meanings": [
+        "cross-border data transfer",
+        "regional compliance",
+        "data sovereignty"
+      ],
+      "confidence_score": 1.0
+    }
+  },
+  "update_history": [],
+  "confidence_thresholds": {
+    "location": 0.85,
+    "age": 0.8,
+    "terminology": 0.75
+  },
+  "last_updated": "2025-08-30T09:10:33.348084"
+}

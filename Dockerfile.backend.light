@@ -3,36 +3,28 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies required for spaCy and its dependencies
+# Install minimal system dependencies
 RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
     curl \
-    build-essential \
-    python3-dev \
-    python3-wheel \
-    cmake \
-    pkg-config \
-    libblas-dev \
-    liblapack-dev \
-    libatlas-base-dev \
-    gfortran \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Upgrade pip and install Python dependencies
-RUN pip install --upgrade pip setuptools wheel
+# Create a lightweight requirements file without spaCy
+RUN grep -v "spacy" requirements.txt > requirements_light.txt
 
-# Install dependencies with specific build options for spaCy
-RUN pip install --no-cache-dir \
-    numpy==1.24.3 \
-    Cython \
-    && pip install --no-cache-dir -r requirements.txt
+# Upgrade pip and install core dependencies
+RUN pip install --upgrade pip
 
-# Download spaCy model with error handling
-RUN python -m spacy download en_core_web_sm || echo "spaCy model download failed, will fallback to blank model"
+# Install core dependencies (excluding spaCy)
+RUN pip install --no-cache-dir -r requirements_light.txt
+
+# Try to install spaCy with pre-compiled wheels only (no compilation)
+RUN pip install --no-cache-dir --only-binary=all spacy || echo "spaCy installation failed, continuing without NER"
+
+# Try to download spaCy model if spaCy was installed successfully
+RUN python -c "import spacy; spacy.cli.download('en_core_web_sm')" || echo "spaCy model download failed, will use fallback"
 
 # Copy backend code
 COPY backend/ ./backend/

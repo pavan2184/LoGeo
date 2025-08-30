@@ -1,19 +1,46 @@
-# 🌍 Geo-Compliance Detection System
+# 🌍 Geo-Compliance System
 
-**Automated geo-compliance detection for product features using LLMs + RAG**
+**Complete geo-compliance solution with feature detection and access control**
 
-A hackathon prototype that analyzes product feature artifacts and determines whether they require geographic-specific compliance measures, with support for major regulations including EU DSA, GDPR, CA Kids Act, UT Social Media Act, FL Minor Protections, and NCMEC reporting requirements.
+A comprehensive system that combines:
+1. **Feature Analysis**: Automated detection of features requiring geo-compliance using LLMs + RAG
+2. **Access Control**: Real-time geographic access control based on compliance rules  
+3. **Audit Logging**: Complete traceability of all access decisions
+4. **Supabase Storage**: All data stored in Supabase for scalability and reliability
+
+Built with FastAPI, Supabase, and Docker for production-ready deployment.
 
 ---
 
 ## 🎯 Features
 
+### Feature Analysis
 - **Single Feature Analysis**: Classify individual features through web interface or API
 - **Batch Processing**: Upload CSV files for bulk classification
 - **RAG-Enhanced Accuracy**: Uses FAISS vector search with regulation summaries for better classification
-- **Audit Trail**: All results logged to CSV for regulatory compliance
-- **Exportable Results**: Download classifications as CSV files
 - **Uncertainty Handling**: Flags ambiguous cases requiring human review
+- **Complete History**: All classifications stored in Supabase with full audit trail
+
+### Geo-Compliance Access Control
+- **Real-time Access Control**: Check user access based on geographic location
+- **Rule-based System**: Configurable allowed/blocked countries per feature
+- **Comprehensive Logging**: All access attempts logged for audit compliance
+- **Batch Processing**: Handle multiple access requests efficiently
+- **Mock Mode**: Fallback system when Supabase is unavailable
+
+### Supabase Integration ⭐
+- **Unified Data Storage**: All classification results and access logs in Supabase
+- **Scalable Architecture**: Real-time database with PostgreSQL power
+- **Audit Trail**: Complete traceability of all system activities
+- **Analytics Ready**: Rich data structure for reporting and analysis
+- **Backup & Recovery**: Cloud-native data protection
+
+### Infrastructure
+- **Docker Support**: Complete containerization for easy deployment
+- **API Documentation**: Auto-generated OpenAPI/Swagger documentation
+- **Health Monitoring**: Built-in health checks and monitoring endpoints
+- **Environment Configuration**: Secure environment variable management
+- **Open Access**: No authentication required - ready for integration
 
 ---
 
@@ -22,64 +49,146 @@ A hackathon prototype that analyzes product feature artifacts and determines whe
 ```
 Qn3/
 ├── backend/
-│   ├── main.py              # FastAPI server with classification endpoints
-│   └── rag_loader.py        # RAG system with FAISS integration
+│   ├── main.py              # FastAPI server with all endpoints
+│   ├── supabase_client.py   # Supabase database client (NEW)
+│   ├── geo_compliance.py    # Geo-compliance access control logic (NEW)
+│   ├── llm_classifier.py    # LLM-based feature classification
+│   ├── rag_loader.py        # RAG system with FAISS integration
+│   └── monitoring.py        # System monitoring and logging
 ├── frontend/
 │   └── app.py               # Streamlit demo interface
 ├── regulations/
 │   ├── eu_dsa.txt           # EU Digital Services Act summary
 │   ├── ca_kids_act.txt      # California Kids Act summary
+│   ├── gdpr.txt             # GDPR compliance requirements
+│   ├── ccpa.txt             # California Consumer Privacy Act
+│   ├── coppa.txt            # Children's Online Privacy Protection Act
 │   ├── fl_minor_protections.txt  # Florida Minor Protection laws
 │   ├── ut_social_media_act.txt   # Utah Social Media Regulation Act
 │   └── us_ncmec_reporting.txt    # NCMEC reporting requirements
+├── docker-compose.yml       # Docker orchestration with Supabase env
+├── Dockerfile.backend       # Backend container configuration
+├── Dockerfile.frontend      # Frontend container configuration
 ├── demo_dataset.csv         # Sample feature examples
-├── requirements.txt         # Python dependencies
-└── README.md               # This file
+├── requirements.txt         # Python dependencies (with supabase-py)
+└── README.md               # This comprehensive guide
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### Option 1: Docker (Recommended)
 
 ```bash
-# Clone or download the project
-cd Qn3
+# 1. Set up environment variables
+cp .env.template .env
+# Edit .env with your Supabase credentials
 
-# Install Python dependencies
+# 2. Build and run with Docker
+docker-compose up --build
+```
+
+- **Backend API**: http://localhost:8000
+- **Frontend Interface**: http://localhost:8501
+- **API Documentation**: http://localhost:8000/docs
+
+### Option 2: Local Development
+
+#### 1. Install Dependencies
+
+```bash
+cd Qn3
 pip install -r requirements.txt
 ```
 
-### 2. Start the Backend API
+#### 2. Configure Environment
 
+Create a `.env` file:
 ```bash
-# Start FastAPI server
-uvicorn backend.main:app --reload
+# Supabase Configuration (Required for geo-compliance)
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Optional
+OPENAI_API_KEY=your_openai_key
+ENVIRONMENT=development
 ```
 
-The API will be available at: http://localhost:8000
+#### 3. Set up Supabase Tables
 
-**API Endpoints:**
-- `GET /` - API info
-- `POST /classify` - Classify single feature (JSON)
-- `POST /batch_classify` - Upload CSV for batch processing
-- `GET /health` - Health check
+Create these tables in your Supabase project:
 
-### 3. Launch the Frontend Demo
+```sql
+-- Geo-compliance rules table
+CREATE TABLE geo_rules (
+    feature_name TEXT PRIMARY KEY,
+    allowed_countries TEXT[],
+    blocked_countries TEXT[]
+);
+
+-- Access logs table
+CREATE TABLE access_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id TEXT NOT NULL,
+    feature_name TEXT NOT NULL,
+    country TEXT NOT NULL,
+    access_granted BOOLEAN NOT NULL,
+    timestamp TIMESTAMP DEFAULT NOW()
+);
+
+-- Classification results table (NEW)
+CREATE TABLE classification_results (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    needs_geo_logic BOOLEAN NOT NULL,
+    confidence FLOAT NOT NULL,
+    reasoning TEXT NOT NULL,
+    regulations TEXT[] DEFAULT '{}',
+    risk_level TEXT NOT NULL,
+    specific_requirements TEXT[] DEFAULT '{}',
+    timestamp TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### 4. Start the Services
 
 ```bash
-# In a new terminal, start Streamlit app
+# Start FastAPI backend
+uvicorn backend.main:app --reload
+
+# In another terminal, start frontend
 streamlit run frontend/app.py
 ```
 
-The web interface will open at: http://localhost:8501
+### API Endpoints
+
+**Feature Classification:**
+- `POST /classify` - Classify single feature (no auth required)
+- `POST /batch_classify` - Batch feature classification (no auth required)
+
+**Geo-Compliance Access Control:**
+- `POST /check_access` - Check geographic access for a feature
+- `GET /logs` - Retrieve access logs  
+- `POST /batch_check` - Batch access checking via CSV
+
+**Data & Analytics:**
+- `GET /classification_results` - Get all classification results from Supabase
+- `GET /stats` - Get classification statistics from Supabase
+
+**System:**
+- `GET /health` - Health check
+- `GET /regulations` - List available regulations
+- `POST /search_regulations` - Search regulations
 
 ---
 
 ## 💻 Usage Examples
 
-### Single Feature Classification (API)
+### Feature Classification
+
+#### Single Feature Classification
 
 ```bash
 curl -X POST "http://localhost:8000/classify" \
@@ -95,26 +204,92 @@ curl -X POST "http://localhost:8000/classify" \
 {
   "needs_geo_logic": true,
   "reasoning": "Feature involves age verification or minor protection, requiring geo-specific compliance",
-  "regulations": ["CA Kids Act", "UT Social Media Act", "FL Minor Protections", "EU DSA"]
+  "regulations": ["CA Kids Act", "UT Social Media Act", "FL Minor Protections", "EU DSA"],
+  "confidence": 0.95,
+  "risk_level": "high"
 }
 ```
 
-### Batch Processing (CSV)
+### Geo-Compliance Access Control (NEW)
 
-Upload a CSV file with `title` and `description` columns:
+#### Check Single Access Request
+
+```bash
+curl -X POST "http://localhost:8000/check_access" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user123",
+    "feature_name": "user_registration",
+    "country": "US"
+  }'
+```
+
+**Response:**
+```json
+{
+  "access_granted": true,
+  "reason": "Access granted: 'US' is allowed for feature 'user_registration'"
+}
+```
+
+#### Get Access Logs
+
+```bash
+curl -X GET "http://localhost:8000/logs?limit=50"
+```
+
+**Response:**
+```json
+{
+  "logs": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "user_id": "user123",
+      "feature_name": "user_registration",
+      "country": "US",
+      "access_granted": true,
+      "timestamp": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "count": 1,
+  "timestamp": "2024-01-15T10:35:00Z"
+}
+```
+
+#### Batch Access Check (CSV)
+
+Upload a CSV file with columns: `user_id`, `feature_name`, `country`
 
 ```csv
-title,description
-User Registration System,Allow users to create accounts with email verification
-Content Recommendation Engine,AI system that recommends content based on user behavior
-Simple Calculator Widget,Basic arithmetic calculator without data storage
+user_id,feature_name,country
+user123,user_registration,US
+user456,age_verification,EU
+user789,data_analytics,CN
+```
+
+```bash
+curl -X POST "http://localhost:8000/batch_check" \
+  -F "file=@access_requests.csv"
+```
+
+### Sample Geo-Rules Setup
+
+To set up geo-compliance rules, insert data into your Supabase `geo_rules` table:
+
+```sql
+INSERT INTO geo_rules (feature_name, allowed_countries, blocked_countries) VALUES
+('user_registration', '{"US","CA","UK","AU"}', '{"CN","RU"}'),
+('age_verification', '{"US","CA","EU","UK"}', '{}'),
+('data_analytics', '{"US","CA"}', '{"EU","UK"}'),
+('content_moderation', '{}', '{"CN","KP"}');
 ```
 
 ### Web Interface
 
-1. **Single Feature Mode**: Enter feature title and description for instant classification
-2. **Batch CSV Mode**: Upload CSV file and download results with classifications
-3. **API Status**: Check backend health and view setup instructions
+1. **Feature Classification**: Analyze features for compliance requirements
+2. **Geo-Access Control**: Test geographic access rules in real-time  
+3. **Classification History**: View all stored classification results from Supabase
+4. **System Monitoring**: View logs and system health statistics
 
 ---
 
@@ -155,15 +330,30 @@ rag = RegulationRAG()
 rag.build_index(force_rebuild=True)
 ```
 
-### Environment Variables (Optional)
+### Environment Variables
 
 Create a `.env` file for configuration:
-```
-OPENAI_API_KEY=your_openai_key_here  # For future LLM integration
+```bash
+# Required for Geo-Compliance
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Optional
+OPENAI_API_KEY=your_openai_key_here  # For enhanced LLM features
 RAG_MODEL=all-MiniLM-L6-v2          # Sentence transformer model
 API_PORT=8000                        # Backend port
 STREAMLIT_PORT=8501                  # Frontend port
+ENVIRONMENT=development              # Environment mode
 ```
+
+### Supabase Setup
+
+1. **Create a new Supabase project** at https://supabase.com
+2. **Get your credentials** from the project settings:
+   - Project URL (SUPABASE_URL)
+   - Anon/Public key (SUPABASE_ANON_KEY)
+3. **Create the required tables** using the SQL provided in the Quick Start section
+4. **Optional: Enable Row Level Security** for production deployments
 
 ---
 

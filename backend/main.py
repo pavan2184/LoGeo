@@ -4,19 +4,23 @@ from pydantic import BaseModel
 import pandas as pd
 import csv
 import io
-from typing import List, Union
+from typing import List, Union, Dict, Any, Optional
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
-from backend.llm_classifier import get_classifier, LLMClassificationResult
+import logging
+from dataclasses import asdict
+from backend.llm_classifier import get_classifier, RegulatoryAnalysisResult
 from backend.rag_loader import get_rag_instance
-from backend.auth import (
-    get_current_user, get_current_admin_user, authenticate_user, 
-    create_access_token, check_rate_limit, User, Token
-)
-from fastapi.security import OAuth2PasswordRequestForm
+from backend.geo_compliance import get_geo_engine
+from backend.supabase_client import get_supabase_client
+from backend.enhanced_classifier import get_enhanced_classifier, EnhancedClassificationResult
+from backend.feedback_system import get_feedback_processor, FeedbackType, InterventionPriority
 
 app = FastAPI(title="Geo-Compliance Detection API", version="1.0.0")
+
+# Setup logger
+logger = logging.getLogger(__name__)
 
 # Pydantic models for request/response
 class FeatureArtifact(BaseModel):
@@ -27,86 +31,194 @@ class ComplianceResult(BaseModel):
     needs_geo_logic: bool
     confidence: float
     reasoning: str
-    regulations: List[str]
-    risk_level: str  # "low", "medium", "high"
-    specific_requirements: List[str]
+    applicable_regulations: List[dict]  # [{"name": "GDPR", "jurisdiction": "EU", "relevance": "high"}]
+    risk_assessment: str  # "low", "medium", "high", "critical"
+    regulatory_requirements: List[str]
+    evidence_sources: List[str]  # References to regulation documents used
+    recommended_actions: List[str]  # What compliance team should do next
+
+class EnhancedComplianceResult(BaseModel):
+    # Core classification
+    needs_geo_logic: bool
+    primary_confidence: float
+    secondary_confidence: float
+    overall_confidence: float
+    
+    # Detailed analysis
+    reasoning: str
+    applicable_regulations: List[dict]
+    risk_assessment: str
+    regulatory_requirements: List[str]
+    evidence_sources: List[str]
+    recommended_actions: List[str]
+    
+    # Enhanced features
+    standardized_entities: dict
+    clear_cut_detection: bool
+    confidence_breakdown: dict
+    
+    # Human intervention
+    needs_human_review: bool
+    human_review_reason: str
+    intervention_priority: str
+    
+    # Processing info
+    method_used: str
+    processing_time_ms: float
 
 class BatchResult(BaseModel):
     total_processed: int
     results: List[dict]
 
-def classify_feature(title: str, description: str) -> ComplianceResult:
+# New geo-compliance models
+class AccessRequest(BaseModel):
+    user_id: str
+    feature_name: str
+    country: str
+
+class AccessResponse(BaseModel):
+    access_granted: bool
+    reason: str
+
+class BatchAccessRequest(BaseModel):
+    requests: List[Dict[str, str]]
+
+class BatchAccessResponse(BaseModel):
+    results: List[Dict[str, Any]]
+
+def classify_feature_enhanced(title: str, description: str) -> EnhancedComplianceResult:
     """
-    Classify feature using LLM + RAG for geo-compliance requirements.
-    Falls back to enhanced mock classification if LLM is unavailable.
+    Enhanced feature classification using the complete multi-stage pipeline.
+    Implements the full feature flow with preprocessing, NER, standardization, 
+    confidence calculation, and human intervention alerts.
     """
-    classifier = get_classifier()
-    llm_result = classifier.classify_feature(title, description)
+    enhanced_classifier = get_enhanced_classifier()
+    feedback_processor = get_feedback_processor()
     
-    # Convert LLM result to API response format
-    return ComplianceResult(
-        needs_geo_logic=llm_result.needs_geo_logic,
-        confidence=llm_result.confidence,
-        reasoning=llm_result.reasoning,
-        regulations=llm_result.regulations,
-        risk_level=llm_result.risk_level,
-        specific_requirements=llm_result.specific_requirements
+    # Get comprehensive analysis
+    result = enhanced_classifier.classify(title, description)
+    
+    # Create intervention alert if needed
+    if result.needs_human_review:
+        priority_map = {
+            "low": InterventionPriority.LOW,
+            "medium": InterventionPriority.MEDIUM, 
+            "high": InterventionPriority.HIGH,
+            "critical": InterventionPriority.CRITICAL
+        }
+        
+        alert_id = feedback_processor.create_intervention_alert(
+            title,
+            description,
+            asdict(result),
+            result.human_review_reason,
+            priority_map.get(result.intervention_priority, InterventionPriority.MEDIUM)
+        )
+        
+        logger.info(f"Human intervention alert created: {alert_id} for feature: {title}")
+    
+    # Convert to API response model
+    return EnhancedComplianceResult(
+        needs_geo_logic=result.needs_geo_logic,
+        primary_confidence=result.primary_confidence,
+        secondary_confidence=result.secondary_confidence,
+        overall_confidence=result.overall_confidence,
+        reasoning=result.reasoning,
+        applicable_regulations=result.applicable_regulations,
+        risk_assessment=result.risk_assessment,
+        regulatory_requirements=result.regulatory_requirements,
+        evidence_sources=result.evidence_sources,
+        recommended_actions=result.recommended_actions,
+        standardized_entities=asdict(result.standardized_entities),
+        clear_cut_detection=result.clear_cut_detection,
+        confidence_breakdown=result.confidence_breakdown,
+        needs_human_review=result.needs_human_review,
+        human_review_reason=result.human_review_reason,
+        intervention_priority=result.intervention_priority,
+        method_used=result.method_used,
+        processing_time_ms=result.processing_time_ms
     )
 
-def log_result(title: str, description: str, result: ComplianceResult):
-    """Log classification results for audit trail"""
-    log_entry = {
-        "timestamp": datetime.now().isoformat(),
-        "title": title,
-        "description": description,
-        "needs_geo_logic": result.needs_geo_logic,
-        "confidence": result.confidence,
-        "reasoning": result.reasoning,
-        "regulations": "; ".join(result.regulations),
-        "risk_level": result.risk_level,
-        "specific_requirements": "; ".join(result.specific_requirements)
-    }
+def classify_feature(title: str, description: str) -> ComplianceResult:
+    """
+    Analyze feature artifacts to determine if geo-specific compliance logic is required.
+    Uses LLM + RAG with legitimate regulatory sources for auditable compliance detection.
+    """
+    classifier = get_classifier()
     
-    # Ensure results directory exists
-    os.makedirs("results", exist_ok=True)
+    # Get comprehensive regulatory analysis from LLM + RAG
+    analysis_result = classifier.analyze_regulatory_compliance(title, description)
     
-    # Append to results.csv
-    file_exists = os.path.exists("results/results.csv")
-    with open("results/results.csv", "a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=log_entry.keys())
-        if not file_exists:
-            writer.writeheader()
-        writer.writerow(log_entry)
+    return ComplianceResult(
+        needs_geo_logic=analysis_result.needs_geo_logic,
+        confidence=analysis_result.confidence,
+        reasoning=analysis_result.reasoning,
+        applicable_regulations=analysis_result.applicable_regulations,
+        risk_assessment=analysis_result.risk_assessment,
+        regulatory_requirements=analysis_result.regulatory_requirements,
+        evidence_sources=analysis_result.evidence_sources,
+        recommended_actions=analysis_result.recommended_actions
+    )
+
+async def log_result(title: str, description: str, result: ComplianceResult):
+    """Log regulatory compliance analysis results for audit trail"""
+    try:
+        supabase_client = get_supabase_client()
+        
+        # Try to log to Supabase first
+        if supabase_client.is_connected():
+            await supabase_client.log_compliance_analysis(
+                title=title,
+                description=description,
+                needs_geo_logic=result.needs_geo_logic,
+                confidence=result.confidence,
+                reasoning=result.reasoning,
+                applicable_regulations=result.applicable_regulations,
+                risk_assessment=result.risk_assessment,
+                regulatory_requirements=result.regulatory_requirements,
+                evidence_sources=result.evidence_sources,
+                recommended_actions=result.recommended_actions
+            )
+        else:
+            # Fallback to CSV for audit purposes
+            log_entry = {
+                "timestamp": datetime.now().isoformat(),
+                "title": title,
+                "description": description,
+                "needs_geo_logic": result.needs_geo_logic,
+                "confidence": result.confidence,
+                "reasoning": result.reasoning,
+                "applicable_regulations": json.dumps(result.applicable_regulations),
+                "risk_assessment": result.risk_assessment,
+                "regulatory_requirements": "; ".join(result.regulatory_requirements),
+                "evidence_sources": "; ".join(result.evidence_sources),
+                "recommended_actions": "; ".join(result.recommended_actions)
+            }
+            
+            # Ensure results directory exists
+            os.makedirs("results", exist_ok=True)
+            
+            # Append to results.csv
+            file_exists = os.path.exists("results/results.csv")
+            with open("results/results.csv", "a", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=log_entry.keys())
+                if not file_exists:
+                    writer.writeheader()
+                writer.writerow(log_entry)
+            
+    except Exception as e:
+        print(f"Warning: Failed to log result: {e}")
+        # Continue execution even if logging fails
 
 @app.get("/")
 async def root():
     return {"message": "Geo-Compliance Detection API", "version": "1.0.0"}
 
-@app.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    """Login endpoint to get access token"""
-    user = authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=401,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/me", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_user)):
-    """Get current user information"""
-    return current_user
 
 @app.post("/classify", response_model=ComplianceResult)
 async def classify_single_feature(
-    feature: FeatureArtifact,
-    current_user: User = Depends(get_current_user)
+    feature: FeatureArtifact
 ):
     """
     Classify a single feature artifact for geo-compliance requirements.
@@ -117,22 +229,54 @@ async def classify_single_feature(
     - regulations: list of relevant regulations
     """
     try:
-        # Check rate limit
-        check_rate_limit(current_user.username)
-        
         result = classify_feature(feature.title, feature.description)
         
         # Log result for audit trail
-        log_result(feature.title, feature.description, result)
+        await log_result(feature.title, feature.description, result)
         
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Classification failed: {str(e)}")
 
+@app.post("/classify_enhanced", response_model=EnhancedComplianceResult)
+async def classify_single_feature_enhanced(
+    feature: FeatureArtifact
+):
+    """
+    Enhanced classification with complete multi-stage pipeline.
+    
+    Implements the full feature flow including:
+    - Preprocessing and tokenization
+    - NER and regex detection for clear-cut cases
+    - Entity standardization using glossary
+    - Multi-stage classification with confidence scoring
+    - Human intervention alerts for low confidence cases
+    
+    Returns comprehensive analysis with confidence breakdown.
+    """
+    try:
+        result = classify_feature_enhanced(feature.title, feature.description)
+        
+        # Log enhanced result for audit trail (convert to legacy format for compatibility)
+        legacy_result = ComplianceResult(
+            needs_geo_logic=result.needs_geo_logic,
+            confidence=result.overall_confidence,
+            reasoning=result.reasoning,
+            applicable_regulations=result.applicable_regulations,
+            risk_assessment=result.risk_assessment,
+            regulatory_requirements=result.regulatory_requirements,
+            evidence_sources=result.evidence_sources,
+            recommended_actions=result.recommended_actions
+        )
+        await log_result(feature.title, feature.description, legacy_result)
+        
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Enhanced classification failed: {str(e)}")
+
 @app.post("/batch_classify")
 async def batch_classify_features(
-    file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user)
+    file: UploadFile = File(...)
 ):
     """
     Upload a CSV file with feature artifacts and return classifications.
@@ -147,9 +291,6 @@ async def batch_classify_features(
         raise HTTPException(status_code=400, detail="File must be a CSV")
     
     try:
-        # Check rate limit
-        check_rate_limit(current_user.username)
-        
         # Read uploaded CSV
         contents = await file.read()
         df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
@@ -167,22 +308,36 @@ async def batch_classify_features(
             title = str(row['title']) if pd.notna(row['title']) else ""
             description = str(row['description']) if pd.notna(row['description']) else ""
             
-            # Classify the feature
-            classification = classify_feature(title, description)
+            # Classify the feature (use enhanced classifier)
+            enhanced_classification = classify_feature_enhanced(title, description)
+            
+            # Convert to legacy format for batch processing compatibility
+            classification = ComplianceResult(
+                needs_geo_logic=enhanced_classification.needs_geo_logic,
+                confidence=enhanced_classification.overall_confidence,
+                reasoning=enhanced_classification.reasoning,
+                applicable_regulations=enhanced_classification.applicable_regulations,
+                risk_assessment=enhanced_classification.risk_assessment,
+                regulatory_requirements=enhanced_classification.regulatory_requirements,
+                evidence_sources=enhanced_classification.evidence_sources,
+                recommended_actions=enhanced_classification.recommended_actions
+            )
             
             # Log result
-            log_result(title, description, classification)
+            await log_result(title, description, classification)
             
-            # Add classification results to row
+            # Add regulatory compliance analysis to row
             result_row = row.to_dict()
             result_row.update({
                 'needs_geo_logic': classification.needs_geo_logic,
                 'confidence': classification.confidence,
                 'reasoning': classification.reasoning,
-                'regulations': "; ".join(classification.regulations),
-                'risk_level': classification.risk_level,
-                'specific_requirements': "; ".join(classification.specific_requirements),
-                'classified_at': datetime.now().isoformat()
+                'applicable_regulations': json.dumps(classification.applicable_regulations),
+                'risk_assessment': classification.risk_assessment,
+                'regulatory_requirements': "; ".join(classification.regulatory_requirements),
+                'evidence_sources': "; ".join(classification.evidence_sources),
+                'recommended_actions': "; ".join(classification.recommended_actions),
+                'analyzed_at': datetime.now().isoformat()
             })
             results.append(result_row)
         
@@ -211,8 +366,125 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
+# ===== GEO-COMPLIANCE ENDPOINTS =====
+
+@app.post("/check_access", response_model=AccessResponse)
+async def check_access(request: AccessRequest):
+    """
+    Check if access should be granted based on geo-compliance rules.
+    
+    Request body:
+    {
+        "user_id": "string",
+        "feature_name": "string", 
+        "country": "string"
+    }
+    
+    Returns:
+    {
+        "access_granted": true|false,
+        "reason": "explanation for the decision"
+    }
+    """
+    try:
+        geo_engine = get_geo_engine()
+        access_granted, reason = await geo_engine.check_access(
+            request.user_id, 
+            request.feature_name, 
+            request.country
+        )
+        
+        return AccessResponse(
+            access_granted=access_granted,
+            reason=reason
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Error checking access: {str(e)}"
+        )
+
+@app.get("/logs")
+async def get_access_logs(limit: int = 100):
+    """
+    Retrieve access logs from the database.
+    
+    Query parameters:
+    - limit: Maximum number of logs to retrieve (default: 100)
+    
+    Returns:
+    List of access log entries with user_id, feature_name, country, 
+    access_granted, and timestamp.
+    """
+    try:
+        supabase_client = get_supabase_client()
+        logs = await supabase_client.get_access_logs(limit)
+        
+        return {
+            "logs": logs,
+            "count": len(logs),
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error retrieving logs: {str(e)}"
+        )
+
+@app.post("/batch_check", response_model=BatchAccessResponse) 
+async def batch_check_access(
+    file: UploadFile = File(...)
+):
+    """
+    Upload a CSV file with access requests and return results.
+    
+    Expected CSV format:
+    user_id,feature_name,country
+    "user123","user_registration","US"
+    "user456","age_verification","EU"
+    
+    Returns: JSON with access results for each request
+    """
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="File must be a CSV")
+    
+    try:
+        # Read uploaded CSV
+        contents = await file.read()
+        df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
+        
+        # Validate required columns
+        required_cols = ['user_id', 'feature_name', 'country']
+        if not all(col in df.columns for col in required_cols):
+            raise HTTPException(
+                status_code=400,
+                detail=f"CSV must contain columns: {', '.join(required_cols)}"
+            )
+        
+        # Process each row
+        geo_engine = get_geo_engine()
+        requests = []
+        
+        for _, row in df.iterrows():
+            requests.append({
+                "user_id": str(row['user_id']) if pd.notna(row['user_id']) else "",
+                "feature_name": str(row['feature_name']) if pd.notna(row['feature_name']) else "",
+                "country": str(row['country']) if pd.notna(row['country']) else ""
+            })
+        
+        results = await geo_engine.batch_check_access(requests)
+        
+        return BatchAccessResponse(results=results)
+        
+    except pd.errors.EmptyDataError:
+        raise HTTPException(status_code=400, detail="Uploaded CSV is empty")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Batch processing failed: {str(e)}")
+
 @app.get("/regulations")
-async def list_regulations(current_user: User = Depends(get_current_user)):
+async def list_regulations():
     """List all available regulations"""
     try:
         rag = get_rag_instance()
@@ -225,10 +497,7 @@ async def list_regulations(current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Failed to load regulations: {str(e)}")
 
 @app.post("/search_regulations")
-async def search_regulations(
-    query: str,
-    current_user: User = Depends(get_current_user)
-):
+async def search_regulations(query: str):
     """Search regulations for relevant content"""
     try:
         rag = get_rag_instance()
@@ -240,42 +509,319 @@ async def search_regulations(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
 
-@app.get("/stats")
-async def get_statistics(current_user: User = Depends(get_current_user)):
-    """Get classification statistics"""
+@app.get("/compliance_audit")
+async def get_compliance_audit(limit: int = 50):
+    """
+    Retrieve regulatory compliance analysis results for audit purposes.
+    
+    Query parameters:
+    - limit: Maximum number of results to retrieve (default: 50)
+    
+    Returns:
+    List of compliance analysis results with full audit trail
+    """
     try:
-        results_file = "results/results.csv"
-        if not os.path.exists(results_file):
+        supabase_client = get_supabase_client()
+        
+        if supabase_client.is_connected():
+            results = await supabase_client.get_compliance_audit(limit)
             return {
-                "total_classifications": 0,
-                "compliance_required": 0,
-                "no_compliance_needed": 0,
-                "average_confidence": 0.0,
-                "risk_levels": {"low": 0, "medium": 0, "high": 0}
+                "audit_records": results,
+                "count": len(results),
+                "timestamp": datetime.now().isoformat(),
+                "audit_trail": True
             }
+        else:
+            # Fallback to CSV audit records
+            results_file = "results/results.csv"
+            if os.path.exists(results_file):
+                df = pd.read_csv(results_file)
+                records = df.to_dict('records')[-limit:]  # Get latest records
+                return {
+                    "audit_records": records,
+                    "count": len(records),
+                    "timestamp": datetime.now().isoformat(),
+                    "audit_trail": True,
+                    "source": "CSV fallback"
+                }
+            else:
+                return {
+                    "audit_records": [],
+                    "count": 0,
+                    "timestamp": datetime.now().isoformat(),
+                    "note": "No audit records available"
+                }
         
-        df = pd.read_csv(results_file)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error retrieving compliance audit records: {str(e)}"
+        )
+
+@app.get("/geo_rules/{feature_name}")
+async def get_geo_rules(feature_name: str):
+    """Get geo-compliance rules for a specific feature"""
+    try:
+        geo_engine = get_geo_engine()
+        geo_rules = getattr(geo_engine, 'rules', {})
         
-        total = len(df)
-        compliance_required = len(df[df['needs_geo_logic'] == True])
-        no_compliance_needed = len(df[df['needs_geo_logic'] == False])
-        avg_confidence = df['confidence'].mean() if 'confidence' in df.columns else 0.0
+        if feature_name in geo_rules:
+            rule = geo_rules[feature_name]
+            return {
+                "feature_name": feature_name,
+                "allowed_countries": rule.get("allowed_countries", []),
+                "blocked_countries": rule.get("blocked_countries", []),
+                "compliance_note": rule.get("compliance_note", ""),
+                "rule_exists": True
+            }
+        else:
+            return {
+                "feature_name": feature_name,
+                "allowed_countries": [],
+                "blocked_countries": [],
+                "compliance_note": "No specific geo-compliance rules configured",
+                "rule_exists": False
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get geo rules: {str(e)}")
+
+@app.get("/all_geo_rules")
+async def get_all_geo_rules():
+    """Get all available geo-compliance rules"""
+    try:
+        geo_engine = get_geo_engine()
+        geo_rules = getattr(geo_engine, 'rules', {})
         
-        risk_levels = {"low": 0, "medium": 0, "high": 0}
-        if 'risk_level' in df.columns:
-            risk_counts = df['risk_level'].value_counts()
-            for level in risk_levels:
-                risk_levels[level] = int(risk_counts.get(level, 0))
+        rules_list = []
+        for feature_name, rule in geo_rules.items():
+            rules_list.append({
+                "feature_name": feature_name,
+                "allowed_countries": rule.get("allowed_countries", []),
+                "blocked_countries": rule.get("blocked_countries", []),
+                "compliance_note": rule.get("compliance_note", "")
+            })
         
         return {
-            "total_classifications": total,
-            "compliance_required": compliance_required,
-            "no_compliance_needed": no_compliance_needed,
-            "average_confidence": round(avg_confidence, 3),
-            "risk_levels": risk_levels
+            "total_rules": len(rules_list),
+            "rules": rules_list
         }
     except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get all geo rules: {str(e)}")
+
+@app.get("/stats")
+async def get_statistics():
+    """Get classification statistics from Supabase"""
+    try:
+        supabase_client = get_supabase_client()
+        
+        # Try to get statistics from Supabase first
+        if supabase_client.is_connected():
+            stats = await supabase_client.get_classification_statistics()
+            return stats
+        else:
+            # Fallback to CSV if Supabase is not available
+            results_file = "results/results.csv"
+            if not os.path.exists(results_file):
+                return {
+                    "total_classifications": 0,
+                    "compliance_required": 0,
+                    "no_compliance_needed": 0,
+                    "average_confidence": 0.0,
+                    "risk_levels": {"low": 0, "medium": 0, "high": 0}
+                }
+            
+            df = pd.read_csv(results_file)
+            
+            total = len(df)
+            compliance_required = len(df[df['needs_geo_logic'] == True])
+            no_compliance_needed = len(df[df['needs_geo_logic'] == False])
+            avg_confidence = df['confidence'].mean() if 'confidence' in df.columns else 0.0
+            
+            risk_levels = {"low": 0, "medium": 0, "high": 0}
+            if 'risk_level' in df.columns:
+                risk_counts = df['risk_level'].value_counts()
+                for level in risk_levels:
+                    risk_levels[level] = int(risk_counts.get(level, 0))
+            
+            return {
+                "total_classifications": total,
+                "compliance_required": compliance_required,
+                "no_compliance_needed": no_compliance_needed,
+                "average_confidence": round(avg_confidence, 3),
+                "risk_levels": risk_levels
+            }
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get statistics: {str(e)}")
+
+@app.get("/regulatory_coverage")
+async def get_regulatory_coverage():
+    """Get coverage analysis of loaded regulatory documents"""
+    try:
+        rag = get_rag_instance()
+        regulations = rag.load_regulations()
+        
+        coverage_info = {
+            "total_regulations": len(regulations),
+            "regulations": [
+                {
+                    "name": reg["name"],
+                    "content_length": len(reg["content"]),
+                    "jurisdiction": reg.get("jurisdiction", "Unknown"),
+                    "last_updated": reg.get("last_updated", "Unknown")
+                }
+                for reg in regulations
+            ],
+            "jurisdictions_covered": list(set(
+                reg.get("jurisdiction", "Unknown") for reg in regulations
+            )),
+            "system_status": "operational"
+        }
+        
+        return coverage_info
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get regulatory coverage: {str(e)}")
+
+# ===== HUMAN INTERVENTION AND FEEDBACK ENDPOINTS =====
+
+class FeedbackSubmission(BaseModel):
+    reviewer_id: str
+    feedback_type: str  # "classification_correction", "entity_correction", etc.
+    original_classification: dict
+    corrections: dict
+    reasoning: str
+    additional_notes: str = ""
+
+@app.get("/alerts")
+async def get_intervention_alerts(priority: Optional[str] = None):
+    """Get pending human intervention alerts"""
+    try:
+        feedback_processor = get_feedback_processor()
+        pending_alerts = feedback_processor.get_pending_alerts(priority)
+        
+        return {
+            "alerts": [asdict(alert) for alert in pending_alerts],
+            "count": len(pending_alerts),
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get alerts: {str(e)}")
+
+@app.post("/feedback")
+async def submit_feedback(feedback: FeedbackSubmission):
+    """Submit human feedback for system improvement"""
+    try:
+        feedback_processor = get_feedback_processor()
+        
+        # Map string to enum
+        feedback_type_map = {
+            "classification_correction": FeedbackType.CLASSIFICATION_CORRECTION,
+            "entity_correction": FeedbackType.ENTITY_CORRECTION,
+            "confidence_adjustment": FeedbackType.CONFIDENCE_ADJUSTMENT,
+            "new_pattern": FeedbackType.NEW_PATTERN,
+            "regulatory_update": FeedbackType.REGULATORY_UPDATE
+        }
+        
+        feedback_type_enum = feedback_type_map.get(feedback.feedback_type, FeedbackType.CLASSIFICATION_CORRECTION)
+        
+        feedback_id = feedback_processor.submit_feedback(
+            feedback_type_enum,
+            feedback.reviewer_id,
+            feedback.original_classification,
+            feedback.corrections,
+            feedback.reasoning,
+            feedback.additional_notes
+        )
+        
+        return {
+            "feedback_id": feedback_id,
+            "status": "submitted",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to submit feedback: {str(e)}")
+
+@app.post("/alerts/{alert_id}/resolve")
+async def resolve_alert(alert_id: str, resolution: dict):
+    """Resolve a human intervention alert"""
+    try:
+        feedback_processor = get_feedback_processor()
+        
+        feedback_processor.resolve_alert(
+            alert_id,
+            resolution.get("reviewer_id", "unknown"),
+            resolution.get("notes", "")
+        )
+        
+        return {
+            "alert_id": alert_id,
+            "status": "resolved",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to resolve alert: {str(e)}")
+
+@app.get("/performance")
+async def get_performance_metrics(days: int = 30):
+    """Get system performance metrics and trends"""
+    try:
+        feedback_processor = get_feedback_processor()
+        performance_summary = feedback_processor.get_performance_summary(days)
+        
+        return performance_summary
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get performance metrics: {str(e)}")
+
+@app.get("/glossary/locations")
+async def get_location_glossary():
+    """Get all location mappings from the glossary"""
+    try:
+        from backend.glossary import get_glossary
+        glossary = get_glossary()
+        
+        # Get unique locations
+        unique_locations = {}
+        for key, location in glossary.locations.items():
+            if location.colloquial_name not in unique_locations:
+                unique_locations[location.colloquial_name] = {
+                    "colloquial_name": location.colloquial_name,
+                    "full_name": location.full_name,
+                    "country_code": location.country_code_iso,
+                    "region": location.region,
+                    "synonyms": location.synonyms,
+                    "abbreviations": location.abbreviations
+                }
+        
+        return {
+            "locations": list(unique_locations.values()),
+            "total_count": len(unique_locations)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get location glossary: {str(e)}")
+
+@app.get("/glossary/age_terms")
+async def get_age_glossary():
+    """Get all age term mappings from the glossary"""
+    try:
+        from backend.glossary import get_glossary
+        glossary = get_glossary()
+        
+        # Get unique age terms
+        unique_age_terms = {}
+        for key, age_term in glossary.age_terms.items():
+            if age_term.term not in unique_age_terms:
+                unique_age_terms[age_term.term] = {
+                    "term": age_term.term,
+                    "numerical_range": age_term.numerical_range,
+                    "synonyms": age_term.synonyms
+                }
+        
+        return {
+            "age_terms": list(unique_age_terms.values()),
+            "total_count": len(unique_age_terms)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get age glossary: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
