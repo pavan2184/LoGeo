@@ -9,7 +9,7 @@ This demo illustrates how different confidence thresholds apply to different cat
 - Internal: 0.60 threshold (low risk)
 """
 
-from enhanced_decision_engine import EnhancedDecisionEngine
+from backend.enhanced_decision_engine import EnhancedDecisionEngine
 
 def run_threshold_demo():
     """Demonstrate the threshold system with various test cases"""

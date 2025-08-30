@@ -1,10 +1,23 @@
 import os
-import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from typing import List, Dict, Tuple
 import pickle
 import logging
+
+# Try to import faiss, fall back to a simple implementation if not available
+try:
+    import faiss
+    FAISS_AVAILABLE = True
+except ImportError:
+    print("⚠️  FAISS not available - using simplified RAG implementation")
+    FAISS_AVAILABLE = False
+
+try:
+    from sentence_transformers import SentenceTransformer
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    print("⚠️  SentenceTransformers not available - using basic text matching")
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,12 +36,17 @@ class RegulationRAG:
         self.documents = []
         self.metadata = []
         self.is_loaded = False
+        self.regulation_texts = {}  # Fallback storage for basic keyword matching
         
     def load_model(self):
         """Load the sentence transformer model"""
         if self.model is None:
-            logger.info(f"Loading sentence transformer model: {self.model_name}")
-            self.model = SentenceTransformer(self.model_name)
+            if SENTENCE_TRANSFORMERS_AVAILABLE:
+                logger.info(f"Loading sentence transformer model: {self.model_name}")
+                self.model = SentenceTransformer(self.model_name)
+            else:
+                logger.info("SentenceTransformers not available - using keyword matching fallback")
+                self.model = None
         
     def load_regulations(self) -> List[Dict]:
         """Load all regulation text files from the regulations directory"""
@@ -135,7 +153,17 @@ class RegulationRAG:
         return chunks
     
     def build_index(self, force_rebuild: bool = False):
-        """Build FAISS index from regulation documents"""
+        """Build FAISS index from regulation documents or use fallback"""
+        
+        if not FAISS_AVAILABLE:
+            # Fallback: Just load regulations into memory for keyword search
+            logger.info("FAISS not available - using keyword matching fallback")
+            regulations = self.load_regulations()
+            for reg in regulations:
+                self.regulation_texts[reg['name']] = reg['content']
+            self.is_loaded = True
+            return
+        
         index_path = "regulation_index.faiss"
         metadata_path = "regulation_metadata.pkl"
         
@@ -194,11 +222,19 @@ class RegulationRAG:
     
     def search(self, query: str, k: int = 5) -> List[Dict]:
         """Search for relevant regulation text chunks"""
-        if not self.is_loaded or self.index is None:
+        if not self.is_loaded:
             logger.warning("Index not loaded, building index...")
             self.build_index()
         
         if not self.is_loaded:
+            return []
+        
+        # Fallback search when FAISS is not available
+        if not FAISS_AVAILABLE:
+            return self._fallback_search(query, k)
+        
+        # Original FAISS-based search
+        if self.index is None:
             return []
         
         # Encode query
@@ -220,6 +256,36 @@ class RegulationRAG:
                 results.append(result)
         
         return results
+    
+    def _fallback_search(self, query: str, k: int = 5) -> List[Dict]:
+        """Fallback search using simple keyword matching"""
+        results = []
+        query_words = query.lower().split()
+        
+        # Search through loaded regulation texts
+        for reg_name, content in self.regulation_texts.items():
+            content_lower = content.lower()
+            
+            # Simple keyword matching score
+            score = 0
+            for word in query_words:
+                if word in content_lower:
+                    score += content_lower.count(word)
+            
+            if score > 0:
+                # Normalize score (simple heuristic)
+                normalized_score = min(1.0, score / (len(query_words) * 10))
+                
+                results.append({
+                    'text': content[:500] + "..." if len(content) > 500 else content,
+                    'regulation': reg_name,
+                    'relevance_score': normalized_score,
+                    'source': 'keyword_fallback'
+                })
+        
+        # Sort by relevance and return top k
+        results.sort(key=lambda x: x['relevance_score'], reverse=True)
+        return results[:k]
     
     def get_relevant_regulations(self, feature_title: str, feature_description: str, threshold: float = 0.3) -> List[str]:
         """Get list of regulation names relevant to a feature"""

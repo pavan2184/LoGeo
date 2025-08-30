@@ -295,18 +295,38 @@ async def batch_classify_features(
         contents = await file.read()
         df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
         
-        # Validate required columns
-        if 'title' not in df.columns or 'description' not in df.columns:
+        # Validate required columns (accept multiple naming conventions)
+        title_col = None
+        desc_col = None
+        
+        # Check for title column variants
+        for col in ['title', 'feature_name', 'name']:
+            if col in df.columns:
+                title_col = col
+                break
+                
+        # Check for description column variants  
+        for col in ['description', 'feature_description', 'desc']:
+            if col in df.columns:
+                desc_col = col
+                break
+        
+        if title_col is None or desc_col is None:
+            missing = []
+            if title_col is None:
+                missing.append("title/feature_name/name")
+            if desc_col is None:
+                missing.append("description/feature_description/desc")
             raise HTTPException(
                 status_code=400, 
-                detail="CSV must contain 'title' and 'description' columns"
+                detail=f"CSV must contain columns: {', '.join(missing)}"
             )
         
         # Process each row
         results = []
         for _, row in df.iterrows():
-            title = str(row['title']) if pd.notna(row['title']) else ""
-            description = str(row['description']) if pd.notna(row['description']) else ""
+            title = str(row[title_col]) if pd.notna(row[title_col]) else ""
+            description = str(row[desc_col]) if pd.notna(row[desc_col]) else ""
             
             # Classify the feature (use enhanced classifier)
             enhanced_classification = classify_feature_enhanced(title, description)

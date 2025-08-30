@@ -14,8 +14,9 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy frontend code
+# Copy frontend code and backend modules (needed for imports)
 COPY frontend/ ./frontend/
+COPY backend/ ./backend/
 
 # Create a non-root user
 RUN useradd -m -u 1000 streamlit && chown -R streamlit:streamlit /app

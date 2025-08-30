@@ -21,6 +21,7 @@ from backend.llm_classifier import get_classifier, RegulatoryAnalysisResult
 from backend.rag_loader import get_rag_instance
 from backend.confidence_scoring import get_confidence_scorer, ConfidenceBreakdown, ConfidenceLevel
 from backend.ambiguity_handler import get_ambiguity_handler, AmbiguityAssessment, DisambiguationResult
+from backend.enhanced_decision_engine import EnhancedDecisionEngine, DecisionResult, EscalationRule
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +73,14 @@ class EnhancedClassificationResult:
     ambiguity_confidence_penalty: float = 0.0
     threshold_decision: Optional[EscalationDecision] = None
     final_action: str = ""  # "auto_approve", "human_review", "ignore"
+    
+    # Enhanced threshold system fields
+    categories_detected: Optional[List[str]] = None
+    applicable_threshold: float = 0.0
+    threshold_violations: Optional[List[str]] = None
+    escalation_rule: Optional[EscalationRule] = None
+    escalation_reason: str = ""
+    enhanced_decision_result: Optional[DecisionResult] = None
 
 class EnhancedGeoComplianceClassifier:
     """
@@ -86,44 +95,10 @@ class EnhancedGeoComplianceClassifier:
         self.rag = get_rag_instance()
         self.confidence_scorer = get_confidence_scorer()
         self.ambiguity_handler = get_ambiguity_handler()
+        self.enhanced_decision_engine = EnhancedDecisionEngine()
         
-        # Legacy confidence thresholds (kept for backward compatibility)
-        self.confidence_thresholds = {
-            "minor_protection": 0.90,   # Higher threshold for child safety
-            "content_safety": 0.90,    # Higher threshold for CSAM/abuse
-            "privacy_rights": 0.85,    # High threshold for privacy
-            "data_protection": 0.85,   # High threshold for data handling
-            "general_compliance": 0.80, # Standard threshold
-            "business_feature": 0.75   # Lower threshold for business decisions
-        }
-        
-        # Updated category determination keywords aligned with threshold rules
-        self.category_keywords = {
-            # Legal/Compliance categories (threshold: 0.90)
-            "minor_protection": ["minor", "child", "teen", "age", "parental", "youth", "juvenile", "underage", "coppa", "age verification"],
-            "content_safety": ["csam", "abuse", "harm", "exploitation", "safety", "ncmec", "reporting", "child sexual abuse"],
-            "privacy_rights": ["privacy", "data", "personal", "tracking", "collection", "consent", "gdpr", "ccpa"],
-            "data_protection": ["data protection", "localization", "retention", "data residency", "cross-border"],
-            "regulatory_compliance": ["compliance", "regulation", "law", "legal", "requirement", "dsa", "digital services act"],
-            
-            # Safety/Health Protection categories (threshold: 0.85)
-            "user_safety": ["safety", "harm prevention", "user protection", "content moderation", "community standards"],
-            "health_protection": ["health", "mental health", "wellbeing", "addiction", "time limits"],
-            "harm_prevention": ["harmful content", "violence", "self-harm", "dangerous", "risk assessment"],
-            "security_compliance": ["security", "authentication", "access control", "identity verification"],
-            
-            # Business (non-binding) categories (threshold: 0.70)
-            "business_feature": ["feature", "functionality", "product", "user interface", "ui", "ux"],
-            "market_testing": ["test", "experiment", "rollout", "market", "pilot", "beta", "a/b test"],
-            "user_experience": ["experience", "engagement", "usability", "interface", "design"],
-            "performance_optimization": ["performance", "optimization", "speed", "efficiency", "revenue", "conversion"],
-            
-            # Internal Analytics categories (threshold: 0.60)
-            "analytics": ["analytics", "data analysis", "tracking", "measurement", "insights"],
-            "metrics": ["metrics", "kpi", "statistics", "reporting", "dashboard"],
-            "internal_monitoring": ["monitoring", "logging", "debugging", "internal", "observability"],
-            "development_tools": ["development", "tools", "testing", "staging", "dev", "tooling"]
-        }
+        # The enhanced decision engine now handles all category detection and thresholds
+        # Legacy code removed - using enhanced_decision_engine for intelligent decision making
     
     def standardize_entities(self, entities: List[EntityMatch]) -> StandardizedEntities:
         """
@@ -237,35 +212,53 @@ class EnhancedGeoComplianceClassifier:
         return ambiguity_assessments, disambiguation_result, confidence_penalty
     
     def determine_feature_category(self, text: str, entities: StandardizedEntities) -> str:
-        """Determine the primary category of the feature for appropriate thresholding"""
+        """Determine the primary category of the feature using enhanced decision engine"""
         
-        text_lower = text.lower()
-        category_scores = {}
+        # Use enhanced decision engine for category detection
+        # Create a dummy LLM output for category detection
+        dummy_llm_output = {
+            "flag": "NeedsGeoLogic",
+            "confidence": 0.8,
+            "reasoning": "Feature analysis for category detection",
+            "suggested_jurisdictions": [],
+            "evidence_passage_ids": []
+        }
         
-        # Score based on keywords
-        for category, keywords in self.category_keywords.items():
-            score = sum(1 for keyword in keywords if keyword in text_lower)
-            category_scores[category] = score
-        
-        # Boost scores based on standardized entities
+        # Get rules matched from entities
+        rules_matched = []
         if entities.ages:
-            category_scores["minor_protection"] = category_scores.get("minor_protection", 0) + 3
+            rules_matched.append("age_detected")
+        if entities.locations:
+            rules_matched.append("location_detected")
+        if entities.terminology:
+            rules_matched.append("regulatory_terminology")
         
-        if any("safety" in term["category"] for term in entities.terminology):
-            category_scores["content_safety"] = category_scores.get("content_safety", 0) + 3
+        # Use enhanced decision engine to detect categories
+        categories = self.enhanced_decision_engine.detect_categories(
+            text, dummy_llm_output, rules_matched
+        )
         
-        if any("privacy" in term["category"] for term in entities.terminology):
-            category_scores["privacy_rights"] = category_scores.get("privacy_rights", 0) + 3
+        if categories:
+            # Return the first category (most relevant)
+            return categories[0]
         
-        if any("content_moderation" in term["category"] for term in entities.terminology):
-            category_scores["user_safety"] = category_scores.get("user_safety", 0) + 2
+        # Fallback: Basic keyword analysis for legacy compatibility
+        text_lower = text.lower()
         
-        # Return category with highest score
-        if category_scores and max(category_scores.values()) > 0:
-            return max(category_scores, key=category_scores.get)
+        # Check for high-priority categories first
+        if any(word in text_lower for word in ['minor', 'child', 'teen', 'age', 'coppa']):
+            return "legal_compliance"
+        elif any(word in text_lower for word in ['safety', 'harm', 'protection']):
+            return "safety_health_protection" 
+        elif any(word in text_lower for word in ['gdpr', 'privacy', 'data']):
+            return "legal_compliance"
+        elif any(word in text_lower for word in ['test', 'experiment', 'analytics']):
+            return "business_analytics"
+        elif any(word in text_lower for word in ['performance', 'optimization', 'internal']):
+            return "internal_features"
         
-        # Default to regulatory_compliance for safety
-        return "regulatory_compliance"
+        # Default to legal compliance for safety
+        return "legal_compliance"
     
     def build_enhanced_prompt(self, title: str, description: str, entities: StandardizedEntities, rag_context: str) -> str:
         """
@@ -529,35 +522,60 @@ CRITICAL INSTRUCTIONS:
                                        confidence: float,
                                        feature_category: str,
                                        entities: StandardizedEntities,
-                                       llm_result: RegulatoryAnalysisResult) -> Tuple[EscalationDecision, bool, str, str, str]:
+                                       llm_result: RegulatoryAnalysisResult,
+                                       feature_text: str = "",
+                                       title: str = "",
+                                       description: str = "") -> Tuple[Optional[EscalationDecision], bool, str, str, str, DecisionResult]:
         """
-        Determine action based on new threshold table system.
-        Returns: (threshold_decision, needs_human_review, review_reason, priority, final_action)
+        Determine action using the enhanced decision engine with category-specific thresholds.
+        Returns: (threshold_decision, needs_human_review, review_reason, priority, final_action, enhanced_decision_result)
         """
         
-        # Use the threshold table system to evaluate
-        threshold_decision = self.glossary.evaluate_threshold(feature_category, confidence)
+        # Prepare LLM output format for enhanced decision engine
+        llm_output = {
+            "flag": "NeedsGeoLogic" if llm_result.needs_geo_logic else "NoGeoLogic",
+            "confidence": confidence,
+            "reasoning": llm_result.reasoning,
+            "suggested_jurisdictions": [reg.get("jurisdiction", "") for reg in llm_result.applicable_regulations],
+            "evidence_passage_ids": llm_result.evidence_sources[:3]  # Limit to first 3 sources
+        }
         
-        # Determine final action based on threshold decision
-        if threshold_decision.escalation_action == "auto_approve":
-            return threshold_decision, False, "", "low", "auto_approve"
+        # Get rules matched from preprocessing/standardized entities
+        rules_matched = []
+        if entities.confidence_scores.get("location", 0) > 0.8:
+            rules_matched.append("location_detected")
+        if entities.confidence_scores.get("age", 0) > 0.8:
+            rules_matched.append("age_detected")
+        if entities.confidence_scores.get("terminology", 0) > 0.8:
+            rules_matched.append("regulatory_terminology")
         
-        elif threshold_decision.escalation_action == "ignore":
-            return threshold_decision, False, "", "low", "ignore"
+        # Use enhanced decision engine for intelligent decision making
+        enhanced_decision = self.enhanced_decision_engine.make_decision(
+            feature_text=f"{title} {description}" if title and description else feature_text,
+            llm_output=llm_output,
+            rules_matched=rules_matched,
+            rule_fired=False  # We're not using deterministic rules yet
+        )
         
-        elif threshold_decision.escalation_action == "human_review":
-            return threshold_decision, True, threshold_decision.reasoning, threshold_decision.priority, "human_review"
+        # Convert enhanced decision to legacy format for backward compatibility
+        needs_review = enhanced_decision.review_required
+        review_reason = enhanced_decision.escalation_reason
+        priority = enhanced_decision.review_priority
         
+        # Determine final action based on escalation rule
+        if enhanced_decision.escalation_rule == EscalationRule.HUMAN_REVIEW:
+            final_action = "human_review"
+        elif enhanced_decision.escalation_rule == EscalationRule.AUTO_OK:
+            final_action = "auto_approve"
+        elif enhanced_decision.escalation_rule == EscalationRule.IGNORE:
+            final_action = "ignore"
         else:
-            # Additional checks for edge cases (keep existing logic)
-            needs_review, reason, priority = self._additional_intervention_checks(
-                confidence, feature_category, entities, llm_result
-            )
+            final_action = "human_review"  # Default to safe option
             
-            if needs_review:
-                return threshold_decision, True, reason, priority, "human_review"
-            else:
-                return threshold_decision, False, "", "low", "auto_approve"
+        # Create threshold decision for backward compatibility (can be None since enhanced system handles this)
+        threshold_decision = None
+        
+        return threshold_decision, needs_review, review_reason, priority, final_action, enhanced_decision
     
     def _additional_intervention_checks(self, 
                                       confidence: float,
@@ -631,7 +649,12 @@ CRITICAL INSTRUCTIONS:
                 risk_assessment="medium" if preprocessing_result.clear_cut_classification else "low",
                 regulatory_requirements=["Verify specific regulatory requirements"] if preprocessing_result.clear_cut_classification else [],
                 evidence_sources=["High-confidence pattern matching", "Entity detection"],
-                recommended_actions=["Proceed with compliance implementation"] if preprocessing_result.clear_cut_classification else ["Continue with standard development"],
+                recommended_actions=self.llm_classifier._generate_contextual_recommendations(
+                    title, description, [], 
+                    "medium" if preprocessing_result.clear_cut_classification else "low", 
+                    preprocessing_result.confidence_score, 
+                    preprocessing_result.clear_cut_classification
+                ),
                 standardized_entities=standardized_entities,
                 preprocessing_result=preprocessing_result,
                 clear_cut_detection=True,
@@ -648,7 +671,14 @@ CRITICAL INSTRUCTIONS:
                 disambiguation_result=disambiguation_result,
                 ambiguity_confidence_penalty=ambiguity_penalty,
                 threshold_decision=None,
-                final_action="auto_approve"
+                final_action="auto_approve",
+                # Enhanced threshold system fields (defaults for clear-cut cases)
+                categories_detected=["deterministic_override"],
+                applicable_threshold=0.95,
+                threshold_violations=[],
+                escalation_rule=EscalationRule.AUTO_OK,
+                escalation_reason="Clear-cut detection with high confidence",
+                enhanced_decision_result=None
             )
         
         # Step 4: Enhanced LLM analysis
@@ -677,9 +707,9 @@ CRITICAL INSTRUCTIONS:
         # Convert to legacy format for backward compatibility
         confidence_breakdown = detailed_confidence.confidence_factors
         
-        # Step 7: Threshold-based action determination
-        threshold_decision, needs_review, review_reason, priority, final_action = self.determine_threshold_based_action(
-            final_confidence, feature_category, standardized_entities, llm_result
+        # Step 7: Enhanced threshold-based action determination using category-specific thresholds
+        threshold_decision, needs_review, review_reason, priority, final_action, enhanced_decision = self.determine_threshold_based_action(
+            final_confidence, feature_category, standardized_entities, llm_result, f"{title} {description}", title, description
         )
         
         processing_time = (datetime.now() - start_time).total_seconds() * 1000
@@ -711,7 +741,14 @@ CRITICAL INSTRUCTIONS:
             disambiguation_result=disambiguation_result,
             ambiguity_confidence_penalty=ambiguity_penalty,
             threshold_decision=threshold_decision,
-            final_action=final_action
+            final_action=final_action,
+            # Enhanced threshold system fields
+            categories_detected=enhanced_decision.categories_detected,
+            applicable_threshold=enhanced_decision.confidence if enhanced_decision else 0.0,
+            threshold_violations=enhanced_decision.threshold_violations,
+            escalation_rule=enhanced_decision.escalation_rule,
+            escalation_reason=enhanced_decision.escalation_reason,
+            enhanced_decision_result=enhanced_decision
         )
 
 # Global enhanced classifier instance

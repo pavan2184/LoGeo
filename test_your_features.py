@@ -6,7 +6,7 @@ Input your feature descriptions and see how the system categorizes them
 and applies category-specific thresholds.
 """
 
-from enhanced_decision_engine import EnhancedDecisionEngine
+from backend.enhanced_decision_engine import EnhancedDecisionEngine
 
 def test_custom_feature():
     """Test a custom feature with user input"""

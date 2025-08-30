@@ -1,48 +1,100 @@
 [
   {
-    "alert_id": "alert_20250830_163336_9103",
-    "timestamp": "2025-08-30T16:33:36.526934",
-    "feature_title": "PF default toggle with NR enforcement for California teens",
-    "feature_description": "As part of compliance with California's SB976, the app will disable PF by default for users under 18 located in California. This default setting is considered NR to override, unless explicit parental opt-in is provided. Geo-detection is handled via GH, and rollout is monitored with FR logs. The design ensures minimal disruption while meeting the strict personalization requirements imposed by the law.",
+    "alert_id": "alert_20250830_182124_2435",
+    "timestamp": "2025-08-30T18:21:24.686702",
+    "feature_title": "Mood-based PF enhancements",
+    "feature_description": "Adjust PF recommendations based on inferred mood signals from emoji usage. This logic is soft-tuned using BB and undergoes quiet testing in ShadowMode.",
     "classification_result": {
-      "needs_geo_logic": true,
-      "primary_confidence": 0.9,
-      "secondary_confidence": 0.42000000000000004,
-      "overall_confidence": 0.6699999999999999,
-      "reasoning": "Strong regulatory compliance signals detected. Feature triggers: California Age-Appropriate Design Code Act. Geographic-specific implementation required.",
-      "risk_assessment": "high",
+      "needs_geo_logic": false,
+      "primary_confidence": 0.85,
+      "secondary_confidence": 0.045,
+      "overall_confidence": 0.44249999999999995,
+      "reasoning": "No clear indicators of the 5 key regulatory requirements (EU DSA, CA Kids Act, FL Minor Protections, UT Social Media Act, US NCMEC) detected. Feature appears to be standard functionality.",
+      "applicable_regulations": [],
+      "risk_assessment": "low",
+      "regulatory_requirements": [],
+      "evidence_sources": [
+        "5-regulation focused analysis"
+      ],
+      "recommended_actions": [
+        "Proceed with A/B testing following standard privacy practices",
+        "Ensure test data collection complies with applicable privacy laws",
+        "Document test parameters for compliance review if needed"
+      ],
+      "standardized_entities": {
+        "locations": [],
+        "ages": [],
+        "terminology": [],
+        "confidence_scores": {
+          "location": 0.0,
+          "age": 0.0,
+          "terminology": 0.0
+        }
+      },
+      "preprocessing_result": {
+        "original_text": "Mood-based PF enhancements. Adjust PF recommendations based on inferred mood signals from emoji usage. This logic is soft-tuned using BB and undergoes quiet testing in ShadowMode.",
+        "cleaned_text": "Mood-based PF enhancements. Adjust PF recommendations based on inferred mood signals from emoji usage. This logic is soft-tuned using BB and undergoes quiet testing in ShadowMode.",
+        "tokens": [
+          "mood",
+          "based",
+          "enhancements",
+          "adjust",
+          "recommendations",
+          "based",
+          "inferred",
+          "mood",
+          "signals",
+          "from",
+          "emoji",
+          "usage",
+          "this",
+          "logic",
+          "soft",
+          "tuned",
+          "using",
+          "undergoes",
+          "quiet",
+          "testing",
+          "shadowmode"
+        ],
+        "entities": [
+          {
+            "text": "ShadowM",
+            "entity_type": "TERMINOLOGY",
+            "start_pos": 168,
+            "end_pos": 175,
+            "confidence": 0.6987462043762207,
+            "standardized_form": "ShadowM",
+            "source": "ner",
+            "additional_info": {
+              "huggingface_label": "ORG"
+            }
+          }
+        ],
+        "clear_cut_classification": null,
+        "confidence_score": 0.2096238613128662,
+        "needs_further_analysis": true
+      },
+      "clear_cut_detection": false,
+      "confidence_breakdown": {
+        "base_weighted": 0.6084999999999999,
+        "llm_component": 0.595,
+        "regex_ner_component": 0.0135,
+        "entity_adjustment": -0.1,
+        "cross_validation_adjustment": -0.066,
+        "diversity_bonus": 0.0,
+        "final_confidence": 0.44249999999999995
+      },
       "needs_human_review": true,
-      "human_review_reason": "Confidence (0.670) below threshold (0.900) - human",
-      "intervention_priority": "high"
-    },
-    "intervention_reason": "Confidence (0.670) below threshold (0.900) for minor_protection",
-    "priority": "high",
-    "status": "pending",
-    "assigned_reviewer": null,
-    "resolution_notes": null,
-    "resolved_timestamp": null
-  },
-  {
-    "alert_id": "alert_20250830_162647_6263",
-    "timestamp": "2025-08-30T16:26:47.667857",
-    "feature_title": "GDPR Age Gate",
-    "feature_description": "Age verification for EU users under 16 to comply with GDPR Article 8",
-    "classification_result": {
-      "needs_geo_logic": true,
-      "primary_confidence": 0.8,
-      "secondary_confidence": 0.6,
-      "overall_confidence": 0.7566666666666667,
-      "reasoning": "Potential regulatory compliance requirements detected: EU Digital Services Act, California Age-Appropriate Design Code Act, Florida Online Protections for Minors. Manual legal review recommended.",
-      "risk_assessment": "medium",
-      "needs_human_review": true,
-      "human_review_reason": "Confidence (0.757) below threshold (0.850) for privacy_rights",
-      "intervention_priority": "medium"
-    },
-    "intervention_reason": "Confidence (0.757) below threshold (0.850) for privacy_rights",
-    "priority": "medium",
-    "status": "pending",
-    "assigned_reviewer": null,
-    "resolution_notes": null,
-    "resolved_timestamp": null
-  }
-]
+      "human_review_reason": "Confidence 0.44 below threshold 0.70 for ",
+      "intervention_priority": "medium",
+      "processing_timestamp": "2025-08-30T18:21:24.685132",
+      "method_used": "llm_primary",
+      "processing_time_ms": 2162.274,
+      "detailed_confidence": {
+        "llm_confidence": 0.85,
+        "regex_ner_confidence": 0.045,
+        "entity_confidence": 0.0,
+        "cross_validation_confidence": 0.06,
+        "final_confidence": 0.44249999999999995,
+        "confidence_level": 

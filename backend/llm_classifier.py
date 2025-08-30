@@ -186,11 +186,9 @@ Analyze this feature:
             risk_assessment="unknown",
             regulatory_requirements=["Conduct manual regulatory review"],
             evidence_sources=["No relevant regulatory documents found"],
-            recommended_actions=[
-                "Conduct manual legal review",
-                "Consult with compliance team",
-                "Research additional regulatory sources"
-            ]
+            recommended_actions=self._generate_contextual_recommendations(
+                title, description, [], "unknown", 0.3, False
+            )
         )
     
     def _handle_analysis_error(self, title: str, description: str, error_msg: str) -> RegulatoryAnalysisResult:
@@ -291,7 +289,9 @@ Analyze this feature:
                 risk_assessment="low",
                 regulatory_requirements=[],
                 evidence_sources=["Business pattern detection"],
-                recommended_actions=["Continue with standard business review process"]
+                recommended_actions=self._generate_contextual_recommendations(
+                    title, description, [], "low", 0.90, False
+                )
             )
         
         # STEP 2: Detect specific regulations
@@ -332,12 +332,9 @@ Analyze this feature:
                         "Design compliance-appropriate user experience"
                     ],
                     evidence_sources=[f"Regulation detection: {', '.join(regulation_scores.keys())}", "Legitimate regulatory document analysis"],
-                    recommended_actions=[
-                        "Consult legal team for specific jurisdiction requirements",
-                        "Implement geo-location detection",
-                        "Design compliance verification system",
-                        "Establish monitoring and reporting mechanisms"
-                    ]
+                    recommended_actions=self._generate_contextual_recommendations(
+                        title, description, detected_regulations, "high", confidence, True
+                    )
                 )
             else:  # Weak detection - might be compliance related
                 return RegulatoryAnalysisResult(
@@ -348,11 +345,9 @@ Analyze this feature:
                     risk_assessment="medium",
                     regulatory_requirements=["Legal review required to determine specific obligations"],
                     evidence_sources=[f"Weak regulation detection: {', '.join(regulation_scores.keys())}"],
-                    recommended_actions=[
-                        "Conduct detailed legal review",
-                        "Research applicable jurisdiction requirements",
-                        "Determine if feature triggers regulatory obligations"
-                    ]
+                    recommended_actions=self._generate_contextual_recommendations(
+                        title, description, detected_regulations, "medium", confidence, True
+                    )
                 )
         
         # STEP 4: Check for ambiguous cases
@@ -365,12 +360,9 @@ Analyze this feature:
                 risk_assessment="unknown", 
                 regulatory_requirements=["Manual review to determine business vs legal requirements"],
                 evidence_sources=["Ambiguous geographic pattern detection"],
-                recommended_actions=[
-                    "Clarify feature purpose with product team",
-                    "Determine if driven by legal requirements or business needs", 
-                    "If business-driven, proceed with normal development",
-                    "If compliance-driven, conduct regulatory analysis"
-                ]
+                recommended_actions=self._generate_contextual_recommendations(
+                    title, description, [], "unknown", 0.50, False
+                )
             )
         
         # STEP 5: No regulatory indicators found
@@ -382,9 +374,138 @@ Analyze this feature:
             risk_assessment="low",
             regulatory_requirements=[],
             evidence_sources=["5-regulation focused analysis"],
-            recommended_actions=["Proceed with standard development and security review processes"]
+            recommended_actions=self._generate_contextual_recommendations(
+                title, description, [], "low", 0.85, False
+            )
         )
     
+    def _generate_contextual_recommendations(self, 
+                                           title: str, 
+                                           description: str, 
+                                           detected_regulations: List[dict], 
+                                           risk_assessment: str,
+                                           confidence: float,
+                                           needs_geo_logic: bool) -> List[str]:
+        """Generate specific, contextual recommendations based on analysis results"""
+        
+        recommendations = []
+        text = f"{title} {description}".lower()
+        
+        # High-risk legal compliance actions
+        if risk_assessment == "high" and needs_geo_logic:
+            if any("gdpr" in reg.get("name", "").lower() for reg in detected_regulations):
+                recommendations.extend([
+                    "Implement GDPR Article 8 compliant age verification for EU users",
+                    "Set up EU-specific data processing consent mechanisms",
+                    "Create GDPR-compliant data retention and deletion processes"
+                ])
+            
+            if any("coppa" in reg.get("name", "").lower() for reg in detected_regulations):
+                recommendations.extend([
+                    "Implement COPPA-compliant parental consent workflow for users under 13",
+                    "Set up US-specific age verification and data minimization",
+                    "Create COPPA-compliant data deletion processes"
+                ])
+            
+            if any("california" in reg.get("jurisdiction", "").lower() for reg in detected_regulations):
+                recommendations.extend([
+                    "Implement California Age-Appropriate Design Code compliance",
+                    "Set up California-specific privacy settings for minors",
+                    "Create opt-out mechanisms for California teens"
+                ])
+            
+            if any("utah" in reg.get("jurisdiction", "").lower() for reg in detected_regulations):
+                recommendations.extend([
+                    "Implement Utah Social Media Act curfew restrictions",
+                    "Set up time-based access controls for Utah minors",
+                    "Create parental notification system for Utah users"
+                ])
+            
+            if any("florida" in reg.get("jurisdiction", "").lower() for reg in detected_regulations):
+                recommendations.extend([
+                    "Implement Florida Online Protections for Minors compliance",
+                    "Set up enhanced parental controls for Florida minors",
+                    "Create Florida-specific content filtering mechanisms"
+                ])
+            
+            if any("ncmec" in reg.get("name", "").lower() for reg in detected_regulations):
+                recommendations.extend([
+                    "Implement NCMEC CyberTipline reporting integration",
+                    "Set up automated CSAM detection and reporting",
+                    "Create mandatory reporter training for content moderation team"
+                ])
+        
+        # Medium-risk actions
+        elif risk_assessment == "medium":
+            if confidence < 0.7:
+                recommendations.extend([
+                    f"Conduct targeted legal review focusing on {', '.join([reg.get('jurisdiction', 'Unknown') for reg in detected_regulations])}",
+                    "Validate regulatory applicability with compliance team",
+                    "Document business justification if no compliance requirements found"
+                ])
+            else:
+                recommendations.extend([
+                    "Implement basic geo-detection for regulatory compliance",
+                    "Set up monitoring for compliance-related user actions",
+                    "Create documentation for audit trail"
+                ])
+        
+        # Feature-specific recommendations based on content
+        if "age" in text and "verification" in text:
+            recommendations.append("Implement secure age verification using government-issued ID or credit card verification")
+        
+        if "parental" in text or "parent" in text:
+            recommendations.append("Design COPPA-compliant parental consent flow with email verification")
+        
+        if "content" in text and "moderation" in text:
+            recommendations.append("Implement jurisdiction-specific content moderation policies")
+        
+        if "data" in text and ("storage" in text or "processing" in text):
+            recommendations.append("Review data localization requirements for applicable jurisdictions")
+        
+        if "analytics" in text or "tracking" in text:
+            recommendations.append("Implement privacy-compliant analytics with jurisdiction-specific consent")
+        
+        # Low-risk or business features
+        if risk_assessment == "low" or not needs_geo_logic:
+            if "test" in text or "experiment" in text:
+                recommendations.extend([
+                    "Proceed with A/B testing following standard privacy practices",
+                    "Ensure test data collection complies with applicable privacy laws",
+                    "Document test parameters for compliance review if needed"
+                ])
+            elif "performance" in text or "optimization" in text:
+                recommendations.extend([
+                    "Proceed with performance improvements following standard security review",
+                    "Ensure optimization doesn't impact compliance-related functionality",
+                    "Monitor performance impact on geo-compliance features"
+                ])
+            else:
+                recommendations.extend([
+                    "Proceed with standard development and security review processes",
+                    "Monitor for any compliance impacts during development",
+                    "Include privacy-by-design principles in implementation"
+                ])
+        
+        # Add general geo-logic recommendations if needed
+        if needs_geo_logic and not any("geo" in rec.lower() for rec in recommendations):
+            recommendations.extend([
+                "Implement accurate geo-location detection using IP geolocation and GPS",
+                "Set up jurisdiction-specific feature flags and configuration",
+                "Create monitoring dashboard for geo-compliance effectiveness"
+            ])
+        
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_recommendations = []
+        for rec in recommendations:
+            if rec not in seen:
+                seen.add(rec)
+                unique_recommendations.append(rec)
+        
+        # Limit to most relevant recommendations (max 6)
+        return unique_recommendations[:6] if len(unique_recommendations) > 6 else unique_recommendations
+
     def _validate_analysis_result(self, result_data: dict) -> None:
         """Validate that LLM response contains required fields"""
         required_fields = [

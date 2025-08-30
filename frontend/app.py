@@ -146,6 +146,100 @@ st.markdown("""
 # Backend API configuration
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 
+def import_backend_decision_engine():
+    """Helper function to import the backend decision engine with proper path setup"""
+    try:
+        import sys
+        import os
+        
+        # Get the current file's directory (frontend folder)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        # Go up one level to get project root
+        project_root = os.path.dirname(current_dir)
+        
+        # Debug information
+        debug_info = {
+            'current_dir': current_dir,
+            'project_root': project_root,
+            'backend_exists': os.path.exists(os.path.join(project_root, 'backend')),
+            'init_exists': os.path.exists(os.path.join(project_root, 'backend', '__init__.py')),
+            'engine_exists': os.path.exists(os.path.join(project_root, 'backend', 'enhanced_decision_engine.py')),
+            'cwd': os.getcwd(),
+            'project_in_path': project_root in sys.path
+        }
+        
+        # Try multiple potential project roots
+        potential_roots = [
+            project_root,  # Standard: one level up from frontend
+            os.getcwd(),   # Current working directory
+            os.path.dirname(os.getcwd()),  # One level up from CWD
+            '/'.join(current_dir.split('/')[:-1]),  # Alternative path calculation
+        ]
+        
+        backend_found = False
+        working_root = None
+        
+        for root in potential_roots:
+            if os.path.exists(os.path.join(root, 'backend', '__init__.py')):
+                working_root = root
+                backend_found = True
+                break
+        
+        if not backend_found:
+            st.error("❌ Could not locate backend directory with __init__.py")
+            if st.checkbox("Show Debug Info", key="debug_backend_search"):
+                st.json(debug_info)
+                st.write("**Potential roots checked:**")
+                for i, root in enumerate(potential_roots):
+                    backend_path = os.path.join(root, 'backend')
+                    st.write(f"{i+1}. `{root}` → backend exists: {os.path.exists(backend_path)}")
+            return None
+        
+        # Add working root to sys.path if not already there
+        if working_root not in sys.path:
+            sys.path.insert(0, working_root)
+        
+        # Try importing the backend module
+        from backend.enhanced_decision_engine import EnhancedDecisionEngine
+        return EnhancedDecisionEngine()
+        
+    except ImportError as first_import_error:
+        # Fallback: Try simpler import with current directory
+        try:
+            import sys
+            import os
+            
+            # Simple fallback: Add current directory to path
+            current_cwd = os.getcwd()
+            if current_cwd not in sys.path:
+                sys.path.insert(0, current_cwd)
+                
+            from backend.enhanced_decision_engine import EnhancedDecisionEngine
+            return EnhancedDecisionEngine()
+            
+        except ImportError:
+            # Both methods failed, show detailed error
+            st.error(f"❌ Could not import backend module: {first_import_error}")
+            st.info("💡 Make sure you're running the app from the project root directory with: `streamlit run frontend/app.py`")
+            
+            if st.checkbox("Show Detailed Debug Info", key="debug_import_error"):
+                st.write("**Debug Information:**")
+                st.write(f"- Current working directory: {os.getcwd()}")
+                st.write(f"- Frontend file location: {current_dir}")
+                st.write(f"- Calculated project root: {working_root}")
+                st.write(f"- Backend directory exists: {os.path.exists(os.path.join(working_root or project_root, 'backend'))}")
+                st.write(f"- Backend __init__.py exists: {os.path.exists(os.path.join(working_root or project_root, 'backend', '__init__.py'))}")
+                st.write("**Python path (first 5 entries):**")
+                for i, path in enumerate(sys.path[:5]):
+                    st.write(f"  {i}: {path}")
+            
+            return None
+    except Exception as e:
+        # General error handling
+        st.error(f"❌ Error setting up decision engine: {e}")
+        st.write(f"Error type: {type(e).__name__}")
+        return None
+
 def call_api(endpoint: str, data=None, files=None, headers=None):
     """Make API calls to the backend"""
     try:
@@ -322,7 +416,190 @@ def display_detailed_confidence_breakdown(result: dict):
             st.markdown("**Entity Detection Scores:**")
             for entity_type, score in entity_confidence_scores.items():
                 st.markdown(f"• **{entity_type.title()}**: {score:.3f}")
+        
+        # Enhanced threshold system details
+        if result.get('categories_detected') or result.get('enhanced_decision_result'):
+            st.markdown("**🎯 Enhanced Threshold Details:**")
+            if result.get('categories_detected'):
+                st.markdown(f"• **Categories**: {', '.join(result['categories_detected'])}")
+            if result.get('applicable_threshold'):
+                st.markdown(f"• **Threshold Applied**: {result['applicable_threshold']:.3f}")
+            if result.get('escalation_rule'):
+                rule = result['escalation_rule']
+                rule_str = rule.value if hasattr(rule, 'value') else str(rule)
+                st.markdown(f"• **Escalation Rule**: {rule_str}")
 
+
+def display_enhanced_threshold_results(result: dict):
+    """Display enhanced threshold system results"""
+    # This function is called from display_compliance_analysis
+    # The actual display logic is now inline in the main function
+    pass
+
+def display_all_threshold_values(result: dict):
+    """Display comprehensive threshold overview showing all system thresholds"""
+    
+    st.markdown("### 🎯 **System Threshold Overview**")
+    
+    # Load threshold configuration
+    engine = import_backend_decision_engine()
+    if engine:
+        threshold_summary = engine.get_threshold_summary()
+        
+        # Get current feature's information
+        current_confidence = result.get('overall_confidence', 0)
+        applicable_threshold = result.get('applicable_threshold', 0)
+        categories_detected = result.get('categories_detected', [])
+        
+        # Create columns for threshold display
+        st.markdown("**All Category Thresholds:**")
+        
+        # Display in a nice table format
+        threshold_data = []
+        
+        for category_name, config in threshold_summary.items():
+            threshold_val = config['threshold']
+            escalation_rule = config['escalation']
+            description = config['description']
+            
+            # Determine if this category applies to current feature
+            applies_to_feature = category_name in categories_detected
+            meets_threshold = current_confidence >= threshold_val if applies_to_feature else None
+            
+            # Status indicators
+            if applies_to_feature:
+                if meets_threshold:
+                    status = "✅ PASS"
+                    status_color = "green"
+                else:
+                    status = "❌ FAIL"
+                    status_color = "red"
+            else:
+                status = "➖ N/A"
+                status_color = "gray"
+            
+            threshold_data.append({
+                "Category": category_name.replace('_', ' ').title(),
+                "Threshold": f"{threshold_val:.1%}",
+                "Escalation": escalation_rule.replace('_', ' ').title(),
+                "Applies": "🎯" if applies_to_feature else "➖",
+                "Status": status,
+                "Description": description[:50] + "..." if len(description) > 50 else description
+            })
+        
+        # Sort by threshold value (highest first)
+        threshold_data.sort(key=lambda x: float(x['Threshold'].rstrip('%'))/100, reverse=True)
+        
+        # Display as DataFrame for better formatting
+        import pandas as pd
+        df = pd.DataFrame(threshold_data)
+        
+        # Style the dataframe based on status
+        def style_row(row):
+            if row['Applies'] == "🎯":
+                if "PASS" in row['Status']:
+                    return ['background-color: #d4edda'] * len(row)
+                elif "FAIL" in row['Status']:
+                    return ['background-color: #f8d7da'] * len(row)
+            return [''] * len(row)
+        
+        styled_df = df.style.apply(style_row, axis=1)
+        st.dataframe(styled_df, use_container_width=True)
+        
+        # Current feature summary
+        st.markdown("---")
+        st.markdown("**Current Feature Analysis:**")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric(
+                "Feature Confidence", 
+                f"{current_confidence:.1%}",
+                help="Overall confidence score for this feature"
+            )
+        
+        with col2:
+            if applicable_threshold > 0:
+                st.metric(
+                    "Applied Threshold", 
+                    f"{applicable_threshold:.1%}",
+                    help="Threshold that was applied to this feature"
+                )
+            else:
+                st.metric("Applied Threshold", "N/A")
+        
+        with col3:
+            if categories_detected:
+                st.metric(
+                    "Categories Detected", 
+                    len(categories_detected),
+                    help=f"Categories: {', '.join(categories_detected)}"
+                )
+            else:
+                st.metric("Categories Detected", "0")
+        
+        # Threshold comparison visualization
+        if applicable_threshold > 0:
+            st.markdown("**Threshold Comparison:**")
+            
+            # Create a visual comparison
+            threshold_pct = applicable_threshold * 100
+            confidence_pct = current_confidence * 100
+            
+            if current_confidence >= applicable_threshold:
+                st.success(f"✅ **ABOVE THRESHOLD**: {confidence_pct:.1f}% ≥ {threshold_pct:.1f}%")
+            else:
+                st.error(f"❌ **BELOW THRESHOLD**: {confidence_pct:.1f}% < {threshold_pct:.1f}%")
+            
+            # Progress bar comparison
+            col_a, col_b = st.columns(2)
+            with col_a:
+                st.markdown("**Feature Confidence:**")
+                st.progress(min(current_confidence, 1.0))
+            with col_b:
+                st.markdown("**Required Threshold:**")
+                st.progress(min(applicable_threshold, 1.0))
+        
+        # Show escalation information
+        if result.get('escalation_rule'):
+            escalation_rule = result.get('escalation_rule')
+            if isinstance(escalation_rule, str):
+                rule_name = escalation_rule
+            else:
+                rule_name = escalation_rule.value if hasattr(escalation_rule, 'value') else str(escalation_rule)
+            
+            st.markdown("**Escalation Decision:**")
+            if 'human_review' in rule_name.lower():
+                st.warning(f"⚠️ **HUMAN REVIEW REQUIRED** - {rule_name}")
+            elif 'auto_ok' in rule_name.lower():
+                st.success(f"✅ **AUTO-APPROVED** - {rule_name}")
+            elif 'ignore' in rule_name.lower():
+                st.info(f"ℹ️ **IGNORED** - {rule_name}")
+            else:
+                st.info(f"📋 **{rule_name}**")
+        
+        # Expandable section with detailed threshold explanations
+        with st.expander("📚 **Detailed Threshold Explanations**"):
+            st.markdown("""
+            **Category Threshold Meanings:**
+            
+            - **Legal Compliance** (90%): GDPR, HIPAA, COPPA, DSA - Super strict, small errors = high impact
+            - **Safety & Health Protection** (85%): Child protection, CSAM reporting, age gates - Strict safety requirements  
+            - **Data Residency** (88%): Data localization, storage requirements - Regulatory compliance
+            - **Tax Compliance** (87%): VAT, tax ID collection - Financial compliance
+            - **Business Analytics** (70%): Product segmentation, A/B testing - Business decisions
+            - **Internal Features** (60%): Internal tools, performance optimizations - Low risk
+            
+            **Escalation Rules:**
+            
+            - **Human Review**: Critical compliance features requiring manual review
+            - **Auto OK**: Can proceed automatically with audit logging
+            - **Ignore**: Skip processing, no action required
+            """)
+            
+            st.markdown("**Hybrid Handling:**")
+            st.info("When multiple categories apply, the system uses the **strictest (highest) threshold** to ensure compliance.")
 
 def display_compliance_analysis(result: dict, title: str, description: str):
     """Display regulatory compliance analysis with audit-ready information"""
@@ -347,6 +624,12 @@ def display_compliance_analysis(result: dict, title: str, description: str):
     
     # Display detailed confidence breakdown first
     display_detailed_confidence_breakdown(result)
+    
+    # Display enhanced threshold system results (NEW)
+    display_enhanced_threshold_results(result)
+    
+    # Display comprehensive threshold overview
+    display_all_threshold_values(result)
     
     st.markdown("---")
     
@@ -374,6 +657,18 @@ def display_compliance_analysis(result: dict, title: str, description: str):
             st.markdown(f"{confidence_percentage:.1f}%")
             st.progress(confidence if isinstance(confidence, (int, float)) else 0.0)
             
+            # Show threshold comparison if available
+            if result.get('applicable_threshold'):
+                threshold = result['applicable_threshold']
+                threshold_percentage = threshold * 100
+                st.markdown(f"**Threshold:** {threshold_percentage:.1f}%")
+                
+                # Visual threshold indicator
+                if confidence >= threshold:
+                    st.success(f"✅ Above threshold ({confidence_percentage:.1f}% ≥ {threshold_percentage:.1f}%)")
+                else:
+                    st.error(f"❌ Below threshold ({confidence_percentage:.1f}% < {threshold_percentage:.1f}%)")
+            
             # Risk assessment with appropriate styling
             risk_colors = {
                 'critical': '🔴',
@@ -387,6 +682,52 @@ def display_compliance_analysis(result: dict, title: str, description: str):
             
             # Legal reasoning
             st.markdown(f"*{result['reasoning']}*")
+    
+    st.markdown("---")
+    
+    # Enhanced Threshold System Results (NEW)
+    if result.get('categories_detected') or result.get('escalation_rule'):
+        st.subheader("🎯 Enhanced Threshold Analysis")
+        
+        col_a, col_b = st.columns(2)
+        
+        with col_a:
+            st.markdown("**Categories Detected:**")
+            if result.get('categories_detected'):
+                for category in result['categories_detected']:
+                    st.markdown(f"• {category.replace('_', ' ').title()}")
+            else:
+                st.markdown("*No specific categories detected*")
+            
+            if result.get('applicable_threshold'):
+                st.markdown(f"**Applicable Threshold:** {result['applicable_threshold']:.2f}")
+        
+        with col_b:
+            if result.get('escalation_rule'):
+                escalation_rule = result['escalation_rule']
+                if isinstance(escalation_rule, str):
+                    rule_display = escalation_rule
+                else:
+                    rule_display = escalation_rule.value if hasattr(escalation_rule, 'value') else str(escalation_rule)
+                
+                st.markdown(f"**Escalation Rule:** {rule_display}")
+                
+                # Color code based on escalation type
+                if 'human_review' in rule_display.lower():
+                    st.warning("⚠️ Requires Human Review")
+                elif 'auto_ok' in rule_display.lower():
+                    st.success("✅ Auto-Approved")
+                elif 'ignore' in rule_display.lower():
+                    st.info("ℹ️ Ignored")
+            
+            if result.get('escalation_reason'):
+                st.markdown(f"**Reason:** {result['escalation_reason']}")
+        
+        # Show threshold violations if any
+        if result.get('threshold_violations'):
+            st.markdown("**⚠️ Threshold Violations:**")
+            for violation in result['threshold_violations']:
+                st.error(f"• {violation}")
     
     st.markdown("---")
     
@@ -491,14 +832,8 @@ def enhanced_threshold_mode():
                 }
                 
                 # Import and run the enhanced decision engine
-                try:
-                    import sys
-                    import os
-                    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-                    
-                    from enhanced_decision_engine import EnhancedDecisionEngine
-                    
-                    engine = EnhancedDecisionEngine()
+                engine = import_backend_decision_engine()
+                if engine:
                     
                     result = engine.make_decision(
                         feature_text=f"{title}: {description}",
@@ -552,26 +887,15 @@ def enhanced_threshold_mode():
                             st.write("**Threshold Violations:**")
                             for violation in result.threshold_violations:
                                 st.write(f"  • {violation}")
-                    
-                except ImportError as e:
-                    st.error(f"❌ Error importing threshold engine: {e}")
-                    st.info("💡 Make sure enhanced_decision_engine.py is in the project root")
-                except Exception as e:
-                    st.error(f"❌ Error running analysis: {e}")
-                    st.info("💡 Check the console for detailed error information")
+                else:
+                    st.error("❌ Could not load the decision engine. Please check the logs above.")
     
     with tab2:
         st.subheader("Threshold Configuration")
         st.markdown("View and understand the category-specific thresholds used by the system.")
         
-        try:
-            import sys
-            import os
-            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            
-            from enhanced_decision_engine import EnhancedDecisionEngine
-            
-            engine = EnhancedDecisionEngine()
+        engine = import_backend_decision_engine()
+        if engine:
             summary = engine.get_threshold_summary()
             
             # Display thresholds in a nice format
@@ -597,8 +921,8 @@ def enhanced_threshold_mode():
                         st.write(f"**Description:** {full_config['thresholds'][category]['description']}")
                         st.write(f"**Examples:** {', '.join(full_config['thresholds'][category]['examples'])}")
             
-        except Exception as e:
-            st.error(f"❌ Error loading threshold configuration: {e}")
+        else:
+            st.error("❌ Could not load threshold configuration. Please check the logs above.")
     
     with tab3:
         st.subheader("Demo Examples")
@@ -966,7 +1290,7 @@ def batch_processing_mode():
         uploaded_file = st.file_uploader(
             "Choose CSV file",
             type="csv",
-            help="CSV must contain 'title' and 'description' columns"
+            help="CSV must contain title (title/feature_name/name) and description (description/feature_description/desc) columns"
         )
         
         if uploaded_file:
@@ -975,12 +1299,20 @@ def batch_processing_mode():
             st.subheader("📋 Data Preview")
             st.dataframe(df.head())
             
-            # Validate columns
-            required_cols = ['title', 'description']
-            missing_cols = [col for col in required_cols if col not in df.columns]
+            # Validate columns (accept multiple naming conventions)
+            title_cols = ['title', 'feature_name', 'name']
+            desc_cols = ['description', 'feature_description', 'desc']
             
-            if missing_cols:
-                st.error(f"❌ Missing required columns: {', '.join(missing_cols)}")
+            has_title = any(col in df.columns for col in title_cols)
+            has_desc = any(col in df.columns for col in desc_cols)
+            
+            if not has_title or not has_desc:
+                missing = []
+                if not has_title:
+                    missing.append("title/feature_name/name")
+                if not has_desc:
+                    missing.append("description/feature_description/desc")
+                st.error(f"❌ Missing required columns: {', '.join(missing)}")
                 return
             
             st.success(f"✅ Valid CSV with {len(df)} rows")
