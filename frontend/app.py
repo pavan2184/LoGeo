@@ -151,11 +151,9 @@ def call_api(endpoint: str, data=None, files=None, headers=None):
     try:
         url = f"{API_BASE_URL}{endpoint}"
         
-        # Add authentication header if available
+        # Set default headers
         if headers is None:
             headers = {}
-        if 'access_token' in st.session_state:
-            headers['Authorization'] = f"Bearer {st.session_state.access_token}"
         
         if files:
             response = requests.post(url, files=files, headers=headers)
@@ -174,98 +172,254 @@ def call_api(endpoint: str, data=None, files=None, headers=None):
         st.error(f"❌ API Error: {e}")
         return None
 
-def login_user(username: str, password: str):
-    """Login user and get access token"""
-    try:
-        data = {
-            'username': username,
-            'password': password
-        }
-        response = requests.post(f"{API_BASE_URL}/token", data=data)
-        response.raise_for_status()
-        token_data = response.json()
-        st.session_state.access_token = token_data['access_token']
-        st.session_state.username = username
-        return True
-    except Exception as e:
-        st.error(f"❌ Login failed: {e}")
-        return False
 
-def logout_user():
-    """Logout user"""
-    if 'access_token' in st.session_state:
-        del st.session_state.access_token
-    if 'username' in st.session_state:
-        del st.session_state.username
 
-def display_classification_result(result: dict, title: str, description: str):
-    """Display a single classification result with enhanced UI using Streamlit components"""
+def display_detailed_confidence_breakdown(result: dict):
+    """Display detailed confidence breakdown with visual indicators and explanations"""
     
-    # Determine status info and risk level styling
-    risk_level = result.get('risk_level', 'low').lower()
-    confidence = result.get('confidence', 0)
+    confidence_breakdown = result.get('confidence_breakdown', {})
+    standardized_entities = result.get('standardized_entities', {})
     
+    # Overall confidence for reference
+    overall_confidence = result.get('overall_confidence', result.get('confidence', 0))
+    primary_confidence = result.get('primary_confidence', 0)
+    secondary_confidence = result.get('secondary_confidence', 0)
+    
+    st.subheader("🎯 Confidence Explainability")
+    st.markdown("**Detailed breakdown of analysis confidence across different components:**")
+    
+    # Entity Detection Component
+    entity_confidence_scores = standardized_entities.get('confidence_scores', {})
+    entity_avg = sum(entity_confidence_scores.values()) / len(entity_confidence_scores) if entity_confidence_scores else 0.5
+    entity_percentage = entity_avg * 100
+    
+    if entity_percentage >= 85:
+        entity_icon = "✅"
+        entity_status = "High Confidence"
+    elif entity_percentage >= 60:
+        entity_icon = "⚠️"
+        entity_status = "Medium Confidence"
+    else:
+        entity_icon = "❌"
+        entity_status = "Low Confidence"
+    
+    st.markdown(f"**Entity Detection {entity_icon} ({entity_percentage:.0f}%)** - {entity_status}")
+    
+    # Classification Component
+    classification_percentage = primary_confidence * 100
+    
+    if classification_percentage >= 85:
+        classification_icon = "✅"
+        classification_status = "High Confidence"
+    elif classification_percentage >= 60:
+        classification_icon = "⚠️"
+        classification_status = "Medium Confidence"
+    else:
+        classification_icon = "❌"
+        classification_status = "Low Confidence"
+    
+    st.markdown(f"**Classification {classification_icon} ({classification_percentage:.0f}%)** - {classification_status}")
+    
+    # Law Matching Component
+    law_matching_percentage = secondary_confidence * 100
+    
+    if law_matching_percentage >= 85:
+        law_icon = "✅"
+        law_status = "High Confidence"
+    elif law_matching_percentage >= 60:
+        law_icon = "⚠️"
+        law_status = "Medium Confidence"
+    else:
+        law_icon = "❌"
+        law_status = "Low Confidence"
+    
+    st.markdown(f"**Law Matching {law_icon} ({law_matching_percentage:.0f}%)** - {law_status}")
+    
+    # Progress bars for visual representation
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.progress(entity_avg)
+    with col2:
+        st.progress(primary_confidence)
+    with col3:
+        st.progress(secondary_confidence)
+    
+    # Explanations for low confidence scores
+    explanations = []
+    
+    # Entity detection explanations
+    if entity_percentage < 85:
+        locations = standardized_entities.get('locations', [])
+        ages = standardized_entities.get('ages', [])
+        terminology = standardized_entities.get('terminology', [])
+        
+        if not locations and not ages and not terminology:
+            explanations.append("🔍 **Entity Detection**: No clear regulatory entities (locations, ages, compliance terms) were detected in the feature description.")
+        elif entity_confidence_scores.get('location', 0) < 0.7:
+            explanations.append("📍 **Location Matching**: Detected locations but uncertain about their regulatory significance.")
+        elif entity_confidence_scores.get('age', 0) < 0.7:
+            explanations.append("👶 **Age Detection**: Age-related terms found but unclear if they trigger minor protection laws.")
+        elif entity_confidence_scores.get('terminology', 0) < 0.7:
+            explanations.append("📚 **Terminology**: Regulatory terms detected but not definitively compliance-related.")
+    
+    # Classification explanations
+    if classification_percentage < 85:
+        if classification_percentage < 60:
+            explanations.append("🤖 **Classification Uncertainty**: LLM analysis shows conflicting signals about regulatory requirements.")
+        else:
+            explanations.append("🎯 **Classification**: Some indicators suggest regulatory requirements but not definitive enough for high confidence.")
+    
+    # Law matching explanations  
+    if law_matching_percentage < 85:
+        applicable_regulations = result.get('applicable_regulations', [])
+        if not applicable_regulations:
+            explanations.append("⚖️ **Law Matching**: No specific regulations matched to this feature type.")
+        elif law_matching_percentage < 60:
+            # Look for mismatches in the standardized entities vs regulations
+            detected_jurisdictions = [loc.get('region', '') for loc in standardized_entities.get('locations', [])]
+            reg_jurisdictions = [reg.get('jurisdiction', '') for reg in applicable_regulations]
+            
+            if detected_jurisdictions and reg_jurisdictions:
+                if not any(dj in rj or rj in dj for dj in detected_jurisdictions for rj in reg_jurisdictions):
+                    explanations.append("🌍 **Jurisdiction Mismatch**: Feature mentions specific locations but regulations apply to different jurisdictions.")
+            
+            detected_ages = standardized_entities.get('ages', [])
+            if detected_ages:
+                age_regs = [reg for reg in applicable_regulations if 'minor' in reg.get('name', '').lower() or 'child' in reg.get('name', '').lower()]
+                if detected_ages and not age_regs:
+                    explanations.append("👶 **Age Regulation Gap**: Feature mentions age groups but no age-specific regulations identified.")
+        else:
+            explanations.append("📋 **Regulation Confidence**: Some applicable laws identified but uncertain about enforcement requirements.")
+    
+    # Display explanations
+    if explanations:
+        st.markdown("**🔍 Confidence Explanations:**")
+        for explanation in explanations:
+            st.info(explanation)
+    
+    # Technical details in expander
+    with st.expander("🔧 Technical Confidence Details"):
+        if confidence_breakdown:
+            st.markdown("**Confidence Breakdown:**")
+            for key, value in confidence_breakdown.items():
+                if isinstance(value, (int, float)):
+                    st.markdown(f"• **{key.replace('_', ' ').title()}**: {value:.3f}")
+        
+        if entity_confidence_scores:
+            st.markdown("**Entity Detection Scores:**")
+            for entity_type, score in entity_confidence_scores.items():
+                st.markdown(f"• **{entity_type.title()}**: {score:.3f}")
+
+
+def display_compliance_analysis(result: dict, title: str, description: str):
+    """Display regulatory compliance analysis with audit-ready information"""
+    
+    # Determine compliance status and risk assessment styling
+    risk_assessment = result.get('risk_assessment', 'low').lower()
+    confidence = result.get('overall_confidence', result.get('confidence', 0))
+    
+    # Main compliance status
     if result['needs_geo_logic'] is True:
-        status_emoji = "⚠️"
-        status_text = "GEO-COMPLIANCE REQUIRED"
+        status_emoji = "🚨"
+        status_text = "GEO-SPECIFIC COMPLIANCE REQUIRED"
         st.error(f"{status_emoji} {status_text}")
     elif result['needs_geo_logic'] is False:
         status_emoji = "✅"
-        status_text = "NO GEO-COMPLIANCE NEEDED"
+        status_text = "NO GEO-SPECIFIC COMPLIANCE DETECTED"
         st.success(f"{status_emoji} {status_text}")
-    else:  # uncertain
+    else:
         status_emoji = "❓"
-        status_text = "UNCERTAIN - NEEDS REVIEW"
+        status_text = "MANUAL REVIEW REQUIRED"
         st.warning(f"{status_emoji} {status_text}")
     
-    # Create a white container for the results with dark text
+    # Display detailed confidence breakdown first
+    display_detailed_confidence_breakdown(result)
+    
+    st.markdown("---")
+    
+    # Create audit-ready display container
     st.markdown('<div class="results-container">', unsafe_allow_html=True)
     
-    # Create a clean container with better styling
+    # Feature Information Section
+    st.subheader("📋 Feature Analysis")
     with st.container():
-        # Feature details in a clean format
         col1, col2 = st.columns([1, 3])
         
         with col1:
             st.markdown("**Feature:**")
             st.markdown("**Description:**")
-            st.markdown("**Confidence:**")
-            st.markdown("**Risk Level:**")
-            st.markdown("**Reasoning:**")
+            st.markdown("**Overall Confidence:**")
+            st.markdown("**Risk Assessment:**")
+            st.markdown("**Legal Reasoning:**")
         
         with col2:
-            st.markdown(title)
-            st.markdown(description)
+            st.markdown(f"*{title}*")
+            st.markdown(f"*{description}*")
             
-            # Confidence with progress bar
+            # Overall confidence with progress bar
             confidence_percentage = confidence * 100 if isinstance(confidence, (int, float)) else 0
             st.markdown(f"{confidence_percentage:.1f}%")
             st.progress(confidence if isinstance(confidence, (int, float)) else 0.0)
             
-            # Risk level with colored badge
+            # Risk assessment with appropriate styling
             risk_colors = {
-                'high': '🔴',
+                'critical': '🔴',
+                'high': '🟠',
                 'medium': '🟡', 
-                'low': '🟢'
+                'low': '🟢',
+                'unknown': '⚪'
             }
-            risk_emoji = risk_colors.get(risk_level, '🟢')
-            st.markdown(f"{risk_emoji} **{risk_level.upper()}**")
+            risk_emoji = risk_colors.get(risk_assessment, '⚪')
+            st.markdown(f"{risk_emoji} **{risk_assessment.upper()}**")
             
-            st.markdown(result['reasoning'])
+            # Legal reasoning
+            st.markdown(f"*{result['reasoning']}*")
     
     st.markdown("---")
     
-    # Display regulations using Streamlit components
-    if result['regulations']:
-        st.subheader("📋 Applicable Regulations")
-        for reg in result['regulations']:
-            st.info(f"📜 {reg}")
+    # Applicable Regulations Section
+    if result.get('applicable_regulations'):
+        st.subheader("⚖️ Applicable Regulations")
+        for reg in result['applicable_regulations']:
+            with st.expander(f"📜 {reg.get('name', 'Unknown Regulation')} - {reg.get('jurisdiction', 'Unknown')}"):
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.markdown(f"**Jurisdiction:** {reg.get('jurisdiction', 'Not specified')}")
+                    st.markdown(f"**Relevance:** {reg.get('relevance', 'Not assessed')}")
+                with col_b:
+                    st.markdown(f"**Legal Basis:** {reg.get('legal_basis', 'Not specified')}")
+                    articles = reg.get('specific_articles', [])
+                    if articles:
+                        st.markdown(f"**Articles:** {', '.join(articles)}")
     
-    # Display requirements using Streamlit components
-    if result.get('specific_requirements'):
-        st.subheader("✅ Specific Requirements")
-        for req in result['specific_requirements']:
-            st.info(f"🔸 {req}")
+    # Regulatory Requirements Section
+    if result.get('regulatory_requirements'):
+        st.subheader("📌 Legal Requirements")
+        for i, req in enumerate(result['regulatory_requirements'], 1):
+            st.info(f"**{i}.** {req}")
+    
+    # Evidence Sources Section (for auditability)
+    if result.get('evidence_sources'):
+        st.subheader("📚 Evidence Sources")
+        with st.expander("View Source Documents"):
+            for source in result['evidence_sources']:
+                st.markdown(f"• {source}")
+    
+    # Recommended Actions Section
+    if result.get('recommended_actions'):
+        st.subheader("🎯 Recommended Actions")
+        for i, action in enumerate(result['recommended_actions'], 1):
+            st.warning(f"**{i}.** {action}")
+    
+    # Audit Trail Information
+    st.subheader("📋 Audit Information")
+    col_audit1, col_audit2 = st.columns(2)
+    with col_audit1:
+        st.markdown(f"**Analysis Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}")
+        st.markdown(f"**System Version:** Production LLM + RAG")
+    with col_audit2:
+        st.markdown(f"**Confidence Score:** {confidence:.2f}")
+        st.markdown(f"**Risk Level:** {risk_assessment.title()}")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -278,56 +432,246 @@ def main():
     </div>
     """, unsafe_allow_html=True)
     
-    # Authentication check
-    if 'access_token' not in st.session_state:
-        login_mode()
-        return
-    
-    # User info in sidebar
-    st.sidebar.success(f"👤 Logged in as: {st.session_state.username}")
-    if st.sidebar.button("🚪 Logout"):
-        logout_user()
-        st.rerun()
-    
     # Sidebar
     st.sidebar.title("📋 Navigation")
     mode = st.sidebar.selectbox(
         "Choose Mode:",
-        ["Single Feature Analysis", "Batch CSV Processing", "Statistics", "API Status"]
+        ["Single Feature Analysis", "Batch CSV Processing", "Compliance Audit", "Regulatory Coverage", "Statistics", "API Status"]
     )
     
     if mode == "Single Feature Analysis":
         single_feature_mode()
     elif mode == "Batch CSV Processing":
         batch_processing_mode()
+    elif mode == "Compliance Audit":
+        compliance_audit_mode()
+    elif mode == "Regulatory Coverage":
+        regulatory_coverage_mode()
     elif mode == "Statistics":
         statistics_mode()
     elif mode == "API Status":
         api_status_mode()
 
-def login_mode():
-    """Login interface"""
-    st.header("🔐 Login Required")
+def geo_access_mode():
+    """Geo-compliance access control interface"""
+    st.header("🌍 Geo-Access Control")
     
-    with st.form("login_form"):
-        username = st.text_input("Username", placeholder="admin or user")
-        password = st.text_input("Password", type="password", placeholder="admin123 or user123")
+    st.markdown("""
+    Test geographic access control for different features and countries.
+    This uses the new geo-compliance system with Supabase integration.
+    """)
+    
+    with st.form("geo_access_form"):
+        col1, col2, col3 = st.columns(3)
         
-        col1, col2 = st.columns(2)
         with col1:
-            submitted = st.form_submit_button("🔑 Login", type="primary")
+            user_id = st.text_input("User ID", placeholder="user123")
         with col2:
-            if st.form_submit_button("💡 Demo Credentials"):
-                st.info("""
-                **Demo Credentials:**
-                - Username: `admin`, Password: `admin123`
-                - Username: `user`, Password: `user123`
-                """)
+            feature_name = st.text_input("Feature Name", placeholder="user_registration")
+        with col3:
+            country = st.text_input("Country Code", placeholder="US")
         
-        if submitted:
-            if login_user(username, password):
-                st.success("✅ Login successful!")
-                st.rerun()
+        submitted = st.form_submit_button("🔍 Check Access", type="primary")
+        
+        if submitted and user_id and feature_name and country:
+            with st.spinner("Checking geo-compliance rules..."):
+                data = {
+                    "user_id": user_id,
+                    "feature_name": feature_name,
+                    "country": country
+                }
+                
+                response = call_api("/check_access", data=data)
+                if response and response.status_code == 200:
+                    result = response.json()
+                    
+                    st.markdown('<div class="results-container">', unsafe_allow_html=True)
+                    
+                    if result['access_granted']:
+                        st.success(f"✅ **Access Granted**")
+                        st.info(f"**Reason:** {result['reason']}")
+                    else:
+                        st.error(f"❌ **Access Denied**")
+                        st.warning(f"**Reason:** {result['reason']}")
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Show recent access logs
+    st.subheader("📊 Recent Access Logs")
+    
+    if st.button("🔄 Refresh Logs"):
+        with st.spinner("Loading access logs..."):
+            response = call_api("/logs?limit=10")
+            if response and response.status_code == 200:
+                logs_data = response.json()
+                logs = logs_data.get('logs', [])
+                
+                if logs:
+                    st.markdown('<div class="results-container">', unsafe_allow_html=True)
+                    for log in logs:
+                        status_icon = "✅" if log['access_granted'] else "❌"
+                        st.write(f"{status_icon} **{log['feature_name']}** - User: {log['user_id']} - Country: {log['country']} - {log['timestamp']}")
+                    st.markdown('</div>', unsafe_allow_html=True)
+                else:
+                    st.info("No access logs found.")
+
+def compliance_audit_mode():
+    """Compliance audit interface for regulatory analysis results"""
+    st.header("📋 Compliance Audit Trail")
+    
+    st.markdown("""
+    **Audit-ready compliance analysis records** for regulatory reporting and legal review.
+    All analyses include evidence sources and recommended actions for full traceability.
+    """)
+    
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:
+        limit = st.slider("Number of audit records to show", 10, 100, 25)
+    
+    with col2:
+        if st.button("🔄 Refresh Audit Data"):
+            st.rerun()
+    
+    with st.spinner("Loading compliance audit records..."):
+        response = call_api(f"/compliance_audit?limit={limit}")
+        if response and response.status_code == 200:
+            data = response.json()
+            records = data.get('audit_records', [])
+            
+            if records:
+                st.success(f"📈 Found {len(records)} audit records")
+                
+                st.markdown('<div class="results-container">', unsafe_allow_html=True)
+                
+                for i, record in enumerate(records):
+                    # Parse applicable regulations if it's JSON string
+                    applicable_regs = record.get('applicable_regulations', [])
+                    if isinstance(applicable_regs, str):
+                        try:
+                            applicable_regs = json.loads(applicable_regs)
+                        except:
+                            applicable_regs = []
+                    
+                    with st.expander(f"📋 {record.get('title', 'Untitled Feature')} - {record.get('timestamp', 'No timestamp')[:19]}"):
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            st.markdown(f"**📝 Feature:** {record.get('title', 'N/A')}")
+                            st.markdown(f"**📄 Description:** {record.get('description', 'N/A')[:200]}{'...' if len(record.get('description', '')) > 200 else ''}")
+                            st.markdown(f"**⚖️ Geo-Compliance Required:** {'🚨 Yes' if record.get('needs_geo_logic') else '✅ No'}")
+                            st.markdown(f"**🎯 Confidence:** {record.get('confidence', 0):.2f}")
+                        
+                        with col2:
+                            risk_level = record.get('risk_assessment', 'unknown').lower()
+                            risk_icon = "🔴" if risk_level == "critical" else "🟠" if risk_level == "high" else "🟡" if risk_level == "medium" else "🟢"
+                            st.markdown(f"**📊 Risk Assessment:** {risk_icon} {record.get('risk_assessment', 'N/A').title()}")
+                            
+                            if applicable_regs:
+                                st.markdown("**⚖️ Applicable Regulations:**")
+                                for reg in applicable_regs[:3]:  # Show first 3
+                                    if isinstance(reg, dict):
+                                        st.markdown(f"• {reg.get('name', 'Unknown')} ({reg.get('jurisdiction', 'Unknown')})")
+                                    else:
+                                        st.markdown(f"• {reg}")
+                            else:
+                                st.markdown("**⚖️ Regulations:** None detected")
+                        
+                        # Legal reasoning
+                        st.markdown(f"**💭 Legal Reasoning:** {record.get('reasoning', 'N/A')}")
+                        
+                        # Evidence sources (critical for audit)
+                        evidence = record.get('evidence_sources', '')
+                        if evidence and evidence != 'No relevant regulatory documents found':
+                            if isinstance(evidence, str) and ';' in evidence:
+                                sources = evidence.split(';')
+                                st.markdown("**📚 Evidence Sources:**")
+                                for source in sources[:3]:  # Show first 3 sources
+                                    st.markdown(f"• {source.strip()}")
+                        
+                        # Recommended actions
+                        actions = record.get('recommended_actions', '')
+                        if actions:
+                            if isinstance(actions, str) and ';' in actions:
+                                action_list = actions.split(';')
+                                st.markdown("**🎯 Recommended Actions:**")
+                                for action in action_list[:2]:  # Show first 2 actions
+                                    st.markdown(f"• {action.strip()}")
+                
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+            else:
+                st.info("📝 No audit records found. Run some compliance analyses first!")
+                st.markdown("""
+                💡 **Tip:** Use "Single Feature Analysis" or "Batch CSV Processing" to generate 
+                audit records that will appear here for regulatory reporting.
+                """)
+        else:
+            st.error("❌ Failed to load audit records")
+            st.info("Make sure your backend is running and properly configured.")
+
+def regulatory_coverage_mode():
+    """Display regulatory coverage and document information"""
+    st.header("📚 Regulatory Coverage")
+    
+    st.markdown("""
+    **Legitimate regulatory sources** loaded in the system for compliance analysis.
+    This shows the coverage of legal documents used for feature analysis.
+    """)
+    
+    if st.button("🔄 Refresh Coverage Data"):
+        st.rerun()
+    
+    with st.spinner("Loading regulatory coverage information..."):
+        response = call_api("/regulatory_coverage")
+        if response and response.status_code == 200:
+            data = response.json()
+            
+            # Summary metrics
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("📋 Total Regulations", data.get('total_regulations', 0))
+            with col2:
+                jurisdictions = data.get('jurisdictions_covered', [])
+                st.metric("🌍 Jurisdictions", len(jurisdictions))
+            with col3:
+                status = data.get('system_status', 'unknown')
+                status_icon = "✅" if status == "operational" else "❌"
+                st.metric("🔧 System Status", f"{status_icon} {status.title()}")
+            
+            # Regulation details
+            st.subheader("📋 Loaded Regulatory Documents")
+            
+            regulations = data.get('regulations', [])
+            if regulations:
+                st.markdown('<div class="results-container">', unsafe_allow_html=True)
+                
+                for reg in regulations:
+                    with st.expander(f"📜 {reg.get('name', 'Unknown Regulation')}"):
+                        col_a, col_b = st.columns(2)
+                        with col_a:
+                            st.markdown(f"**📍 Jurisdiction:** {reg.get('jurisdiction', 'Not specified')}")
+                            st.markdown(f"**📊 Content Length:** {reg.get('content_length', 0):,} characters")
+                        with col_b:
+                            st.markdown(f"**📅 Last Updated:** {reg.get('last_updated', 'Unknown')}")
+                            st.markdown(f"**🔧 Status:** Loaded and indexed")
+                
+                st.markdown('</div>', unsafe_allow_html=True)
+            else:
+                st.warning("⚠️ No regulatory documents found")
+                st.info("Check the /regulations directory for legal document files")
+            
+            # Jurisdictions covered
+            st.subheader("🌍 Geographic Coverage")
+            if jurisdictions:
+                for jurisdiction in jurisdictions:
+                    st.success(f"✅ {jurisdiction}")
+            else:
+                st.warning("⚠️ No jurisdiction information available")
+                
+        else:
+            st.error("❌ Failed to load regulatory coverage data")
+            st.info("Make sure your backend is running and regulatory documents are loaded.")
 
 def single_feature_mode():
     """Single feature classification interface"""
@@ -360,14 +704,14 @@ def single_feature_mode():
                 return
             
             with st.spinner("🔄 Analyzing feature for geo-compliance requirements..."):
-                response = call_api("/classify", {
+                response = call_api("/classify_enhanced", {
                     "title": title.strip(),
                     "description": description.strip()
                 })
                 
                 if response:
                     result = response.json()
-                    display_classification_result(result, title, description)
+                    display_compliance_analysis(result, title, description)
     
     with col2:
         # Example features sidebar
