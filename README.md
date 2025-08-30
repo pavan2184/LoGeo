@@ -28,12 +28,6 @@ Built with FastAPI, Supabase, and Docker for production-ready deployment.
 - **Batch Processing**: Handle multiple access requests efficiently
 - **Mock Mode**: Fallback system when Supabase is unavailable
 
-### Supabase Integration ⭐
-- **Unified Data Storage**: All classification results and access logs in Supabase
-- **Scalable Architecture**: Real-time database with PostgreSQL power
-- **Audit Trail**: Complete traceability of all system activities
-- **Analytics Ready**: Rich data structure for reporting and analysis
-- **Backup & Recovery**: Cloud-native data protection
 
 ### Infrastructure
 - **Docker Support**: Complete containerization for easy deployment
@@ -50,8 +44,7 @@ Built with FastAPI, Supabase, and Docker for production-ready deployment.
 Qn3/
 ├── backend/
 │   ├── main.py              # FastAPI server with all endpoints
-│   ├── supabase_client.py   # Supabase database client (NEW)
-│   ├── geo_compliance.py    # Geo-compliance access control logic (NEW)
+│   ├── geo_compliance.py    # Geo-compliance access control logic 
 │   ├── llm_classifier.py    # LLM-based feature classification
 │   ├── rag_loader.py        # RAG system with FAISS integration
 │   └── monitoring.py        # System monitoring and logging
@@ -70,7 +63,7 @@ Qn3/
 ├── Dockerfile.backend       # Backend container configuration
 ├── Dockerfile.frontend      # Frontend container configuration
 ├── demo_dataset.csv         # Sample feature examples
-├── requirements.txt         # Python dependencies (with supabase-py)
+├── requirements.txt         # Python dependencies 
 └── README.md               # This comprehensive guide
 ```
 
@@ -78,89 +71,19 @@ Qn3/
 
 ## 🚀 Quick Start
 
-### Option 1: Docker (Recommended)
+### Docker 
 
-```bash
-# 1. Set up environment variables
-cp .env.template .env
-# Edit .env with your Supabase credentials
 
-# 2. Build and run with Docker
+Build and run with Docker
 docker-compose up --build
-```
 
 - **Backend API**: http://localhost:8000
 - **Frontend Interface**: http://localhost:8501
 - **API Documentation**: http://localhost:8000/docs
 
-### Option 2: Local Development
 
-#### 1. Install Dependencies
 
-```bash
-cd Qn3
-pip install -r requirements.txt
-```
 
-#### 2. Configure Environment
-
-Create a `.env` file:
-```bash
-# Supabase Configuration (Required for geo-compliance)
-SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Optional
-OPENAI_API_KEY=your_openai_key
-ENVIRONMENT=development
-```
-
-#### 3. Set up Supabase Tables
-
-Create these tables in your Supabase project:
-
-```sql
--- Geo-compliance rules table
-CREATE TABLE geo_rules (
-    feature_name TEXT PRIMARY KEY,
-    allowed_countries TEXT[],
-    blocked_countries TEXT[]
-);
-
--- Access logs table
-CREATE TABLE access_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id TEXT NOT NULL,
-    feature_name TEXT NOT NULL,
-    country TEXT NOT NULL,
-    access_granted BOOLEAN NOT NULL,
-    timestamp TIMESTAMP DEFAULT NOW()
-);
-
--- Classification results table (NEW)
-CREATE TABLE classification_results (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    needs_geo_logic BOOLEAN NOT NULL,
-    confidence FLOAT NOT NULL,
-    reasoning TEXT NOT NULL,
-    regulations TEXT[] DEFAULT '{}',
-    risk_level TEXT NOT NULL,
-    specific_requirements TEXT[] DEFAULT '{}',
-    timestamp TIMESTAMP DEFAULT NOW()
-);
-```
-
-#### 4. Start the Services
-
-```bash
-# Start FastAPI backend
-uvicorn backend.main:app --reload
-
-# In another terminal, start frontend
-streamlit run frontend/app.py
-```
 
 ### API Endpoints
 
@@ -332,28 +255,16 @@ rag.build_index(force_rebuild=True)
 
 ### Environment Variables
 
-Create a `.env` file for configuration:
-```bash
-# Required for Geo-Compliance
-SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
+
 
 # Optional
-OPENAI_API_KEY=your_openai_key_here  # For enhanced LLM features
 RAG_MODEL=all-MiniLM-L6-v2          # Sentence transformer model
 API_PORT=8000                        # Backend port
 STREAMLIT_PORT=8501                  # Frontend port
 ENVIRONMENT=development              # Environment mode
 ```
 
-### Supabase Setup
 
-1. **Create a new Supabase project** at https://supabase.com
-2. **Get your credentials** from the project settings:
-   - Project URL (SUPABASE_URL)
-   - Anon/Public key (SUPABASE_ANON_KEY)
-3. **Create the required tables** using the SQL provided in the Quick Start section
-4. **Optional: Enable Row Level Security** for production deployments
 
 ---
 
@@ -452,7 +363,6 @@ The system uses a multi-layered approach:
 
 ---
 
-## 🤝 Contributing
 
 This is a hackathon prototype. For production use:
 
@@ -464,9 +374,7 @@ This is a hackathon prototype. For production use:
 
 ---
 
-## 📄 License
 
-Hackathon prototype - see project requirements for usage guidelines.
 
 ---
 
@@ -474,7 +382,6 @@ Hackathon prototype - see project requirements for usage guidelines.
 
 **Backend won't start:**
 - Check Python version (3.8+ required)
-- Verify all dependencies installed: `pip install -r requirements.txt`
 - Ensure port 8000 is available
 
 **Frontend connection errors:**
@@ -494,4 +401,4 @@ Hackathon prototype - see project requirements for usage guidelines.
 
 ---
 
-**Built for TikTok Tech Jam Hackathon** 🚀
+**Built for TikTok Tech Jam Hackathon** 
