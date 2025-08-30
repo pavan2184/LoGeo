@@ -276,11 +276,24 @@ def display_detailed_confidence_breakdown(result: dict):
             explanations.append("⚖️ **Law Matching**: No specific regulations matched to this feature type.")
         elif law_matching_percentage < 60:
             # Look for mismatches in the standardized entities vs regulations
-            detected_jurisdictions = [loc.get('region', '') for loc in standardized_entities.get('locations', [])]
+            detected_jurisdictions = []
+            for loc in standardized_entities.get('locations', []):
+                region = loc.get('region', [])
+                if isinstance(region, list):
+                    detected_jurisdictions.extend(region)
+                elif isinstance(region, str):
+                    detected_jurisdictions.append(region)
+            
             reg_jurisdictions = [reg.get('jurisdiction', '') for reg in applicable_regulations]
             
             if detected_jurisdictions and reg_jurisdictions:
-                if not any(dj in rj or rj in dj for dj in detected_jurisdictions for rj in reg_jurisdictions):
+                # Check for overlap between detected and regulation jurisdictions
+                jurisdiction_overlap = any(
+                    any(dj.lower() in rj.lower() or rj.lower() in dj.lower() 
+                        for dj in detected_jurisdictions if isinstance(dj, str))
+                    for rj in reg_jurisdictions if isinstance(rj, str)
+                )
+                if not jurisdiction_overlap:
                     explanations.append("🌍 **Jurisdiction Mismatch**: Feature mentions specific locations but regulations apply to different jurisdictions.")
             
             detected_ages = standardized_entities.get('ages', [])
