@@ -1,4 +1,4 @@
-# 🌍 Geo-Compliance System
+# 🌍 LoGeo - Geo-Compliance Detection System
 
 **Complete geo-compliance solution with feature detection and access control**
 
