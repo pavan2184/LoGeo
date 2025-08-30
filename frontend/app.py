@@ -436,12 +436,210 @@ def display_compliance_analysis(result: dict, title: str, description: str):
     
     st.markdown('</div>', unsafe_allow_html=True)
 
+def enhanced_threshold_mode():
+    """Enhanced threshold system with category-specific confidence thresholds"""
+    st.header("🎯 Enhanced Threshold System")
+    st.markdown("""
+    **Category-specific confidence thresholds** for intelligent compliance decisions:
+    - **Legal/Compliance**: 0.90 threshold (super strict)
+    - **Safety/Health**: 0.85 threshold (strict)  
+    - **Business/Analytics**: 0.70 threshold (moderate)
+    - **Internal**: 0.60 threshold (low risk)
+    """)
+    
+    # Create tabs for different testing approaches
+    tab1, tab2, tab3 = st.tabs(["🧪 Test Your Features", "📊 Threshold Configuration", "📈 Demo Examples"])
+    
+    with tab1:
+        st.subheader("Test Your Own Features")
+        st.markdown("Input a feature description and see how the threshold system categorizes it.")
+        
+        with st.form("threshold_test_form"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                title = st.text_input("Feature Title", placeholder="e.g., GDPR Age Gate")
+                description = st.text_area("Feature Description", 
+                    placeholder="e.g., Age verification for EU users under 16 to comply with GDPR Article 8",
+                    height=100)
+            
+            with col2:
+                confidence = st.slider("LLM Confidence", 0.0, 1.0, 0.75, 0.01, 
+                    help="Simulate the confidence score from your LLM")
+                flag = st.selectbox("LLM Flag", 
+                    ["NeedsGeoLogic", "NoGeoLogic", "Ambiguous"],
+                    help="Simulate the flag from your LLM")
+            
+            # Rules matched
+            rules_input = st.text_input("Rules Matched (comma-separated)", 
+                placeholder="e.g., child_protection, data_residency",
+                help="Enter rules that were matched, or leave empty for none")
+            
+            submitted = st.form_submit_button("🧠 Analyze with Threshold System", type="primary")
+            
+            if submitted and title and description:
+                # Process rules
+                rules_matched = [r.strip() for r in rules_input.split(",")] if rules_input else []
+                
+                # Simulate LLM output
+                llm_output = {
+                    "flag": flag,
+                    "confidence": confidence,
+                    "reasoning": f"Simulated output for: {title}",
+                    "suggested_jurisdictions": [],
+                    "evidence_passage_ids": []
+                }
+                
+                # Import and run the enhanced decision engine
+                try:
+                    import sys
+                    import os
+                    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                    
+                    from enhanced_decision_engine import EnhancedDecisionEngine
+                    
+                    engine = EnhancedDecisionEngine()
+                    
+                    result = engine.make_decision(
+                        feature_text=f"{title}: {description}",
+                        llm_output=llm_output,
+                        rules_matched=rules_matched,
+                        rule_fired=len(rules_matched) > 0
+                    )
+                    
+                    # Display results
+                    st.success("✅ Analysis Complete!")
+                    
+                    # Results in columns
+                    col_a, col_b = st.columns(2)
+                    
+                    with col_a:
+                        st.subheader("📋 Feature Details")
+                        st.write(f"**Title:** {title}")
+                        st.write(f"**Description:** {description}")
+                        st.write(f"**LLM Flag:** {flag}")
+                        st.write(f"**LLM Confidence:** {confidence:.2f}")
+                        st.write(f"**Rules Matched:** {rules_matched if rules_matched else 'None'}")
+                    
+                    with col_b:
+                        st.subheader("🎯 Category Analysis")
+                        st.write(f"**Categories Detected:** {', '.join(result.categories_detected) if result.categories_detected else 'None'}")
+                        
+                        if result.categories_detected:
+                            threshold, escalation = engine.get_applicable_threshold(result.categories_detected)
+                            st.write(f"**Applicable Threshold:** {threshold:.2f}")
+                            st.write(f"**Escalation Rule:** {escalation.value}")
+                    
+                    # Final decision
+                    st.subheader("📋 Final Decision")
+                    
+                    # Color-coded result
+                    if result.final_flag == "NeedsGeoLogic":
+                        st.error(f"🚨 **Final Flag:** {result.final_flag}")
+                    elif result.final_flag == "NoGeoLogic":
+                        st.success(f"✅ **Final Flag:** {result.final_flag}")
+                    else:
+                        st.warning(f"⚠️ **Final Flag:** {result.final_flag}")
+                    
+                    st.write(f"**Final Confidence:** {result.confidence:.2f}")
+                    st.write(f"**Review Required:** {result.review_required}")
+                    st.write(f"**Review Priority:** {result.review_priority}")
+                    
+                    if result.escalation_required:
+                        st.warning("⚠️ **Escalation Required**")
+                        st.write(f"**Reason:** {result.escalation_reason}")
+                        if result.threshold_violations:
+                            st.write("**Threshold Violations:**")
+                            for violation in result.threshold_violations:
+                                st.write(f"  • {violation}")
+                    
+                except ImportError as e:
+                    st.error(f"❌ Error importing threshold engine: {e}")
+                    st.info("💡 Make sure enhanced_decision_engine.py is in the project root")
+                except Exception as e:
+                    st.error(f"❌ Error running analysis: {e}")
+                    st.info("💡 Check the console for detailed error information")
+    
+    with tab2:
+        st.subheader("Threshold Configuration")
+        st.markdown("View and understand the category-specific thresholds used by the system.")
+        
+        try:
+            import sys
+            import os
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            
+            from enhanced_decision_engine import EnhancedDecisionEngine
+            
+            engine = EnhancedDecisionEngine()
+            summary = engine.get_threshold_summary()
+            
+            # Display thresholds in a nice format
+            for category, config in summary.items():
+                with st.expander(f"📊 {category.replace('_', ' ').title()}"):
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.metric("Threshold", f"{config['threshold']:.2f}")
+                    with col2:
+                        st.metric("Escalation", config['escalation'])
+                    with col3:
+                        st.metric("Risk Level", 
+                            "High" if config['threshold'] >= 0.85 else 
+                            "Medium" if config['threshold'] >= 0.70 else "Low")
+                    
+                    # Load full config for description
+                    import json
+                    with open("threshold_config.json", "r") as f:
+                        full_config = json.load(f)
+                    
+                    if category in full_config["thresholds"]:
+                        st.write(f"**Description:** {full_config['thresholds'][category]['description']}")
+                        st.write(f"**Examples:** {', '.join(full_config['thresholds'][category]['examples'])}")
+            
+        except Exception as e:
+            st.error(f"❌ Error loading threshold configuration: {e}")
+    
+    with tab3:
+        st.subheader("Demo Examples")
+        st.markdown("See how different feature types are handled by the threshold system.")
+        
+        if st.button("🚀 Run Demo Examples"):
+            try:
+                import sys
+                import os
+                sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                
+                from threshold_demo import run_threshold_demo
+                
+                # Capture demo output
+                import io
+                import sys
+                
+                # Redirect stdout to capture demo output
+                old_stdout = sys.stdout
+                new_stdout = io.StringIO()
+                sys.stdout = new_stdout
+                
+                try:
+                    run_threshold_demo()
+                    demo_output = new_stdout.getvalue()
+                finally:
+                    sys.stdout = old_stdout
+                
+                # Display demo output
+                st.code(demo_output, language="text")
+                
+            except Exception as e:
+                st.error(f"❌ Error running demo: {e}")
+                st.info("💡 Make sure threshold_demo.py is in the project root")
+
 def main():
     # Header
     st.markdown("""
     <div class="main-header">
         <h1>🌍 Geo-Compliance Detection System</h1>
-        <p>Automated compliance detection for product features using LLMs + RAG</p>
+        <p>Automated compliance detection with enhanced category-specific thresholds using LLMs + RAG</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -449,11 +647,13 @@ def main():
     st.sidebar.title("📋 Navigation")
     mode = st.sidebar.selectbox(
         "Choose Mode:",
-        ["Single Feature Analysis", "Batch CSV Processing", "Compliance Audit", "Regulatory Coverage", "Statistics", "API Status"]
+        ["Single Feature Analysis", "Enhanced Threshold System", "Batch CSV Processing", "Compliance Audit", "Regulatory Coverage", "Statistics", "API Status"]
     )
     
     if mode == "Single Feature Analysis":
         single_feature_mode()
+    elif mode == "Enhanced Threshold System":
+        enhanced_threshold_mode()
     elif mode == "Batch CSV Processing":
         batch_processing_mode()
     elif mode == "Compliance Audit":

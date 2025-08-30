@@ -1,0 +1,154 @@
+[
+  {
+    "alert_id": "alert_20250830_162647_6263",
+    "timestamp": "2025-08-30T16:26:47.667857",
+    "feature_title": "GDPR Age Gate",
+    "feature_description": "Age verification for EU users under 16 to comply with GDPR Article 8",
+    "classification_result": {
+      "needs_geo_logic": true,
+      "primary_confidence": 0.8,
+      "secondary_confidence": 0.6,
+      "overall_confidence": 0.7566666666666667,
+      "reasoning": "Potential regulatory compliance requirements detected: EU Digital Services Act, California Age-Appropriate Design Code Act, Florida Online Protections for Minors. Manual legal review recommended.",
+      "applicable_regulations": [
+        {
+          "name": "EU Digital Services Act",
+          "jurisdiction": "European Union",
+          "relevance": "medium",
+          "specific_articles": [],
+          "legal_basis": "Detected 1 keywords + 0 triggers"
+        },
+        {
+          "name": "California Age-Appropriate Design Code Act",
+          "jurisdiction": "California",
+          "relevance": "medium",
+          "specific_articles": [],
+          "legal_basis": "Detected 0 keywords + 1 triggers"
+        },
+        {
+          "name": "Florida Online Protections for Minors",
+          "jurisdiction": "Florida",
+          "relevance": "medium",
+          "specific_articles": [],
+          "legal_basis": "Detected 1 keywords + 0 triggers"
+        }
+      ],
+      "risk_assessment": "medium",
+      "regulatory_requirements": [
+        "Legal review required to determine specific obligations"
+      ],
+      "evidence_sources": [
+        "Weak regulation detection: EU_DSA, CA_KIDS_ACT, FL_MINOR_PROTECTIONS"
+      ],
+      "recommended_actions": [
+        "Conduct detailed legal review",
+        "Research applicable jurisdiction requirements",
+        "Determine if feature triggers regulatory obligations"
+      ],
+      "standardized_entities": {
+        "locations": [],
+        "ages": [],
+        "terminology": [
+          {
+            "original_text": "GDPR",
+            "standardized_form": "General Data Protection Regulation",
+            "category": "privacy",
+            "confidence": 1.0,
+            "source": "regex"
+          },
+          {
+            "original_text": "GDPR",
+            "standardized_form": "General Data Protection Regulation",
+            "category": "privacy",
+            "confidence": 1.0,
+            "source": "regex"
+          }
+        ],
+        "confidence_scores": {
+          "location": 0.0,
+          "age": 0.0,
+          "terminology": 1.0
+        }
+      },
+      "preprocessing_result": {
+        "original_text": "GDPR Age Gate. Age verification for EU users under 16 to comply with GDPR Article 8",
+        "cleaned_text": "GDPR Age Gate. Age verification for EU users under 16 to comply with GDPR Article 8",
+        "tokens": [
+          "gdpr",
+          "age",
+          "gate",
+          "age",
+          "verification",
+          "users",
+          "under",
+          "comply",
+          "gdpr",
+          "article"
+        ],
+        "entities": [
+          {
+            "text": "GDPR",
+            "entity_type": "TERMINOLOGY",
+            "start_pos": 0,
+            "end_pos": 4,
+            "confidence": 1.0,
+            "standardized_form": "General Data Protection Regulation",
+            "source": "regex",
+            "additional_info": {
+              "category": "privacy"
+            }
+          },
+          {
+            "text": "GDPR",
+            "entity_type": "TERMINOLOGY",
+            "start_pos": 69,
+            "end_pos": 73,
+            "confidence": 1.0,
+            "standardized_form": "General Data Protection Regulation",
+            "source": "regex",
+            "additional_info": {
+              "category": "privacy"
+            }
+          },
+          {
+            "text": "EU",
+            "entity_type": "TERMINOLOGY",
+            "start_pos": 36,
+            "end_pos": 38,
+            "confidence": 0.7945965290069581,
+            "standardized_form": "EU",
+            "source": "ner",
+            "additional_info": {
+              "huggingface_label": "ORG"
+            }
+          }
+        ],
+        "clear_cut_classification": null,
+        "confidence_score": 0.3,
+        "needs_further_analysis": true
+      },
+      "clear_cut_detection": false,
+      "confidence_breakdown": {
+        "base_confidence": 0.74,
+        "primary_component": 0.5599999999999999,
+        "secondary_component": 0.18,
+        "entity_adjustment": -0.03333333333333334,
+        "diversity_boost": 0.05,
+        "final_confidence": 0.7566666666666667,
+        "category_threshold": 0.85
+      },
+      "needs_human_review": true,
+      "human_review_reason": "Confidence (0.757) below threshold (0.850) for privacy_rights",
+      "intervention_priority": "medium",
+      "processing_timestamp": "2025-08-30T16:26:47.667609",
+      "method_used": "llm_primary",
+      "processing_time_ms": 276.561
+    },
+    "intervention_reason": "Confidence (0.757) below threshold (0.850) for privacy_rights",
+    "priority": "medium",
+    "status": "pending",
+    "assigned_reviewer": null,
+    "resolution_notes": null,
+    "resolved_timestamp": null
+  }
+]
