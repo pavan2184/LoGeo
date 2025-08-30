@@ -2446,11 +2446,114 @@
       "confidence_score": 1.0
     }
   },
+  "classification_thresholds": {
+    "legal_compliance": {
+      "confidence_threshold": 0.9,
+      "escalation_rule": "human_review",
+      "description": "Legal / Compliance requirements",
+      "categories": [
+        "minor_protection",
+        "content_safety",
+        "privacy_rights",
+        "data_protection",
+        "regulatory_compliance"
+      ],
+      "priority": "high",
+      "below_threshold_action": "human"
+    },
+    "safety_health_protection": {
+      "confidence_threshold": 0.85,
+      "escalation_rule": "human_review",
+      "description": "Safety / Health Protection",
+      "categories": [
+        "user_safety",
+        "health_protection",
+        "harm_prevention",
+        "security_compliance"
+      ],
+      "priority": "medium",
+      "below_threshold_action": "human"
+    },
+    "business_non_binding": {
+      "confidence_threshold": 0.7,
+      "escalation_rule": "auto_ok",
+      "description": "Business (non-binding)",
+      "categories": [
+        "business_feature",
+        "market_testing",
+        "user_experience",
+        "performance_optimization"
+      ],
+      "priority": "low",
+      "below_threshold_action": "auto_ok"
+    },
+    "internal_analytics": {
+      "confidence_threshold": 0.6,
+      "escalation_rule": "ignore",
+      "description": "Internal Analytics only",
+      "categories": [
+        "analytics",
+        "metrics",
+        "internal_monitoring",
+        "development_tools"
+      ],
+      "priority": "low",
+      "below_threshold_action": "ignore"
+    }
+  },
   "update_history": [],
   "confidence_thresholds": {
     "location": 0.85,
     "age": 0.8,
     "terminology": 0.75
   },
-  "last_updated": "2025-08-30T09:10:33.348084"
+  "current_version": "1.0.0",
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "timestamp": "2025-08-30T16:26:57.077682",
+      "description": "Initial migration to versioned format",
+      "changes": [
+        "Migrated legacy glossary data to versioned format"
+      ],
+      "author": "system"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "timestamp": "2025-08-30T16:26:57.077714",
+      "change_type": "migration",
+      "entity_type": "location",
+      "entity_name": "all_locations",
+      "old_value": null,
+      "new_value": "Migrated 18 unique locations",
+      "reason": "Legacy format migration",
+      "author": "system"
+    },
+    {
+      "version": "1.0.0",
+      "timestamp": "2025-08-30T16:26:57.077727",
+      "change_type": "migration",
+      "entity_type": "age",
+      "entity_name": "all_age_terms",
+      "old_value": null,
+      "new_value": "Migrated 8 unique age terms",
+      "reason": "Legacy format migration",
+      "author": "system"
+    },
+    {
+      "version": "1.0.0",
+      "timestamp": "2025-08-30T16:26:57.077732",
+      "change_type": "migration",
+      "entity_type": "terminology",
+      "entity_name": "all_terminology",
+      "old_value": null,
+      "new_value": "Migrated 9 unique terms",
+      "reason": "Legacy format migration",
+      "author": "system"
+    }
+  ],
+  "last_updated": "2025-08-30T16:26:57.078863",
+  "schema_version": "2.0.0"
 }

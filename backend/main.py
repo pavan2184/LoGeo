@@ -692,6 +692,14 @@ class FeedbackSubmission(BaseModel):
     reasoning: str
     additional_notes: str = ""
 
+class ThresholdRuleUpdate(BaseModel):
+    confidence_threshold: float
+    escalation_rule: str  # "human_review", "auto_ok", "ignore"
+    description: str
+    categories: List[str]
+    priority: str  # "high", "medium", "low"
+    below_threshold_action: str  # "human", "auto_ok", "ignore"
+
 @app.get("/alerts")
 async def get_intervention_alerts(priority: Optional[str] = None):
     """Get pending human intervention alerts"""
@@ -822,6 +830,188 @@ async def get_age_glossary():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get age glossary: {str(e)}")
+
+# ===== THRESHOLD MANAGEMENT ENDPOINTS =====
+
+@app.get("/thresholds")
+async def get_threshold_rules():
+    """Get all threshold rules and their configuration"""
+    try:
+        from backend.glossary import get_glossary
+        glossary = get_glossary()
+        
+        threshold_rules = glossary.get_all_threshold_rules()
+        
+        return {
+            "threshold_rules": {
+                rule_name: {
+                    "confidence_threshold": rule.confidence_threshold,
+                    "escalation_rule": rule.escalation_rule,
+                    "description": rule.description,
+                    "categories": rule.categories,
+                    "priority": rule.priority,
+                    "below_threshold_action": rule.below_threshold_action
+                } for rule_name, rule in threshold_rules.items()
+            },
+            "total_rules": len(threshold_rules),
+            "system_version": "1.0"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get threshold rules: {str(e)}")
+
+@app.get("/thresholds/{rule_name}")
+async def get_threshold_rule(rule_name: str):
+    """Get a specific threshold rule by name"""
+    try:
+        from backend.glossary import get_glossary
+        glossary = get_glossary()
+        
+        rule = glossary.get_threshold_rule(rule_name)
+        
+        if not rule:
+            raise HTTPException(status_code=404, detail=f"Threshold rule '{rule_name}' not found")
+        
+        return {
+            "rule_name": rule_name,
+            "confidence_threshold": rule.confidence_threshold,
+            "escalation_rule": rule.escalation_rule,
+            "description": rule.description,
+            "categories": rule.categories,
+            "priority": rule.priority,
+            "below_threshold_action": rule.below_threshold_action
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get threshold rule: {str(e)}")
+
+@app.put("/thresholds/{rule_name}")
+async def update_threshold_rule(rule_name: str, rule_update: ThresholdRuleUpdate):
+    """Update or create a threshold rule"""
+    try:
+        from backend.glossary import get_glossary, ThresholdRule
+        glossary = get_glossary()
+        
+        # Validate threshold value
+        if not (0.0 <= rule_update.confidence_threshold <= 1.0):
+            raise HTTPException(status_code=400, detail="Confidence threshold must be between 0.0 and 1.0")
+        
+        # Validate escalation rule
+        valid_escalation_rules = ["human_review", "auto_ok", "ignore"]
+        if rule_update.escalation_rule not in valid_escalation_rules:
+            raise HTTPException(status_code=400, detail=f"Invalid escalation rule. Must be one of: {valid_escalation_rules}")
+        
+        # Validate priority
+        valid_priorities = ["low", "medium", "high", "critical"]
+        if rule_update.priority not in valid_priorities:
+            raise HTTPException(status_code=400, detail=f"Invalid priority. Must be one of: {valid_priorities}")
+        
+        # Validate below_threshold_action
+        valid_actions = ["human", "auto_ok", "ignore"]
+        if rule_update.below_threshold_action not in valid_actions:
+            raise HTTPException(status_code=400, detail=f"Invalid below_threshold_action. Must be one of: {valid_actions}")
+        
+        # Create the threshold rule
+        threshold_rule = ThresholdRule(
+            confidence_threshold=rule_update.confidence_threshold,
+            escalation_rule=rule_update.escalation_rule,
+            description=rule_update.description,
+            categories=rule_update.categories,
+            priority=rule_update.priority,
+            below_threshold_action=rule_update.below_threshold_action
+        )
+        
+        # Update the rule
+        success = glossary.update_threshold_rule(rule_name, threshold_rule)
+        
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to update threshold rule")
+        
+        return {
+            "message": f"Threshold rule '{rule_name}' updated successfully",
+            "rule_name": rule_name,
+            "updated_rule": {
+                "confidence_threshold": threshold_rule.confidence_threshold,
+                "escalation_rule": threshold_rule.escalation_rule,
+                "description": threshold_rule.description,
+                "categories": threshold_rule.categories,
+                "priority": threshold_rule.priority,
+                "below_threshold_action": threshold_rule.below_threshold_action
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update threshold rule: {str(e)}")
+
+@app.post("/thresholds/{rule_name}/evaluate")
+async def evaluate_threshold(rule_name: str, confidence: float, category: str = None):
+    """Evaluate a confidence score against a threshold rule"""
+    try:
+        from backend.glossary import get_glossary
+        glossary = get_glossary()
+        
+        # Validate confidence value
+        if not (0.0 <= confidence <= 1.0):
+            raise HTTPException(status_code=400, detail="Confidence must be between 0.0 and 1.0")
+        
+        # If category is provided, use it; otherwise use first category from the rule
+        if not category:
+            rule = glossary.get_threshold_rule(rule_name)
+            if not rule or not rule.categories:
+                raise HTTPException(status_code=400, detail="Category must be provided if rule has no default categories")
+            category = rule.categories[0]
+        
+        # Evaluate the threshold
+        decision = glossary.evaluate_threshold(category, confidence)
+        
+        return {
+            "threshold_rule_name": decision.threshold_rule_name,
+            "category": category,
+            "confidence": decision.confidence,
+            "threshold": decision.threshold,
+            "meets_threshold": decision.meets_threshold,
+            "escalation_action": decision.escalation_action,
+            "priority": decision.priority,
+            "reasoning": decision.reasoning,
+            "evaluated_at": datetime.now().isoformat()
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to evaluate threshold: {str(e)}")
+
+@app.get("/thresholds/categories/mapping")
+async def get_category_threshold_mapping():
+    """Get mapping of categories to their threshold rules"""
+    try:
+        from backend.glossary import get_glossary
+        glossary = get_glossary()
+        
+        threshold_rules = glossary.get_all_threshold_rules()
+        category_mapping = {}
+        
+        for rule_name, rule in threshold_rules.items():
+            for category in rule.categories:
+                category_mapping[category] = {
+                    "rule_name": rule_name,
+                    "threshold": rule.confidence_threshold,
+                    "escalation_rule": rule.escalation_rule,
+                    "priority": rule.priority,
+                    "description": rule.description
+                }
+        
+        return {
+            "category_mapping": category_mapping,
+            "total_categories": len(category_mapping),
+            "total_rules": len(threshold_rules)
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get category mapping: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

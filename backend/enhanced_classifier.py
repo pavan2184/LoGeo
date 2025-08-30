@@ -16,9 +16,11 @@ from datetime import datetime
 import json
 
 from backend.preprocessing import get_preprocessor, PreprocessingResult, EntityMatch
-from backend.glossary import get_glossary, LocationMapping, AgeMapping, TerminologyMapping
+from backend.glossary import get_glossary, LocationMapping, AgeMapping, TerminologyMapping, EscalationDecision
 from backend.llm_classifier import get_classifier, RegulatoryAnalysisResult
 from backend.rag_loader import get_rag_instance
+from backend.confidence_scoring import get_confidence_scorer, ConfidenceBreakdown, ConfidenceLevel
+from backend.ambiguity_handler import get_ambiguity_handler, AmbiguityAssessment, DisambiguationResult
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +64,14 @@ class EnhancedClassificationResult:
     processing_timestamp: str
     method_used: str  # "clear_cut", "llm_primary", "llm_secondary", "rule_based"
     processing_time_ms: float
+    
+    # Optional fields with defaults (must come last)
+    detailed_confidence: Optional[ConfidenceBreakdown] = None
+    ambiguity_assessments: Optional[List[AmbiguityAssessment]] = None
+    disambiguation_result: Optional[DisambiguationResult] = None
+    ambiguity_confidence_penalty: float = 0.0
+    threshold_decision: Optional[EscalationDecision] = None
+    final_action: str = ""  # "auto_approve", "human_review", "ignore"
 
 class EnhancedGeoComplianceClassifier:
     """
@@ -74,8 +84,10 @@ class EnhancedGeoComplianceClassifier:
         self.glossary = get_glossary()
         self.llm_classifier = get_classifier()
         self.rag = get_rag_instance()
+        self.confidence_scorer = get_confidence_scorer()
+        self.ambiguity_handler = get_ambiguity_handler()
         
-        # Confidence thresholds for different categories
+        # Legacy confidence thresholds (kept for backward compatibility)
         self.confidence_thresholds = {
             "minor_protection": 0.90,   # Higher threshold for child safety
             "content_safety": 0.90,    # Higher threshold for CSAM/abuse
@@ -85,14 +97,32 @@ class EnhancedGeoComplianceClassifier:
             "business_feature": 0.75   # Lower threshold for business decisions
         }
         
-        # Category determination keywords
+        # Updated category determination keywords aligned with threshold rules
         self.category_keywords = {
-            "minor_protection": ["minor", "child", "teen", "age", "parental", "youth", "juvenile", "underage"],
-            "content_safety": ["csam", "abuse", "harm", "exploitation", "safety", "ncmec", "reporting"],
-            "privacy_rights": ["privacy", "data", "personal", "tracking", "collection", "consent"],
-            "data_protection": ["gdpr", "ccpa", "data protection", "localization", "retention"],
-            "general_compliance": ["compliance", "regulation", "law", "legal", "requirement"],
-            "business_feature": ["test", "experiment", "rollout", "market", "engagement", "revenue"]
+            # Legal/Compliance categories (threshold: 0.90)
+            "minor_protection": ["minor", "child", "teen", "age", "parental", "youth", "juvenile", "underage", "coppa", "age verification"],
+            "content_safety": ["csam", "abuse", "harm", "exploitation", "safety", "ncmec", "reporting", "child sexual abuse"],
+            "privacy_rights": ["privacy", "data", "personal", "tracking", "collection", "consent", "gdpr", "ccpa"],
+            "data_protection": ["data protection", "localization", "retention", "data residency", "cross-border"],
+            "regulatory_compliance": ["compliance", "regulation", "law", "legal", "requirement", "dsa", "digital services act"],
+            
+            # Safety/Health Protection categories (threshold: 0.85)
+            "user_safety": ["safety", "harm prevention", "user protection", "content moderation", "community standards"],
+            "health_protection": ["health", "mental health", "wellbeing", "addiction", "time limits"],
+            "harm_prevention": ["harmful content", "violence", "self-harm", "dangerous", "risk assessment"],
+            "security_compliance": ["security", "authentication", "access control", "identity verification"],
+            
+            # Business (non-binding) categories (threshold: 0.70)
+            "business_feature": ["feature", "functionality", "product", "user interface", "ui", "ux"],
+            "market_testing": ["test", "experiment", "rollout", "market", "pilot", "beta", "a/b test"],
+            "user_experience": ["experience", "engagement", "usability", "interface", "design"],
+            "performance_optimization": ["performance", "optimization", "speed", "efficiency", "revenue", "conversion"],
+            
+            # Internal Analytics categories (threshold: 0.60)
+            "analytics": ["analytics", "data analysis", "tracking", "measurement", "insights"],
+            "metrics": ["metrics", "kpi", "statistics", "reporting", "dashboard"],
+            "internal_monitoring": ["monitoring", "logging", "debugging", "internal", "observability"],
+            "development_tools": ["development", "tools", "testing", "staging", "dev", "tooling"]
         }
     
     def standardize_entities(self, entities: List[EntityMatch]) -> StandardizedEntities:
@@ -153,6 +183,59 @@ class EnhancedGeoComplianceClassifier:
             confidence_scores=confidence_scores
         )
     
+    def process_ambiguity(self, 
+                         entities: List[EntityMatch], 
+                         text: str,
+                         feature_category: str) -> Tuple[List[AmbiguityAssessment], Optional[DisambiguationResult], float]:
+        """
+        Process ambiguity in detected entities and apply resolution strategies.
+        
+        Args:
+            entities: List of detected entities from preprocessing
+            text: Original text being analyzed
+            feature_category: Category of the feature for context
+        
+        Returns:
+            Tuple of (ambiguity_assessments, disambiguation_result, confidence_penalty)
+        """
+        
+        # Convert entities to format expected by ambiguity handler
+        entity_dicts = []
+        for entity in entities:
+            entity_dicts.append({
+                "entity_type": entity.entity_type,
+                "text": entity.text,
+                "source": entity.source,
+                "confidence": entity.confidence
+            })
+        
+        # Prepare context for ambiguity assessment
+        context = {
+            "feature_category": feature_category,
+            "text_length": len(text),
+            "has_regulatory_signals": any(signal in text.lower() for signal in 
+                                        ["gdpr", "ccpa", "coppa", "dsa", "law", "regulation", "compliance"])
+        }
+        
+        # Assess ambiguity
+        ambiguity_assessments = self.ambiguity_handler.assess_ambiguity(
+            entity_dicts, text, context
+        )
+        
+        # Resolve ambiguities if any detected
+        disambiguation_result = None
+        confidence_penalty = 0.0
+        
+        if ambiguity_assessments:
+            disambiguation_result = self.ambiguity_handler.resolve_ambiguities(
+                ambiguity_assessments, use_defaults=True
+            )
+            confidence_penalty = disambiguation_result.overall_confidence_penalty
+            
+            logger.info(f"Processed {len(ambiguity_assessments)} ambiguities with {confidence_penalty:.3f} confidence penalty")
+        
+        return ambiguity_assessments, disambiguation_result, confidence_penalty
+    
     def determine_feature_category(self, text: str, entities: StandardizedEntities) -> str:
         """Determine the primary category of the feature for appropriate thresholding"""
         
@@ -166,19 +249,23 @@ class EnhancedGeoComplianceClassifier:
         
         # Boost scores based on standardized entities
         if entities.ages:
-            category_scores["minor_protection"] += 2
+            category_scores["minor_protection"] = category_scores.get("minor_protection", 0) + 3
         
         if any("safety" in term["category"] for term in entities.terminology):
-            category_scores["content_safety"] += 2
+            category_scores["content_safety"] = category_scores.get("content_safety", 0) + 3
         
         if any("privacy" in term["category"] for term in entities.terminology):
-            category_scores["privacy_rights"] += 2
+            category_scores["privacy_rights"] = category_scores.get("privacy_rights", 0) + 3
+        
+        if any("content_moderation" in term["category"] for term in entities.terminology):
+            category_scores["user_safety"] = category_scores.get("user_safety", 0) + 2
         
         # Return category with highest score
-        if category_scores:
+        if category_scores and max(category_scores.values()) > 0:
             return max(category_scores, key=category_scores.get)
         
-        return "general_compliance"
+        # Default to regulatory_compliance for safety
+        return "regulatory_compliance"
     
     def build_enhanced_prompt(self, title: str, description: str, entities: StandardizedEntities, rag_context: str) -> str:
         """
@@ -277,126 +364,209 @@ CRITICAL INSTRUCTIONS:
                                            llm_result: RegulatoryAnalysisResult,
                                            entities: StandardizedEntities) -> Tuple[float, Dict[str, float]]:
         """
-        Perform secondary validation using regex/NER patterns.
-        This implements the Primary + Secondary cross-checking from the feature flow.
+        Perform enhanced secondary validation using regex/NER patterns.
+        This implements the improved Primary + Secondary cross-checking with weighted scoring.
         """
         
         secondary_scores = {
             "location_validation": 0.0,
             "age_validation": 0.0, 
             "terminology_validation": 0.0,
-            "pattern_matching": 0.0
+            "pattern_matching": 0.0,
+            "regulatory_alignment": 0.0
         }
         
-        # Location validation
+        # Enhanced location validation with jurisdiction alignment
         if entities.locations:
-            # Check if LLM detected regulations match detected locations
             detected_jurisdictions = [loc["region"] for loc in entities.locations]
             llm_jurisdictions = [reg.get("jurisdiction", "") for reg in llm_result.applicable_regulations]
             
-            jurisdiction_overlap = any(
-                any(detected_region in llm_jurisdiction for detected_region in loc_regions)
-                for loc_regions in detected_jurisdictions
-                for llm_jurisdiction in llm_jurisdictions
-            )
+            # Calculate jurisdiction overlap score
+            jurisdiction_matches = 0
+            total_checks = len(detected_jurisdictions) * len(llm_jurisdictions) if llm_jurisdictions else 1
             
-            secondary_scores["location_validation"] = 0.9 if jurisdiction_overlap else 0.6
+            for det_regions in detected_jurisdictions:
+                for llm_jurisdiction in llm_jurisdictions:
+                    if any(region.lower() in llm_jurisdiction.lower() for region in det_regions):
+                        jurisdiction_matches += 1
+            
+            jurisdiction_score = jurisdiction_matches / total_checks if total_checks > 0 else 0.0
+            secondary_scores["location_validation"] = min(jurisdiction_score + 0.6, 0.95)
         
-        # Age validation  
+        # Enhanced age validation with regulation specificity
         if entities.ages:
-            # Check for age-related regulations
-            age_regulations = ["coppa", "minor protection", "parental consent", "age verification"]
-            llm_has_age_focus = any(
-                any(age_reg in reg.get("name", "").lower() for age_reg in age_regulations)
-                for reg in llm_result.applicable_regulations
-            )
+            age_regulations = ["coppa", "minor protection", "parental consent", "age verification", "children"]
+            regulation_text = " ".join([reg.get("name", "") + " " + llm_result.reasoning for reg in llm_result.applicable_regulations])
             
-            secondary_scores["age_validation"] = 0.9 if llm_has_age_focus else 0.5
+            age_mentions = sum(1 for age_reg in age_regulations if age_reg in regulation_text.lower())
+            age_score = min(age_mentions * 0.3 + 0.5, 0.95)
+            secondary_scores["age_validation"] = age_score
         
-        # Terminology validation
+        # Enhanced terminology validation with category alignment
         if entities.terminology:
-            # Check if LLM identified regulations match detected terminology
             detected_categories = set(term["category"] for term in entities.terminology)
-            llm_mentions_categories = any(
-                any(category in llm_result.reasoning.lower() for category in detected_categories)
-                for category in detected_categories
-            )
             
-            secondary_scores["terminology_validation"] = 0.9 if llm_mentions_categories else 0.6
+            # Check category alignment with LLM reasoning and regulations
+            category_alignment = 0
+            for category in detected_categories:
+                if category in llm_result.reasoning.lower():
+                    category_alignment += 0.3
+                for reg in llm_result.applicable_regulations:
+                    if category in reg.get("name", "").lower() or category in reg.get("legal_basis", "").lower():
+                        category_alignment += 0.2
+            
+            secondary_scores["terminology_validation"] = min(category_alignment + 0.4, 0.95)
         
-        # Pattern matching validation
+        # Enhanced pattern matching with regulatory context
         compliance_patterns = [
             r'\b(?:comply|compliance)\s+with.*(?:law|regulation|act)\b',
             r'\b(?:geo.*restriction|geographic.*requirement|location.*based.*compliance)\b',
-            r'\b(?:minor.*protection|age.*verification|parental.*consent).*(?:law|requirement)\b'
+            r'\b(?:minor.*protection|age.*verification|parental.*consent).*(?:law|requirement)\b',
+            r'\b(?:data.*protection|privacy.*law|gdpr|ccpa|dsa)\b',
+            r'\b(?:content.*moderation|harmful.*content|safety.*requirement)\b'
         ]
         
         import re
         pattern_matches = sum(1 for pattern in compliance_patterns if re.search(pattern, text, re.IGNORECASE))
-        secondary_scores["pattern_matching"] = min(pattern_matches * 0.3, 0.9)
+        secondary_scores["pattern_matching"] = min(pattern_matches * 0.2 + 0.3, 0.9)
         
-        # Calculate overall secondary confidence
-        non_zero_scores = [score for score in secondary_scores.values() if score > 0]
-        overall_secondary = sum(non_zero_scores) / len(non_zero_scores) if non_zero_scores else 0.0
+        # New: Regulatory alignment validation
+        if llm_result.applicable_regulations:
+            # Check if risk assessment aligns with detected entities
+            risk_entity_alignment = 0.5  # Base score
+            
+            if entities.ages and llm_result.risk_assessment in ["high", "critical"]:
+                risk_entity_alignment += 0.2
+            if entities.locations and len(llm_result.applicable_regulations) > 1:
+                risk_entity_alignment += 0.2
+            if entities.terminology and any("privacy" in term["category"] for term in entities.terminology):
+                risk_entity_alignment += 0.1
+                
+            secondary_scores["regulatory_alignment"] = min(risk_entity_alignment, 0.95)
+        
+        # Calculate weighted secondary confidence (improved logic)
+        weights = {
+            "location_validation": 0.25,
+            "age_validation": 0.25,
+            "terminology_validation": 0.25,
+            "pattern_matching": 0.15,
+            "regulatory_alignment": 0.10
+        }
+        
+        overall_secondary = sum(score * weights[category] for category, score in secondary_scores.items())
         
         return overall_secondary, secondary_scores
     
-    def calculate_final_confidence(self, 
-                                 primary_confidence: float,
-                                 secondary_confidence: float, 
-                                 entities: StandardizedEntities,
-                                 feature_category: str) -> Tuple[float, Dict[str, float]]:
+    def calculate_enhanced_confidence(self, 
+                                    primary_confidence: float,
+                                    secondary_confidence: float, 
+                                    entities: StandardizedEntities,
+                                    feature_category: str,
+                                    cross_validation_scores: Dict[str, float]) -> ConfidenceBreakdown:
         """
-        Calculate final confidence score with category-specific thresholds.
-        This implements the sophisticated confidence scoring from the feature flow.
+        Calculate final confidence using the new standardized confidence scoring system.
+        This replaces the old calculate_final_confidence method with systematic weighted scoring.
         """
         
-        # Weight primary and secondary confidence
-        primary_weight = 0.7
-        secondary_weight = 0.3
+        # Calculate entity quality score
+        entity_quality = sum(entities.confidence_scores.values()) / len(entities.confidence_scores) if entities.confidence_scores else 0.5
         
-        base_confidence = (primary_confidence * primary_weight) + (secondary_confidence * secondary_weight)
+        # Calculate cross-validation score from secondary checks
+        cross_validation_confidence = sum(cross_validation_scores.values()) / len(cross_validation_scores) if cross_validation_scores else 0.5
         
-        # Entity quality boost/penalty
-        entity_confidence_avg = sum(entities.confidence_scores.values()) / len(entities.confidence_scores) if entities.confidence_scores else 0.5
-        entity_adjustment = (entity_confidence_avg - 0.5) * 0.2  # ±0.1 adjustment
-        
-        # Entity diversity boost
-        entity_types_detected = sum(1 for score in entities.confidence_scores.values() if score > 0)
-        diversity_boost = min(entity_types_detected * 0.05, 0.15)  # Up to 0.15 boost
-        
-        final_confidence = base_confidence + entity_adjustment + diversity_boost
-        final_confidence = max(0.0, min(1.0, final_confidence))  # Clamp to [0, 1]
-        
-        breakdown = {
-            "base_confidence": base_confidence,
-            "primary_component": primary_confidence * primary_weight,
-            "secondary_component": secondary_confidence * secondary_weight,
-            "entity_adjustment": entity_adjustment,
-            "diversity_boost": diversity_boost,
-            "final_confidence": final_confidence,
-            "category_threshold": self.confidence_thresholds.get(feature_category, 0.80)
+        # Determine diversity factors
+        diversity_factors = {
+            "has_locations": bool(entities.locations),
+            "has_ages": bool(entities.ages),
+            "has_terminology": bool(entities.terminology),
+            "has_cross_validation": cross_validation_confidence > 0.6
         }
         
-        return final_confidence, breakdown
+        # Use the standardized confidence scorer
+        confidence_breakdown = self.confidence_scorer.calculate_weighted_confidence(
+            llm_score=primary_confidence,
+            regex_ner_score=secondary_confidence,
+            entity_quality=entity_quality,
+            cross_validation_score=cross_validation_confidence,
+            diversity_factors=diversity_factors
+        )
+        
+        return confidence_breakdown
     
-    def determine_human_intervention(self, 
-                                   confidence: float,
-                                   feature_category: str,
-                                   entities: StandardizedEntities,
-                                   llm_result: RegulatoryAnalysisResult) -> Tuple[bool, str, str]:
+    def apply_ambiguity_penalty(self, 
+                               confidence_breakdown: ConfidenceBreakdown,
+                               ambiguity_penalty: float) -> ConfidenceBreakdown:
+        """Apply ambiguity penalty to confidence breakdown"""
+        
+        # Apply penalty to final confidence
+        adjusted_confidence = max(0.0, confidence_breakdown.final_confidence - ambiguity_penalty)
+        
+        # Update confidence factors
+        updated_factors = confidence_breakdown.confidence_factors.copy()
+        updated_factors["ambiguity_penalty"] = -ambiguity_penalty
+        updated_factors["adjusted_final_confidence"] = adjusted_confidence
+        
+        # Update recommendations
+        updated_recommendations = confidence_breakdown.recommendations.copy()
+        if ambiguity_penalty > 0.2:
+            updated_recommendations.insert(0, "High ambiguity detected - consider human review")
+        elif ambiguity_penalty > 0.1:
+            updated_recommendations.insert(0, "Moderate ambiguity detected - proceed with caution")
+        
+        # Return updated confidence breakdown
+        return ConfidenceBreakdown(
+            llm_confidence=confidence_breakdown.llm_confidence,
+            regex_ner_confidence=confidence_breakdown.regex_ner_confidence,
+            entity_confidence=confidence_breakdown.entity_confidence,
+            cross_validation_confidence=confidence_breakdown.cross_validation_confidence,
+            final_confidence=adjusted_confidence,
+            confidence_level=self.confidence_scorer.classify_confidence_level(adjusted_confidence),
+            confidence_factors=updated_factors,
+            recommendations=updated_recommendations
+        )
+    
+    def determine_threshold_based_action(self, 
+                                       confidence: float,
+                                       feature_category: str,
+                                       entities: StandardizedEntities,
+                                       llm_result: RegulatoryAnalysisResult) -> Tuple[EscalationDecision, bool, str, str, str]:
         """
-        Determine if human intervention is needed based on confidence thresholds.
-        This implements the human intervention logic from the feature flow.
+        Determine action based on new threshold table system.
+        Returns: (threshold_decision, needs_human_review, review_reason, priority, final_action)
         """
         
-        category_threshold = self.confidence_thresholds.get(feature_category, 0.80)
+        # Use the threshold table system to evaluate
+        threshold_decision = self.glossary.evaluate_threshold(feature_category, confidence)
         
-        # Check if confidence is below threshold
-        if confidence < category_threshold:
-            priority = "high" if feature_category in ["minor_protection", "content_safety"] else "medium"
-            reason = f"Confidence ({confidence:.3f}) below threshold ({category_threshold:.3f}) for {feature_category}"
-            return True, reason, priority
+        # Determine final action based on threshold decision
+        if threshold_decision.escalation_action == "auto_approve":
+            return threshold_decision, False, "", "low", "auto_approve"
+        
+        elif threshold_decision.escalation_action == "ignore":
+            return threshold_decision, False, "", "low", "ignore"
+        
+        elif threshold_decision.escalation_action == "human_review":
+            return threshold_decision, True, threshold_decision.reasoning, threshold_decision.priority, "human_review"
+        
+        else:
+            # Additional checks for edge cases (keep existing logic)
+            needs_review, reason, priority = self._additional_intervention_checks(
+                confidence, feature_category, entities, llm_result
+            )
+            
+            if needs_review:
+                return threshold_decision, True, reason, priority, "human_review"
+            else:
+                return threshold_decision, False, "", "low", "auto_approve"
+    
+    def _additional_intervention_checks(self, 
+                                      confidence: float,
+                                      feature_category: str,
+                                      entities: StandardizedEntities,
+                                      llm_result: RegulatoryAnalysisResult) -> Tuple[bool, str, str]:
+        """
+        Additional intervention checks beyond threshold evaluation.
+        """
         
         # Check for conflicting signals
         has_locations = bool(entities.locations)
@@ -406,13 +576,15 @@ CRITICAL INSTRUCTIONS:
         if has_locations and not (has_ages or has_terminology):
             return True, "Location detected without compliance context - unclear intent", "medium"
         
-        # Check for high-risk categories with medium confidence
-        if feature_category in ["minor_protection", "content_safety"] and confidence < 0.90:
-            return True, f"High-risk category ({feature_category}) requires higher confidence", "high"
-        
         # Check for uncertain risk assessment
         if llm_result.risk_assessment == "unknown":
             return True, "LLM unable to determine risk level", "medium"
+        
+        # Check for low entity confidence
+        if entities.confidence_scores:
+            avg_entity_confidence = sum(entities.confidence_scores.values()) / len(entities.confidence_scores)
+            if avg_entity_confidence < 0.7:
+                return True, "Low entity detection confidence - may need verification", "medium"
         
         return False, "", "low"
     
@@ -437,6 +609,12 @@ CRITICAL INSTRUCTIONS:
         
         # Step 2: Entity standardization
         standardized_entities = self.standardize_entities(preprocessing_result.entities)
+        
+        # Step 2.5: Process ambiguity in entities
+        feature_category = self.determine_feature_category(f"{title} {description}", standardized_entities)
+        ambiguity_assessments, disambiguation_result, ambiguity_penalty = self.process_ambiguity(
+            preprocessing_result.entities, f"{title} {description}", feature_category
+        )
         
         # Step 3: Check for clear-cut cases (95% confidence)
         if preprocessing_result.clear_cut_classification is not None and preprocessing_result.confidence_score >= 0.95:
@@ -463,29 +641,44 @@ CRITICAL INSTRUCTIONS:
                 intervention_priority="low",
                 processing_timestamp=datetime.now().isoformat(),
                 method_used="clear_cut",
-                processing_time_ms=processing_time
+                processing_time_ms=processing_time,
+                # Optional fields with defaults
+                detailed_confidence=None,
+                ambiguity_assessments=ambiguity_assessments,
+                disambiguation_result=disambiguation_result,
+                ambiguity_confidence_penalty=ambiguity_penalty,
+                threshold_decision=None,
+                final_action="auto_approve"
             )
         
         # Step 4: Enhanced LLM analysis
-        feature_category = self.determine_feature_category(f"{title} {description}", standardized_entities)
         rag_context = self.rag.get_regulatory_context(title, description)
         enhanced_prompt = self.build_enhanced_prompt(title, description, standardized_entities, rag_context)
         
         # Get LLM analysis (this will use the existing llm_classifier with enhanced prompt)
         llm_result = self.llm_classifier.analyze_regulatory_compliance(title, description)
         
-        # Step 5: Secondary cross-validation
+        # Step 5: Enhanced secondary cross-validation
         secondary_confidence, secondary_breakdown = self.cross_validate_with_secondary_checks(
             f"{title} {description}", llm_result, standardized_entities
         )
         
-        # Step 6: Final confidence calculation
-        final_confidence, confidence_breakdown = self.calculate_final_confidence(
-            llm_result.confidence, secondary_confidence, standardized_entities, feature_category
+        # Step 6: Enhanced confidence calculation using standardized scoring
+        detailed_confidence = self.calculate_enhanced_confidence(
+            llm_result.confidence, secondary_confidence, standardized_entities, feature_category, secondary_breakdown
         )
         
-        # Step 7: Human intervention determination
-        needs_review, review_reason, priority = self.determine_human_intervention(
+        # Step 6.5: Apply ambiguity penalty to confidence
+        if ambiguity_penalty > 0:
+            detailed_confidence = self.apply_ambiguity_penalty(detailed_confidence, ambiguity_penalty)
+        
+        final_confidence = detailed_confidence.final_confidence
+        
+        # Convert to legacy format for backward compatibility
+        confidence_breakdown = detailed_confidence.confidence_factors
+        
+        # Step 7: Threshold-based action determination
+        threshold_decision, needs_review, review_reason, priority, final_action = self.determine_threshold_based_action(
             final_confidence, feature_category, standardized_entities, llm_result
         )
         
@@ -511,7 +704,14 @@ CRITICAL INSTRUCTIONS:
             intervention_priority=priority,
             processing_timestamp=datetime.now().isoformat(),
             method_used="llm_primary" if llm_result.confidence > 0.7 else "llm_secondary",
-            processing_time_ms=processing_time
+            processing_time_ms=processing_time,
+            # Optional fields with defaults
+            detailed_confidence=detailed_confidence,
+            ambiguity_assessments=ambiguity_assessments,
+            disambiguation_result=disambiguation_result,
+            ambiguity_confidence_penalty=ambiguity_penalty,
+            threshold_decision=threshold_decision,
+            final_action=final_action
         )
 
 # Global enhanced classifier instance

@@ -1,0 +1,11 @@
+{
+  "total_classifications": 0,
+  "correct_classifications": 0,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "human_interventions": 1,
+  "feedback_applied": 0,
+  "accuracy_trend": [],
+  "confidence_trend": [],
+  "last_updated": "2025-08-30T16:33:36.531560"
+}
