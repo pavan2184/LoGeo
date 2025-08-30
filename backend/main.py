@@ -685,6 +685,7 @@ async def get_regulatory_coverage():
             "regulations": [
                 {
                     "name": reg["name"],
+                    "filename": reg.get("filename", ""),
                     "content_length": len(reg["content"]),
                     "jurisdiction": reg.get("jurisdiction", "Unknown"),
                     "last_updated": reg.get("last_updated", "Unknown")

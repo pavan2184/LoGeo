@@ -1,14 +1,14 @@
 [
   {
-    "alert_id": "alert_20250830_182124_2435",
-    "timestamp": "2025-08-30T18:21:24.686702",
-    "feature_title": "Mood-based PF enhancements",
-    "feature_description": "Adjust PF recommendations based on inferred mood signals from emoji usage. This logic is soft-tuned using BB and undergoes quiet testing in ShadowMode.",
+    "alert_id": "alert_20250830_192704_4890",
+    "timestamp": "2025-08-30T19:27:04.945003",
+    "feature_title": "Custom avatar system with identity checks",
+    "feature_description": "Users can now design custom avatars. For safety, T5 triggers block adult-themed assets from use by underage profiles. Age detection uses ASL and logs flow through GH.",
     "classification_result": {
       "needs_geo_logic": false,
       "primary_confidence": 0.85,
-      "secondary_confidence": 0.045,
-      "overall_confidence": 0.44249999999999995,
+      "secondary_confidence": 0.16999999999999998,
+      "overall_confidence": 0.3116666666666667,
       "reasoning": "No clear indicators of the 5 key regulatory requirements (EU DSA, CA Kids Act, FL Minor Protections, UT Social Media Act, US NCMEC) detected. Feature appears to be standard functionality.",
       "applicable_regulations": [],
       "risk_assessment": "low",
@@ -17,84 +17,144 @@
         "5-regulation focused analysis"
       ],
       "recommended_actions": [
-        "Proceed with A/B testing following standard privacy practices",
-        "Ensure test data collection complies with applicable privacy laws",
-        "Document test parameters for compliance review if needed"
+        "Proceed with standard development and security review processes",
+        "Monitor for any compliance impacts during development",
+        "Include privacy-by-design principles in implementation"
       ],
       "standardized_entities": {
         "locations": [],
-        "ages": [],
+        "ages": [
+          {
+            "original_text": "adult",
+            "standardized_term": "adult",
+            "numerical_range": [
+              18,
+              120
+            ],
+            "confidence": 1.0,
+            "source": "regex"
+          },
+          {
+            "original_text": "underage",
+            "standardized_term": "minor",
+            "numerical_range": [
+              0,
+              17
+            ],
+            "confidence": 1.0,
+            "source": "regex"
+          }
+        ],
         "terminology": [],
         "confidence_scores": {
           "location": 0.0,
-          "age": 0.0,
+          "age": 1.0,
           "terminology": 0.0
         }
       },
       "preprocessing_result": {
-        "original_text": "Mood-based PF enhancements. Adjust PF recommendations based on inferred mood signals from emoji usage. This logic is soft-tuned using BB and undergoes quiet testing in ShadowMode.",
-        "cleaned_text": "Mood-based PF enhancements. Adjust PF recommendations based on inferred mood signals from emoji usage. This logic is soft-tuned using BB and undergoes quiet testing in ShadowMode.",
+        "original_text": "Custom avatar system with identity checks. Users can now design custom avatars. For safety, T5 triggers block adult-themed assets from use by underage profiles. Age detection uses ASL and logs flow through GH.",
+        "cleaned_text": "Custom avatar system with identity checks. Users can now design custom avatars. For safety, T5 triggers block adult-themed assets from use by underage profiles. Age detection uses ASL and logs flow through GH.",
         "tokens": [
-          "mood",
-          "based",
-          "enhancements",
-          "adjust",
-          "recommendations",
-          "based",
-          "inferred",
-          "mood",
-          "signals",
+          "custom",
+          "avatar",
+          "system",
+          "identity",
+          "checks",
+          "users",
+          "can",
+          "now",
+          "design",
+          "custom",
+          "avatars",
+          "safety",
+          "triggers",
+          "block",
+          "adult",
+          "themed",
+          "assets",
           "from",
-          "emoji",
-          "usage",
-          "this",
-          "logic",
-          "soft",
-          "tuned",
-          "using",
-          "undergoes",
-          "quiet",
-          "testing",
-          "shadowmode"
+          "use",
+          "underage",
+          "profiles",
+          "age",
+          "detection",
+          "uses",
+          "asl",
+          "logs",
+          "flow",
+          "through"
         ],
         "entities": [
           {
-            "text": "ShadowM",
+            "text": "adult",
+            "entity_type": "AGE",
+            "start_pos": 110,
+            "end_pos": 115,
+            "confidence": 1.0,
+            "standardized_form": "adult (18-120)",
+            "source": "regex",
+            "additional_info": {
+              "numerical_range": [
+                18,
+                120
+              ]
+            }
+          },
+          {
+            "text": "underage",
+            "entity_type": "AGE",
+            "start_pos": 142,
+            "end_pos": 150,
+            "confidence": 1.0,
+            "standardized_form": "minor (0-17)",
+            "source": "regex",
+            "additional_info": {
+              "numerical_range": [
+                0,
+                17
+              ]
+            }
+          },
+          {
+            "text": "AS",
             "entity_type": "TERMINOLOGY",
-            "start_pos": 168,
-            "end_pos": 175,
-            "confidence": 0.6987462043762207,
-            "standardized_form": "ShadowM",
+            "start_pos": 180,
+            "end_pos": 182,
+            "confidence": 0.6552923679351806,
+            "standardized_form": "AS",
             "source": "ner",
             "additional_info": {
-              "huggingface_label": "ORG"
+              "huggingface_label": "MISC"
             }
           }
         ],
         "clear_cut_classification": null,
-        "confidence_score": 0.2096238613128662,
+        "confidence_score": 0.5959052524566649,
         "needs_further_analysis": true
       },
       "clear_cut_detection": false,
       "confidence_breakdown": {
-        "base_weighted": 0.6084999999999999,
+        "base_weighted": 0.646,
         "llm_component": 0.595,
-        "regex_ner_component": 0.0135,
-        "entity_adjustment": -0.1,
-        "cross_validation_adjustment": -0.066,
-        "diversity_bonus": 0.0,
-        "final_confidence": 0.44249999999999995
+        "regex_ner_component": 0.051,
+        "entity_adjustment": -0.03333333333333334,
+        "cross_validation_adjustment": -0.051,
+        "diversity_bonus": 0.05,
+        "final_confidence": 0.6116666666666667,
+        "ambiguity_penalty": -0.3,
+        "adjusted_final_confidence": 0.3116666666666667
       },
       "needs_human_review": true,
-      "human_review_reason": "Confidence 0.44 below threshold 0.70 for ",
+      "human_review_reason": "Confidence 0.31 below threshold 0.70 for ",
       "intervention_priority": "medium",
-      "processing_timestamp": "2025-08-30T18:21:24.685132",
+      "processing_timestamp": "2025-08-30T19:27:04.944706",
       "method_used": "llm_primary",
-      "processing_time_ms": 2162.274,
+      "processing_time_ms": 170.77100000000002,
       "detailed_confidence": {
         "llm_confidence": 0.85,
-        "regex_ner_confidence": 0.045,
-        "entity_confidence": 0.0,
-        "cross_validation_confidence": 0.06,
-        "final_confidence": 0.44249999999999995,
+        "regex_ner_confidence": 0.16999999999999998,
+        "entity_confidence": 0.3333333333333333,
+        "cross_validation_confidence": 0.16,
+        "final_confidence": 0.3116666666666667,
         "confidence_level": 

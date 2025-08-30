@@ -85,10 +85,18 @@ st.markdown("""
     }
     
     .main-header h1 {
-        font-size: 2.5rem;
+        font-size: 3rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
         color: white !important;
+    }
+    
+    .main-header h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: white !important;
+        opacity: 0.95;
     }
     
     .main-header p {
@@ -129,6 +137,312 @@ st.markdown("""
     .stTextArea > div > div > textarea:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    /* Enhanced Sidebar Styling */
+    .css-1d391kg {
+        background: linear-gradient(180deg, #2d3748 0%, #4a5568 100%);
+        border-right: 2px solid #667eea;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Sidebar content */
+    .css-1d391kg .css-1y4p8pa {
+        padding: 1.5rem 1rem;
+    }
+    
+    /* Sidebar title styling */
+    .css-1d391kg h1 {
+        color: #ffffff !important;
+        font-size: 1.4rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 1.5rem !important;
+        text-align: center !important;
+        padding: 0.75rem !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    }
+    
+    /* Navigation selectbox styling */
+    .css-1d391kg .stSelectbox > label {
+        color: #e2e8f0 !important;
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Selectbox container */
+    .css-1d391kg .stSelectbox > div > div {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 8px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .css-1d391kg .stSelectbox > div > div:hover {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+    }
+    
+    /* Selectbox text */
+    .css-1d391kg .stSelectbox input {
+        color: #ffffff !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Dropdown arrow */
+    .css-1d391kg .stSelectbox svg {
+        fill: #e2e8f0 !important;
+    }
+    
+    /* Sidebar buttons (if any) */
+    .css-1d391kg .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        margin: 0.25rem 0 !important;
+    }
+    
+    .css-1d391kg .stButton > button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+    }
+    
+    /* Sidebar text and labels */
+    .css-1d391kg p, .css-1d391kg span, .css-1d391kg div {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Sidebar metrics and info boxes */
+    .css-1d391kg .metric-container {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 6px !important;
+        padding: 0.75rem !important;
+        margin: 0.5rem 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    /* Sidebar markdown content */
+    .css-1d391kg .markdown-text-container {
+        color: #cbd5e0 !important;
+    }
+    
+    /* Alternative sidebar class names (Streamlit versions vary) */
+    .css-17eq0hr, .css-1lcbmhc, .css-1y4p8pa {
+        background: linear-gradient(180deg, #2d3748 0%, #4a5568 100%) !important;
+    }
+    
+    /* Additional sidebar styling for different Streamlit versions */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #2d3748 0%, #4a5568 100%) !important;
+        border-right: 2px solid #667eea !important;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] > div {
+        background: transparent !important;
+        padding-top: 2rem !important;
+    }
+    
+    /* Sidebar navigation title with enhanced styling */
+    section[data-testid="stSidebar"] h1 {
+        color: #ffffff !important;
+        font-size: 1.4rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 1.5rem !important;
+        text-align: center !important;
+        padding: 0.75rem !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+        margin-left: 0.5rem !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    /* Sidebar selectbox improvements */
+    section[data-testid="stSidebar"] .stSelectbox label {
+        color: #e2e8f0 !important;
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 0.75rem !important;
+        letter-spacing: 0.025em !important;
+    }
+    
+    section[data-testid="stSidebar"] .stSelectbox > div > div {
+        background: rgba(255, 255, 255, 0.12) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-radius: 8px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stSelectbox > div > div:hover {
+        background: rgba(255, 255, 255, 0.18) !important;
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25), 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* Sidebar selectbox text */
+    section[data-testid="stSidebar"] .stSelectbox input {
+        color: #ffffff !important;
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+    }
+    
+    /* Sidebar selectbox dropdown arrow */
+    section[data-testid="stSidebar"] .stSelectbox svg {
+        fill: #e2e8f0 !important;
+        transition: fill 0.2s ease !important;
+    }
+    
+    section[data-testid="stSidebar"] .stSelectbox:hover svg {
+        fill: #ffffff !important;
+    }
+    
+    /* Enhanced hover effects and visual feedback */
+    section[data-testid="stSidebar"] .stSelectbox {
+        transition: all 0.2s ease !important;
+    }
+    
+    section[data-testid="stSidebar"] .stSelectbox:hover {
+        transform: translateX(2px) !important;
+    }
+    
+    /* Sidebar general text styling */
+    section[data-testid="stSidebar"] p, 
+    section[data-testid="stSidebar"] span, 
+    section[data-testid="stSidebar"] div {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Sidebar buttons styling */
+    section[data-testid="stSidebar"] .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.2rem !important;
+        font-weight: 500 !important;
+        font-size: 0.9rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        width: 100% !important;
+        margin: 0.5rem 0 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        transform: translateY(-2px) translateX(2px) !important;
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:active {
+        transform: translateY(0px) !important;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    }
+    
+    /* Sidebar metrics and info styling */
+    section[data-testid="stSidebar"] .metric-container,
+    section[data-testid="stSidebar"] .stMetric {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-radius: 8px !important;
+        padding: 0.75rem !important;
+        margin: 0.5rem 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    section[data-testid="stSidebar"] .metric-container:hover,
+    section[data-testid="stSidebar"] .stMetric:hover {
+        background: rgba(255, 255, 255, 0.12) !important;
+        border-color: rgba(102, 126, 234, 0.3) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* Sidebar markdown and text content */
+    section[data-testid="stSidebar"] .markdown-text-container {
+        color: #cbd5e0 !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Sidebar dividers */
+    section[data-testid="stSidebar"] hr {
+        border: none !important;
+        height: 1px !important;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%) !important;
+        margin: 1.5rem 0 !important;
+    }
+    
+    /* Visual hierarchy improvements */
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3 {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        margin-top: 1.5rem !important;
+        margin-bottom: 0.75rem !important;
+        padding-bottom: 0.5rem !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+    
+    /* Sidebar icon enhancements */
+    section[data-testid="stSidebar"] .stSelectbox::before {
+        content: "🧭" !important;
+        margin-right: 0.5rem !important;
+        font-size: 1.1rem !important;
+    }
+    
+    /* Navigation section styling */
+    section[data-testid="stSidebar"] > div:first-child {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        padding-bottom: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Sidebar scrollbar styling */
+    section[data-testid="stSidebar"]::-webkit-scrollbar {
+        width: 6px !important;
+    }
+    
+    section[data-testid="stSidebar"]::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 3px !important;
+    }
+    
+    section[data-testid="stSidebar"]::-webkit-scrollbar-thumb {
+        background: rgba(102, 126, 234, 0.5) !important;
+        border-radius: 3px !important;
+        transition: background 0.3s ease !important;
+    }
+    
+    section[data-testid="stSidebar"]::-webkit-scrollbar-thumb:hover {
+        background: rgba(102, 126, 234, 0.7) !important;
+    }
+    
+    /* Responsive sidebar adjustments */
+    @media (max-width: 768px) {
+        section[data-testid="stSidebar"] {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        section[data-testid="stSidebar"] h1 {
+            font-size: 1.2rem !important;
+            padding: 0.5rem !important;
+        }
+    }
+    
+    /* Polish for selected state */
+    section[data-testid="stSidebar"] .stSelectbox > div > div[aria-expanded="true"] {
+        background: rgba(102, 126, 234, 0.2) !important;
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3) !important;
     }
     
     /* Animation for loading states */
@@ -962,7 +1276,8 @@ def main():
     # Header
     st.markdown("""
     <div class="main-header">
-        <h1>🌍 Geo-Compliance Detection System</h1>
+        <h1>LoGeo</h1>
+        <h2>🌍 Geo-Compliance Detection System</h2>
         <p>Automated compliance detection with enhanced category-specific thresholds using LLMs + RAG</p>
     </div>
     """, unsafe_allow_html=True)
@@ -971,23 +1286,15 @@ def main():
     st.sidebar.title("📋 Navigation")
     mode = st.sidebar.selectbox(
         "Choose Mode:",
-        ["Single Feature Analysis", "Enhanced Threshold System", "Batch CSV Processing", "Compliance Audit", "Regulatory Coverage", "Statistics", "API Status"]
+        ["Single Feature Analysis", "Batch CSV Processing", "Regulatory Coverage"]
     )
     
     if mode == "Single Feature Analysis":
         single_feature_mode()
-    elif mode == "Enhanced Threshold System":
-        enhanced_threshold_mode()
     elif mode == "Batch CSV Processing":
         batch_processing_mode()
-    elif mode == "Compliance Audit":
-        compliance_audit_mode()
     elif mode == "Regulatory Coverage":
         regulatory_coverage_mode()
-    elif mode == "Statistics":
-        statistics_mode()
-    elif mode == "API Status":
-        api_status_mode()
 
 def geo_access_mode():
     """Geo-compliance access control interface"""
@@ -1164,18 +1471,6 @@ def regulatory_coverage_mode():
         if response and response.status_code == 200:
             data = response.json()
             
-            # Summary metrics
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("📋 Total Regulations", data.get('total_regulations', 0))
-            with col2:
-                jurisdictions = data.get('jurisdictions_covered', [])
-                st.metric("🌍 Jurisdictions", len(jurisdictions))
-            with col3:
-                status = data.get('system_status', 'unknown')
-                status_icon = "✅" if status == "operational" else "❌"
-                st.metric("🔧 System Status", f"{status_icon} {status.title()}")
-            
             # Regulation details
             st.subheader("📋 Loaded Regulatory Documents")
             
@@ -1183,28 +1478,147 @@ def regulatory_coverage_mode():
             if regulations:
                 st.markdown('<div class="results-container">', unsafe_allow_html=True)
                 
+                # Jurisdiction mapping for better display
+                jurisdiction_map = {
+                    'ca': '🇨🇦 Canada',
+                    'eu': '🇪🇺 European Union', 
+                    'us': '🇺🇸 United States',
+                    'fl': '🇺🇸 Florida, USA',
+                    'ut': '🇺🇸 Utah, USA',
+                    'ccpa': '🇺🇸 California, USA',
+                    'coppa': '🇺🇸 United States (Federal)',
+                    'gdpr': '🇪🇺 European Union',
+                    'ncmec': '🇺🇸 United States (Federal)'
+                }
+                
                 for reg in regulations:
-                    with st.expander(f"📜 {reg.get('name', 'Unknown Regulation')}"):
+                    reg_name = reg.get('name', 'Unknown Regulation')
+                    filename = reg.get('filename', reg_name.lower().replace(' ', '_'))
+                    
+                    # Extract jurisdiction from filename
+                    jurisdiction = "🌍 Multi-jurisdictional"
+                    for prefix, jur in jurisdiction_map.items():
+                        if filename.lower().startswith(prefix) or prefix in filename.lower():
+                            jurisdiction = jur
+                            break
+                    
+                    # Determine regulation type
+                    reg_type = "📋 General Compliance"
+                    if any(keyword in reg_name.lower() for keyword in ['child', 'minor', 'kid', 'coppa']):
+                        reg_type = "👶 Child Protection"
+                    elif any(keyword in reg_name.lower() for keyword in ['data', 'privacy', 'gdpr', 'ccpa']):
+                        reg_type = "🔒 Data Privacy"
+                    elif any(keyword in reg_name.lower() for keyword in ['dsa', 'platform', 'social']):
+                        reg_type = "📱 Platform Regulation"
+                    elif any(keyword in reg_name.lower() for keyword in ['reporting', 'ncmec']):
+                        reg_type = "📊 Reporting Requirements"
+                        
+                    with st.expander(f"📜 {reg_name}"):
                         col_a, col_b = st.columns(2)
                         with col_a:
-                            st.markdown(f"**📍 Jurisdiction:** {reg.get('jurisdiction', 'Not specified')}")
+                            st.markdown(f"**📍 Jurisdiction:** {jurisdiction}")
                             st.markdown(f"**📊 Content Length:** {reg.get('content_length', 0):,} characters")
+                            st.markdown(f"**📋 Type:** {reg_type}")
                         with col_b:
-                            st.markdown(f"**📅 Last Updated:** {reg.get('last_updated', 'Unknown')}")
-                            st.markdown(f"**🔧 Status:** Loaded and indexed")
+                            # More descriptive status
+                            if reg.get('content_length', 0) > 0:
+                                status = "✅ Active & Indexed"
+                                status_color = "success"
+                            else:
+                                status = "⚠️ Loaded but Empty"
+                                status_color = "warning"
+                            
+                            st.markdown(f"**🔧 Status:** {status}")
+                            
+                            # Show content summary
+                            content_length = reg.get('content_length', 0)
+                            if content_length > 10000:
+                                size_desc = "📚 Comprehensive Document"
+                            elif content_length > 5000:
+                                size_desc = "📄 Standard Document"
+                            elif content_length > 1000:
+                                size_desc = "📃 Brief Document"
+                            else:
+                                size_desc = "📝 Summary Document"
+                            
+                            st.markdown(f"**📑 Size:** {size_desc}")
+                            
+                            # Calculate approximate reading time
+                            words = content_length // 5  # Rough estimate: 5 chars per word
+                            reading_time = max(1, words // 200)  # 200 words per minute
+                            st.markdown(f"**⏱️ Reading Time:** ~{reading_time} min")
                 
                 st.markdown('</div>', unsafe_allow_html=True)
             else:
                 st.warning("⚠️ No regulatory documents found")
                 st.info("Check the /regulations directory for legal document files")
             
-            # Jurisdictions covered
+            # Jurisdictions covered - Enhanced display
             st.subheader("🌍 Geographic Coverage")
-            if jurisdictions:
-                for jurisdiction in jurisdictions:
-                    st.success(f"✅ {jurisdiction}")
+            if regulations:
+                # Extract unique jurisdictions from our enhanced mapping
+                jurisdiction_map = {
+                    'ca': '🇨🇦 Canada',
+                    'eu': '🇪🇺 European Union', 
+                    'us': '🇺🇸 United States',
+                    'fl': '🇺🇸 Florida, USA',
+                    'ut': '🇺🇸 Utah, USA',
+                    'ccpa': '🇺🇸 California, USA',
+                    'coppa': '🇺🇸 United States (Federal)',
+                    'gdpr': '🇪🇺 European Union',
+                    'ncmec': '🇺🇸 United States (Federal)'
+                }
+                
+                detected_jurisdictions = set()
+                for reg in regulations:
+                    filename = reg.get('filename', reg.get('name', '').lower().replace(' ', '_'))
+                    for prefix, jur in jurisdiction_map.items():
+                        if filename.lower().startswith(prefix) or prefix in filename.lower():
+                            detected_jurisdictions.add(jur)
+                            break
+                
+                if detected_jurisdictions:
+                    # Group by country for better display
+                    countries = {}
+                    for jur in detected_jurisdictions:
+                        if '🇺🇸' in jur:
+                            countries.setdefault('🇺🇸 United States', []).append(jur)
+                        elif '🇪🇺' in jur:
+                            countries.setdefault('🇪🇺 European Union', []).append(jur)
+                        elif '🇨🇦' in jur:
+                            countries.setdefault('🇨🇦 Canada', []).append(jur)
+                    
+                    for country, regions in countries.items():
+                        unique_regions = list(set(regions))
+                        # Filter out the main country from the regions list
+                        specific_regions = [region for region in unique_regions if region != country]
+                        
+                        if len(specific_regions) == 0:
+                            # Only show the country if no specific regions
+                            st.success(f"{country}")
+                        else:
+                            # Show country with specific regions listed underneath
+                            st.success(f"{country}")
+                            for region in specific_regions:
+                                # Extract just the state/region name without country repetition
+                                if '🇺🇸' in region:
+                                    # For US states, extract just the state name
+                                    state_name = region.replace('🇺🇸 ', '').replace(', USA', '').replace(' (Federal)', ' (Federal)')
+                                    st.info(f"  • {state_name}")
+                                elif '🇪🇺' in region:
+                                    # For EU regions, extract region name
+                                    region_name = region.replace('🇪🇺 ', '')
+                                    st.info(f"  • {region_name}")
+                                elif '🇨🇦' in region:
+                                    # For Canadian regions, extract region name  
+                                    region_name = region.replace('🇨🇦 ', '')
+                                    st.info(f"  • {region_name}")
+                                else:
+                                    st.info(f"  • {region}")
+                else:
+                    st.warning("⚠️ No jurisdiction information available")
             else:
-                st.warning("⚠️ No jurisdiction information available")
+                st.warning("⚠️ No regulatory documents loaded")
                 
         else:
             st.error("❌ Failed to load regulatory coverage data")
@@ -1214,68 +1628,38 @@ def single_feature_mode():
     """Single feature classification interface"""
     st.header("🔍 Single Feature Analysis")
     
-    col1, col2 = st.columns([2, 1])
+    # Input form
+    with st.form("feature_form"):
+        title = st.text_input(
+            "Feature Title",
+            placeholder="e.g., User Age Verification System",
+            help="Brief name or title of the feature"
+        )
+        
+        description = st.text_area(
+            "Feature Description",
+            placeholder="e.g., System to verify user age during registration using government ID validation...",
+            height=150,
+            help="Detailed description of what the feature does"
+        )
+        
+        submitted = st.form_submit_button("🚀 Analyze Feature", type="primary")
     
-    with col1:
-        # Input form
-        with st.form("feature_form"):
-            title = st.text_input(
-                "Feature Title",
-                placeholder="e.g., User Age Verification System",
-                help="Brief name or title of the feature"
-            )
-            
-            description = st.text_area(
-                "Feature Description",
-                placeholder="e.g., System to verify user age during registration using government ID validation...",
-                height=150,
-                help="Detailed description of what the feature does"
-            )
-            
-            submitted = st.form_submit_button("🚀 Analyze Feature", type="primary")
+    # Process submission
+    if submitted:
+        if not title.strip() or not description.strip():
+            st.error("❌ Please provide both title and description")
+            return
         
-        # Process submission
-        if submitted:
-            if not title.strip() or not description.strip():
-                st.error("❌ Please provide both title and description")
-                return
+        with st.spinner("🔄 Analyzing feature for geo-compliance requirements..."):
+            response = call_api("/classify_enhanced", {
+                "title": title.strip(),
+                "description": description.strip()
+            })
             
-            with st.spinner("🔄 Analyzing feature for geo-compliance requirements..."):
-                response = call_api("/classify_enhanced", {
-                    "title": title.strip(),
-                    "description": description.strip()
-                })
-                
-                if response:
-                    result = response.json()
-                    display_compliance_analysis(result, title, description)
-    
-    with col2:
-        # Example features sidebar
-        st.subheader("💡 Example Features")
-        
-        examples = [
-            {
-                "title": "User Age Verification",
-                "description": "System to verify user age during registration using government ID validation for compliance with minor protection laws."
-            },
-            {
-                "title": "Content Recommendation Algorithm",
-                "description": "AI-powered system that suggests personalized content to users based on their viewing history and preferences."
-            },
-            {
-                "title": "Simple Calculator Widget",
-                "description": "Basic arithmetic calculator that performs mathematical operations without storing user data."
-            }
-        ]
-        
-        for i, example in enumerate(examples):
-            with st.expander(f"Example {i+1}: {example['title']}"):
-                st.write(f"**Description:** {example['description']}")
-                if st.button(f"Use Example {i+1}", key=f"example_{i}"):
-                    st.session_state.example_title = example['title']
-                    st.session_state.example_description = example['description']
-                    st.rerun()
+            if response:
+                result = response.json()
+                display_compliance_analysis(result, title, description)
 
 def batch_processing_mode():
     """Batch CSV processing interface"""
@@ -1317,50 +1701,142 @@ def batch_processing_mode():
             
             st.success(f"✅ Valid CSV with {len(df)} rows")
             
+            # Processing options
+            st.subheader("📊 Processing Options")
+            
+            show_detailed = st.checkbox("Show detailed analysis for each feature", value=False)
+            
+            if show_detailed:
+                feature_count = len(df)
+                if feature_count > 20:
+                    st.warning(f"⚠️ You have {feature_count} features. Detailed analysis will be shown for ALL of them. This may take significantly longer to load and display.")
+                else:
+                    st.info(f"ℹ️ Detailed analysis will be shown for all {feature_count} features.")
+            
             # Process button
             if st.button("🚀 Process Batch", type="primary"):
-                with st.spinner(f"🔄 Processing {len(df)} features..."):
-                    # Reset file pointer
-                    uploaded_file.seek(0)
+                # Get title and description column names
+                title_col = next((col for col in title_cols if col in df.columns), None)
+                desc_col = next((col for col in desc_cols if col in df.columns), None)
+                
+                with st.spinner(f"🔄 Processing {len(df)} features using enhanced analysis..."):
+                    results = []
+                    detailed_results = []
                     
-                    # Send to API
-                    response = call_api("/batch_classify", files={
-                        "file": ("features.csv", uploaded_file, "text/csv")
-                    })
+                    # Progress bar
+                    progress_bar = st.progress(0)
                     
-                    if response:
-                        # Create download
+                    for idx, row in df.iterrows():
+                        # Update progress
+                        progress_bar.progress((idx + 1) / len(df))
+                        
+                        title = str(row[title_col]).strip()
+                        description = str(row[desc_col]).strip()
+                        
+                        if title and description and title.lower() != 'nan' and description.lower() != 'nan':
+                            # Use same logic as single feature analysis
+                            response = call_api("/classify_enhanced", {
+                                "title": title,
+                                "description": description
+                            })
+                            
+                            if response:
+                                result = response.json()
+                                
+                                # Store for CSV export
+                                results.append({
+                                    'title': title,
+                                    'description': description,
+                                    'needs_geo_logic': result.get('needs_geo_logic'),
+                                    'overall_confidence': result.get('overall_confidence', 0),
+                                    'primary_confidence': result.get('primary_confidence', 0),
+                                    'secondary_confidence': result.get('secondary_confidence', 0),
+                                    'risk_assessment': result.get('risk_assessment', 'unknown'),
+                                    'reasoning': result.get('reasoning', ''),
+                                    'applicable_regulations': str(result.get('applicable_regulations', [])),
+                                    'regulatory_requirements': str(result.get('regulatory_requirements', [])),
+                                    'recommended_actions': str(result.get('recommended_actions', []))
+                                })
+                                
+                                # Store detailed results for display
+                                if show_detailed:
+                                    detailed_results.append({
+                                        'title': title,
+                                        'description': description,
+                                        'result': result
+                                    })
+                            else:
+                                # Handle API error
+                                results.append({
+                                    'title': title,
+                                    'description': description,
+                                    'needs_geo_logic': 'error',
+                                    'overall_confidence': 0,
+                                    'primary_confidence': 0,
+                                    'secondary_confidence': 0,
+                                    'risk_assessment': 'error',
+                                    'reasoning': 'API Error - could not process',
+                                    'applicable_regulations': '',
+                                    'regulatory_requirements': '',
+                                    'recommended_actions': ''
+                                })
+                    
+                    progress_bar.empty()
+                    
+                    if results:
                         st.success("✅ Batch processing completed!")
                         
+                        # Create results DataFrame
+                        results_df = pd.DataFrame(results)
+                        
                         # Provide download link
+                        csv_buffer = io.StringIO()
+                        results_df.to_csv(csv_buffer, index=False)
+                        
                         st.download_button(
                             label="📥 Download Results CSV",
-                            data=response.content,
-                            file_name=f"classified_features_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                            data=csv_buffer.getvalue(),
+                            file_name=f"enhanced_classified_features_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                             mime="text/csv"
                         )
                         
-                        # Show preview of results
-                        result_df = pd.read_csv(io.StringIO(response.content.decode('utf-8')))
-                        st.subheader("📊 Results Preview")
-                        st.dataframe(result_df.head())
-                        
                         # Summary statistics
-                        if 'needs_geo_logic' in result_df.columns:
-                            st.subheader("📈 Summary Statistics")
-                            col_a, col_b, col_c = st.columns(3)
+                        st.subheader("📈 Summary Statistics")
+                        col_a, col_b, col_c = st.columns(3)
+                        
+                        # Count results
+                        compliant = len(results_df[results_df['needs_geo_logic'] == True])
+                        non_compliant = len(results_df[results_df['needs_geo_logic'] == False])
+                        uncertain = len(results_df[results_df['needs_geo_logic'].isin(['uncertain', 'error'])])
+                        
+                        with col_a:
+                            st.metric("🚨 Requires Compliance", compliant)
+                        with col_b:
+                            st.metric("✅ No Compliance Needed", non_compliant)
+                        with col_c:
+                            st.metric("❓ Uncertain/Error", uncertain)
+                        
+                        # Show results preview
+                        st.subheader("📊 Results Preview")
+                        st.dataframe(results_df[['title', 'needs_geo_logic', 'overall_confidence', 'risk_assessment']].head(10))
+                        
+                        # Show detailed analysis if requested
+                        if show_detailed and detailed_results:
+                            st.subheader(f"🔍 Detailed Analysis ({len(detailed_results)} features)")
                             
-                            with col_a:
-                                compliant = len(result_df[result_df['needs_geo_logic'] == True])
-                                st.metric("⚠️ Requires Compliance", compliant)
-                            
-                            with col_b:
-                                non_compliant = len(result_df[result_df['needs_geo_logic'] == False])
-                                st.metric("✅ No Compliance Needed", non_compliant)
-                            
-                            with col_c:
-                                uncertain = len(result_df[result_df['needs_geo_logic'] == 'uncertain'])
-                                st.metric("❓ Uncertain", uncertain)
+                            # For large numbers of features, use expanders to keep interface manageable
+                            if len(detailed_results) > 10:
+                                for idx, item in enumerate(detailed_results):
+                                    with st.expander(f"📋 Feature {idx + 1}: {item['title']}", expanded=False):
+                                        display_compliance_analysis(item['result'], item['title'], item['description'])
+                            else:
+                                # For smaller numbers, show directly with separators
+                                for idx, item in enumerate(detailed_results):
+                                    st.markdown(f"---")
+                                    st.markdown(f"### Feature {idx + 1}: {item['title']}")
+                                    display_compliance_analysis(item['result'], item['title'], item['description'])
+                    else:
+                        st.error("❌ No valid features could be processed")
     
     with col2:
         # Sample CSV download
@@ -1491,10 +1967,7 @@ def statistics_mode():
             else:
                 st.error("❌ Failed to load statistics")
 
-# Handle example selection from session state
-if 'example_title' in st.session_state:
-    st.session_state.pop('example_title')
-    st.session_state.pop('example_description')
+
 
 if __name__ == "__main__":
     main()
