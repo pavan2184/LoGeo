@@ -1,6 +1,6 @@
 # Geo-Compliance Feature Classification System
 
-A production-ready system for automated detection and classification of software features requiring geographic-specific regulatory compliance. Built for the TikTok Tech Jam Hackathon.
+A production-ready system for automated detection and classification of software features requiring geographic-specific regulatory compliance. 
 
 ---
 
