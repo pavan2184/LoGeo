@@ -514,7 +514,7 @@ def import_backend_decision_engine():
             sys.path.insert(0, working_root)
         
         # Try importing the backend module
-        from backend.enhanced_decision_engine import EnhancedDecisionEngine
+        from src.backend.compliance.enhanced_decision_engine import EnhancedDecisionEngine
         return EnhancedDecisionEngine()
         
     except ImportError as first_import_error:
@@ -528,7 +528,7 @@ def import_backend_decision_engine():
             if current_cwd not in sys.path:
                 sys.path.insert(0, current_cwd)
                 
-            from backend.enhanced_decision_engine import EnhancedDecisionEngine
+            from src.backend.compliance.enhanced_decision_engine import EnhancedDecisionEngine
             return EnhancedDecisionEngine()
             
         except ImportError:

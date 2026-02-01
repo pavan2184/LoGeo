@@ -29,3 +29,6 @@ feature_name,feature_description
 "Reaction GIFs with embedded filtering","Enable GIFs in comments, while filtering content deemed inappropriate for minor accounts. Softblock will apply if a flagged GIF is used by ASL-flagged profiles."
 "Longform posts with age-based moderation","Longform post creation is now open to all. However, moderation for underage authors is stricter via Snowcap."
 "Custom avatar system with identity checks","Users can now design custom avatars. For safety, T5 triggers block adult-themed assets from use by underage profiles. Age detection uses ASL and logs flow through GH."
+
+
+

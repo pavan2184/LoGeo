@@ -15,13 +15,13 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 import json
 
-from backend.preprocessing import get_preprocessor, PreprocessingResult, EntityMatch
-from backend.glossary import get_glossary, LocationMapping, AgeMapping, TerminologyMapping, EscalationDecision
-from backend.llm_classifier import get_classifier, RegulatoryAnalysisResult
-from backend.rag_loader import get_rag_instance
-from backend.confidence_scoring import get_confidence_scorer, ConfidenceBreakdown, ConfidenceLevel
-from backend.ambiguity_handler import get_ambiguity_handler, AmbiguityAssessment, DisambiguationResult
-from backend.enhanced_decision_engine import EnhancedDecisionEngine, DecisionResult, EscalationRule
+from src.backend.core.preprocessing import get_preprocessor, PreprocessingResult, EntityMatch
+from src.backend.knowledge.glossary import get_glossary, LocationMapping, AgeMapping, TerminologyMapping, EscalationDecision
+from src.backend.core.llm_classifier import get_classifier, RegulatoryAnalysisResult
+from src.backend.knowledge.rag_loader import get_rag_instance
+from src.backend.core.confidence_scoring import get_confidence_scorer, ConfidenceBreakdown, ConfidenceLevel
+from src.backend.compliance.ambiguity_handler import get_ambiguity_handler, AmbiguityAssessment, DisambiguationResult
+from src.backend.compliance.enhanced_decision_engine import EnhancedDecisionEngine, DecisionResult, EscalationRule
 
 logger = logging.getLogger(__name__)
 

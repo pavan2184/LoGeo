@@ -3,7 +3,7 @@ Geo-compliance logic for access control based on geographic rules.
 """
 
 from typing import Dict, List, Tuple, Any
-from backend.supabase_client import get_supabase_client
+from src.backend.infrastructure.supabase_client import get_supabase_client
 import logging
 
 logger = logging.getLogger(__name__)

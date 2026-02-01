@@ -27,18 +27,19 @@ RUN pip install --no-cache-dir --only-binary=all spacy || echo "spaCy installati
 RUN python -c "import spacy; spacy.cli.download('en_core_web_sm')" || echo "spaCy model download failed, will use fallback"
 
 # Copy backend code
-COPY backend/ ./backend/
+COPY src/ ./src/
 COPY regulations/ ./regulations/
+COPY config/ ./config/
 
 # Copy test and entrypoint scripts
-COPY test_spacy_docker.py .
-COPY docker-entrypoint.sh .
+COPY scripts/utils/test_spacy_docker.py .
+COPY docker/docker-entrypoint.sh .
 
 # Make entrypoint executable
 RUN chmod +x docker-entrypoint.sh
 
 # Create results directory
-RUN mkdir -p results
+RUN mkdir -p data/output
 
 # Expose port
 EXPOSE 8000

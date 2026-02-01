@@ -17,8 +17,8 @@ from datetime import datetime, timedelta
 import os
 from enum import Enum
 
-from backend.glossary import get_glossary
-from backend.supabase_client import get_supabase_client
+from src.backend.knowledge.glossary import get_glossary
+from src.backend.infrastructure.supabase_client import get_supabase_client
 
 logger = logging.getLogger(__name__)
 

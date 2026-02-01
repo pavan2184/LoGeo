@@ -4,7 +4,7 @@ import json
 from typing import Dict, List, Optional
 import logging
 from pydantic import BaseModel
-from backend.rag_loader import get_rag_instance
+from src.backend.knowledge.rag_loader import get_rag_instance
 
 logger = logging.getLogger(__name__)
 

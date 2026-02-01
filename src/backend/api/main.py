@@ -10,12 +10,12 @@ from datetime import datetime
 import os
 import logging
 from dataclasses import asdict
-from backend.llm_classifier import get_classifier, RegulatoryAnalysisResult
-from backend.rag_loader import get_rag_instance
-from backend.geo_compliance import get_geo_engine
-from backend.supabase_client import get_supabase_client
-from backend.enhanced_classifier import get_enhanced_classifier, EnhancedClassificationResult
-from backend.feedback_system import get_feedback_processor, FeedbackType, InterventionPriority
+from src.backend.core.llm_classifier import get_classifier, RegulatoryAnalysisResult
+from src.backend.knowledge.rag_loader import get_rag_instance
+from src.backend.compliance.geo_compliance import get_geo_engine
+from src.backend.infrastructure.supabase_client import get_supabase_client
+from src.backend.core.enhanced_classifier import get_enhanced_classifier, EnhancedClassificationResult
+from src.backend.infrastructure.feedback_system import get_feedback_processor, FeedbackType, InterventionPriority
 
 app = FastAPI(title="Geo-Compliance Detection API", version="1.0.0")
 
@@ -805,7 +805,7 @@ async def get_performance_metrics(days: int = 30):
 async def get_location_glossary():
     """Get all location mappings from the glossary"""
     try:
-        from backend.glossary import get_glossary
+        from src.backend.knowledge.glossary import get_glossary
         glossary = get_glossary()
         
         # Get unique locations
@@ -832,7 +832,7 @@ async def get_location_glossary():
 async def get_age_glossary():
     """Get all age term mappings from the glossary"""
     try:
-        from backend.glossary import get_glossary
+        from src.backend.knowledge.glossary import get_glossary
         glossary = get_glossary()
         
         # Get unique age terms
@@ -858,7 +858,7 @@ async def get_age_glossary():
 async def get_threshold_rules():
     """Get all threshold rules and their configuration"""
     try:
-        from backend.glossary import get_glossary
+        from src.backend.knowledge.glossary import get_glossary
         glossary = get_glossary()
         
         threshold_rules = glossary.get_all_threshold_rules()
@@ -884,7 +884,7 @@ async def get_threshold_rules():
 async def get_threshold_rule(rule_name: str):
     """Get a specific threshold rule by name"""
     try:
-        from backend.glossary import get_glossary
+        from src.backend.knowledge.glossary import get_glossary
         glossary = get_glossary()
         
         rule = glossary.get_threshold_rule(rule_name)
@@ -910,7 +910,7 @@ async def get_threshold_rule(rule_name: str):
 async def update_threshold_rule(rule_name: str, rule_update: ThresholdRuleUpdate):
     """Update or create a threshold rule"""
     try:
-        from backend.glossary import get_glossary, ThresholdRule
+        from src.backend.knowledge.glossary import get_glossary, ThresholdRule
         glossary = get_glossary()
         
         # Validate threshold value
@@ -971,7 +971,7 @@ async def update_threshold_rule(rule_name: str, rule_update: ThresholdRuleUpdate
 async def evaluate_threshold(rule_name: str, confidence: float, category: str = None):
     """Evaluate a confidence score against a threshold rule"""
     try:
-        from backend.glossary import get_glossary
+        from src.backend.knowledge.glossary import get_glossary
         glossary = get_glossary()
         
         # Validate confidence value
@@ -1009,7 +1009,7 @@ async def evaluate_threshold(rule_name: str, confidence: float, category: str = 
 async def get_category_threshold_mapping():
     """Get mapping of categories to their threshold rules"""
     try:
-        from backend.glossary import get_glossary
+        from src.backend.knowledge.glossary import get_glossary
         glossary = get_glossary()
         
         threshold_rules = glossary.get_all_threshold_rules()

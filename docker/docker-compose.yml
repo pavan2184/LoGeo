@@ -3,22 +3,22 @@ version: '3.8'
 services:
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend.simple
+      context: ..
+      dockerfile: docker/Dockerfile.backend.simple
     container_name: geo-compliance-backend
     ports:
       - "8001:8000"
     volumes:
-      - ./results:/app/results
-      - ./regulations:/app/regulations
-      - ./backend:/app/backend  # Mount backend code for auto-reload
+      - ../data/output:/app/data/output
+      - ../regulations:/app/regulations
+      - ../src/backend:/app/src/backend  # Mount backend code for auto-reload
     environment:
       - PYTHONPATH=/app
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     restart: unless-stopped
-    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn src.backend.api.main:app --host 0.0.0.0 --port 8000 --reload
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -28,13 +28,13 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
     container_name: geo-compliance-frontend
     ports:
       - "8501:8501"
     volumes:
-      - ./frontend:/app/frontend  # Mount frontend code for auto-reload
+      - ../src/frontend:/app/src/frontend  # Mount frontend code for auto-reload
     depends_on:
       backend:
         condition: service_healthy
@@ -50,15 +50,15 @@ services:
 
   demo:
     build:
-      context: .
-      dockerfile: Dockerfile.backend.simple
+      context: ..
+      dockerfile: docker/Dockerfile.backend.simple
     container_name: geo-compliance-demo
     volumes:
-      - .:/app
+      - ..:/app
     environment:
       - PYTHONPATH=/app
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-    command: ["python3", "demo_enhanced_flow.py"]
+    command: ["python3", "scripts/demos/demo_enhanced_flow.py"]
 
 volumes:
   results:

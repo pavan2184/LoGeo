@@ -11,7 +11,7 @@ import re
 import logging
 from typing import List, Dict, Tuple, Set, Optional, Any
 from dataclasses import dataclass
-from backend.glossary import get_glossary, LocationMapping, AgeMapping, TerminologyMapping
+from src.backend.knowledge.glossary import get_glossary, LocationMapping, AgeMapping, TerminologyMapping
 
 # HuggingFace imports
 try:

@@ -16,16 +16,17 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY backend/ ./backend/
+COPY src/ ./src/
 COPY regulations/ ./regulations/
-COPY test_spacy_docker.py .
-COPY docker-entrypoint.sh .
+COPY config/ ./config/
+COPY scripts/utils/test_spacy_docker.py .
+COPY docker/docker-entrypoint.sh .
 
 # Make entrypoint executable
 RUN chmod +x docker-entrypoint.sh
 
 # Create results directory
-RUN mkdir -p results
+RUN mkdir -p data/output
 
 # Expose port
 EXPOSE 8000
