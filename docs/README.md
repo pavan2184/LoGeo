@@ -1,8 +1,26 @@
-# Geo-Compliance Feature Classification System
+<a id="readme-top"></a>
 
-A production-ready system for automated detection and classification of software features requiring geographic-specific regulatory compliance. 
+<div align="center">
+  <h1>LoGeo</h1>
+  <p><strong>Know when product features need local compliance logic.</strong></p>
+  <p>A geo-compliance classification system that combines entity extraction, regulation retrieval, confidence scoring, and human review.</p>
+  <p>
+    <a href="#overview"><strong>Explore the classification system »</strong></a>
+    <br /><br />
+    <a href="#table-of-contents">View documentation</a>
+    &middot;
+    <a href="https://github.com/pavan2184/LoGeo/issues/new">Report a bug</a>
+    &middot;
+    <a href="https://github.com/pavan2184/LoGeo/issues/new">Request a feature</a>
+  </p>
+</div>
 
----
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?logo=python&amp;logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&amp;logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Vector_Search-FAISS-4B32C3" alt="FAISS" />
+  <img src="https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&amp;logoColor=white" alt="Supabase" />
+</p>
 
 ## Table of Contents
 
